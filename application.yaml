@@ -1,0 +1,57 @@
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: finder
+    password: finder
+    url: jdbc:mysql://localhost:3306/search_engine?useSSL=false&requireSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+    hibernate:
+      ddl-auto: create
+
+
+
+
+indexing-settings:
+  sites:
+#    - url: https://www.svetlovka.ru
+#      name: svetlovka.ru
+    - url: https://www.lenta.ru
+      name: Lenta
+#    - url: https://www.skillbox.ru
+#      name: Skillbox
+    - url: https://www.playback.ru
+      name: PlayBack.Ru
+#    - url: https://www.rbc.ru
+#      name: Rbc.Ru
+#    - url: https://for-each.dev
+#      name: for-each
+#    - url: https://www.kotelnich.info
+#      name: Котельнич
+#    - url: https://www.cdek.ru
+#      name: cdek
+    - url: https://nosite.ru
+      name: Nosite
+#    - url: https://fitstars.ru
+#      name: fitstars.ru
+
+user-agents-settings:
+  userAgents:
+    - name: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+    - name: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0
+    - name: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.183 Safari/537.36 Vivaldi/1.96.1147.42
+    - name: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15
+    - name: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 OPR/73.0.3856.284
+    - name: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0
+    - name: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/99.0.0.0
+    - name: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Vivaldi/6.1.3035.75
+    - name: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML, как Gecko) Chrome / 80.0.3987.149 Safari / 537.36 OPR / 67.0.3575.115
+
+
