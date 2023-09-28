@@ -32,6 +32,8 @@ public class IndexServiceImp implements IndexService {
 
     private final UserAgentList userAgentList;
 
+    static final Object lock = new Object();
+
     public IndexServiceImp(SiteRepository siteRepository, PageRepository pageRepository, SitesList sitesList, UserAgentList userAgentList) {
         this.siteRepository = siteRepository;
         this.pageRepository = pageRepository;
@@ -48,6 +50,7 @@ public class IndexServiceImp implements IndexService {
             return new IndexResponseError(false, "Индексация уже запущена");
         }
         IndexServiceImp indexServiceImp = new IndexServiceImp(siteRepository, pageRepository, sitesList, userAgentList);
+
 
         int sizeSitesList = indexServiceImp.getSitesList().getSites().size();
 
@@ -125,7 +128,7 @@ public class IndexServiceImp implements IndexService {
             // }
 
         }
-        for (Future<SiteEntity> result : futureResult) {
+       /* for (Future<SiteEntity> result : futureResult) {
             try {
                 if (result.isDone()) {
                     SiteEntity siteEntity = result.get();
@@ -146,14 +149,15 @@ public class IndexServiceImp implements IndexService {
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             }
-         /*   siteEntity.setStatus(StatusIndex.INDEXED);
+         *//*   siteEntity.setStatus(StatusIndex.INDEXED);
             indexServiceImp.getSiteRepository().save(siteEntity);
             Logger.getLogger(IndexServiceImp.class.getName()).info("в методе startIndexing после строки siteEntity.setStatus(StatusIndex.INDEXED);\n" +
-                    "            indexServiceImp.getSiteRepository().save(siteEntity);");*/
+                    "            indexServiceImp.getSiteRepository().save(siteEntity);");*//*
 
-        }
+        }*/
 
         executorService.shutdown();
+        Logger.getLogger(IndexServiceImp.class.getName()).info("executorService.shutdown();");
 
        /* IndexResponse indexResponse = new IndexResponse(true);
           IndexResponseError indexResponseError = new IndexResponseError(false, "не удалось");*/
