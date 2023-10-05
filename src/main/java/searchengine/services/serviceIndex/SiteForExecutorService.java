@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 @Getter
 @Setter
-public class SiteForExecutorService implements Callable<SiteEntity> {
+public class SiteForExecutorService implements Callable<Set<String>> {
     // private Site url;
     private SiteEntity siteEntity;
 
@@ -28,18 +28,20 @@ public class SiteForExecutorService implements Callable<SiteEntity> {
     }
 
     @Override
-    public SiteEntity call() throws Exception {
+    public Set<String> call() throws Exception {
         Set<String> stringSetResult = new HashSet<>();
         //  SiteEntityToSetString siteEntityToSetString = new SiteEntityToSetString();
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         try {
             HtmlParser htmlParser = new HtmlParser(siteEntity.getUrl(), siteEntity, indexServiceImp);
-            forkJoinPool.invoke(htmlParser);
+            stringSetResult = forkJoinPool.invoke(htmlParser);
+            Logger.getLogger(SiteForExecutorService.class.getName()).info("Пришел результат stringSetResult size() = " + stringSetResult.size());
 
             Logger.getLogger(SiteForExecutorService.class.getName()).info("Отработал forkJoinPool.invoke(htmlParser) !!!!!!!!!!!!!!");
 
-            forkJoinPool.shutdown();
+              forkJoinPool.shutdown();
             if(forkJoinPool.isShutdown()){
+                Logger.getLogger(SiteForExecutorService.class.getName()).info("Вошли в условие  if(forkJoinPool.isShutdown())");
                 siteEntity.setStatus(StatusIndex.INDEXED);
                 siteEntity.setStatusTime(LocalDateTime.now());
                 indexServiceImp.getSiteRepository().save(siteEntity);
@@ -59,6 +61,6 @@ public class SiteForExecutorService implements Callable<SiteEntity> {
         /*siteEntityToSetString.setSiteEntity(siteEntity);
         siteEntityToSetString.setStringSet(stringSetResult);*/
 
-        return siteEntity;
+        return stringSetResult;
     }
 }

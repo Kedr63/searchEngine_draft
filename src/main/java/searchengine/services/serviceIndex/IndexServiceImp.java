@@ -32,7 +32,7 @@ public class IndexServiceImp implements IndexService {
 
     private final UserAgentList userAgentList;
 
-    static final Object lock = new Object();
+    protected static final Object lock = new Object();
 
     public IndexServiceImp(SiteRepository siteRepository, PageRepository pageRepository, SitesList sitesList, UserAgentList userAgentList) {
         this.siteRepository = siteRepository;
@@ -48,6 +48,7 @@ public class IndexServiceImp implements IndexService {
         siteRepository.deleteAll();
         if (siteRepository.findAll().stream().anyMatch(o -> o.getStatus().equals(StatusIndex.INDEXING))) {
             return new IndexResponseError(false, "Индексация уже запущена");
+
         }
         IndexServiceImp indexServiceImp = new IndexServiceImp(siteRepository, pageRepository, sitesList, userAgentList);
 
@@ -55,7 +56,7 @@ public class IndexServiceImp implements IndexService {
         int sizeSitesList = indexServiceImp.getSitesList().getSites().size();
 
         ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
-        List<Future<SiteEntity>> futureResult = new ArrayList<>();
+        List<Future<Set<String>>> futureResult = new ArrayList<>();
 
       /*  ThreadStopper threadStopper = new ThreadStopper();
         threadStopper.setStopper(false);*/
@@ -69,8 +70,17 @@ public class IndexServiceImp implements IndexService {
 
             try {
                 SiteForExecutorService siteForExecutorService = new SiteForExecutorService(siteEntity, indexServiceImp);
-                Future<SiteEntity> futureSetString = executorService.submit(siteForExecutorService);
-                Logger.getLogger(IndexServiceImp.class.getName()).info("Future<SiteEntity> futureSetString = executorService.submit(siteForExecutorService);");
+                Future<Set<String>> futureSetString = executorService.submit(siteForExecutorService);
+                Logger.getLogger(IndexServiceImp.class.getName()).info("Future<Set<String>> futureSetString = executorService.submit(siteForExecutorService);");
+
+                try {
+                    Set<String> stringSet = futureSetString.get();
+                    Logger.getLogger(IndexServiceImp.class.getName()).info("futureSetString.get();");
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
 
                 futureResult.add(futureSetString);
                 Logger.getLogger(IndexServiceImp.class.getName()).info("После futureResult.add(futureSetString); Size futureResult = " + futureResult.size());

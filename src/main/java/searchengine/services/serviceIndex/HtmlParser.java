@@ -13,12 +13,10 @@ import searchengine.dto.indexing.DocumentParsed;
 import searchengine.dto.indexing.ThreadStopper;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
-import searchengine.model.StatusIndex;
 import searchengine.repositories.PageRepository;
 import searchengine.repositories.SiteRepository;
 
 import java.awt.geom.IllegalPathStateException;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -29,8 +27,6 @@ import java.util.logging.Logger;
 @Setter
 public class HtmlParser extends RecursiveTask<Set<String>> {
 
-    //  private SiteRepository siteRepository;
-    // private PageRepository pageRepository;
     private final String url;
     private final SiteEntity siteEntity;
     private final IndexServiceImp indexServiceImp;
@@ -48,19 +44,15 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
         List<HtmlParser> tasks = new ArrayList<>();
         Set<String> paths = new HashSet<>();
 
-      /*  PageRepository pageRepository = indexServiceImp.getPageRepository();
-        SiteRepository siteRepository = indexServiceImp.getSiteRepository();*/
-
-
         try {
             DocumentParsed documentParsed = getParsedDocument(url);
             Document doc = documentParsed.getDoc();
 
-          /*  Elements searchLinks = doc.getElementsByTag("a").select("[href^=http], [href^=/]")
-                    .not("[href^=#]");*/
-
-            Elements searchLinks = doc.getElementsByTag("a").select("[href^=/]")
+            Elements searchLinks = doc.select("a[href^=/][href~=(/\\w*\\z|\\w/\\z|.html)]")
                     .not("[href*=#]");
+            //📌 a[href^=/][href~=(/\w+\z|\w/\z|.html)] - в теге /а/ будет искать href начинающийся на "/", далее href с регулярным
+            // выражением ("/" ноль или несколько букв, подчеркивание или цифр (\\w*) и это конец текста (\\z) | или в конце текста / (\w/\z) | или в конце
+            // .html
 
             // добавим проверку по тэгу title: если такая страница уже участвовала в обработке, то не будем повторно использовать эту страницу
           /*  String titleString = doc.getElementsByTag("title").text();
@@ -72,60 +64,64 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
                 String relHref = element.attr("href");
                 String absHref = siteEntity.getUrl();
                 String fullHref = absHref + relHref;
+                Logger.getLogger(HtmlParser.class.getName()).info("fullHref: " + fullHref);
 
 
                 // предварительно уберем повторяющиеся path
                 // if BD have /path/ -> то перейдем к следующему элементу цикла
-                /*if (pageRepository.findByPath(absHref + relHref).isPresent()) {
-                    // throw new IllegalPathStateException(" такой путь есть - не используем и идем дальше");
-                    Logger.getLogger(HtmlParser.class.getName()).info("такой путь есть - не используем и идем дальше -> use continue");
-                    continue;
+               /* synchronized (IndexServiceImp.lock) {
+                    if (CollectionStorage.setPaths.contains(fullHref)) {
+                        // throw new IllegalPathStateException(" такой путь есть - не используем и идем дальше");
+                        Logger.getLogger(HtmlParser.class.getName()).info("такой путь есть - не используем и идем дальше -> use continue");
+                        continue;
+                    }
                 }*/
 
-
-//                if (isMatchRequiredConditions(linkHref, url)) {
-//                    String relHref = linkHref.replaceAll(
-//                            "(ht{2}ps?:)?(//[a-z]+\\.\\w+)?(/)?([/{1}][\\w/\\-]+\\.?h?t?m?l?[^/])(/)?", "$4");
-
-                // после всех условий и фильтров получаем URL-ссылку из doc
-                //   String urlAddress = absHref + relHref;
-
-                PageEntity pageEntity = createPageEntity(relHref, siteEntity);
-                Logger.getLogger(HtmlParser.class.getName()).info("Path: " + pageEntity.getPath());
 
                 PageRepository pageRepository = indexServiceImp.getPageRepository();
                 SiteRepository siteRepository = indexServiceImp.getSiteRepository();
 
-
-           //     synchronized (IndexServiceImp.lock) {
-                    if (!pageRepository.findByPath(pageEntity.getPath()).isPresent()) // path будет искаться по индексу
-                    {
-
-                   //     PageEntity pageEntity = createPageEntity(relHref, siteEntity);
+                if (!isPresentPathInPageRepository(fullHref, pageRepository)) {
+                    PageEntity pageEntity;
+                    synchronized (IndexServiceImp.lock) {
+                        pageEntity = createPageEntity(relHref, siteEntity);
                         pageRepository.save(pageEntity);
 
-                        MyLogger.logger.info("Path: " + pageEntity.getPath());
-                        // MyLogger.logger.info("После проверки isPresent: " + pageEntity.getPath());
-                        // если такого path нет в БД (он null), то
+                        Logger.getLogger(HtmlParser.class.getName()).info("save ENTITY in repository: IT path - " + pageEntity.getPath());
+                    }
+
                         paths.add(pageEntity.getPath());
 
 
-                        siteEntity.setStatusTime(LocalDateTime.now()); // update time indexing
-                        siteRepository.save(siteEntity);
+                    siteEntity.setStatusTime(LocalDateTime.now()); // update time indexing
+                    siteRepository.save(siteEntity);
 
-                        // MyLogger.logger.info("save Entity in pageRepository: it path - " + pageEntity.getPath());
-                        Logger.getLogger(HtmlParser.class.getName()).info("save ENTITY in repository: IT path - " + pageEntity.getPath());
+                    HtmlParser task = new HtmlParser(pageEntity.getPath(), siteEntity, indexServiceImp);
+                    tasks.add(task);
+                    task.fork();
 
-                        HtmlParser task = new HtmlParser(pageEntity.getPath(), siteEntity, indexServiceImp);
-                        task.fork();
+                }
+
+
+
+
+                    /*siteEntity.setStatusTime(LocalDateTime.now()); // update time indexing
+                    siteRepository.save(siteEntity);
+
+                    // MyLogger.logger.info("save Entity in pageRepository: it path - " + pageEntity.getPath());
+                    Logger.getLogger(HtmlParser.class.getName()).info("save ENTITY in repository: IT path - " + pageEntity.getPath());
+
+                    HtmlParser task = new HtmlParser(pageEntity.getPath(), siteEntity, indexServiceImp);
+                    tasks.add(task);
+                    task.fork();*/
                        /* try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }*/
-                        tasks.add(task);
-                    }
-             //   }
+
+                //}
+                //   }
                 // }
             }
 
@@ -142,7 +138,7 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
                 throw new IllegalStateException("Набор даже не набрался, здесь все пути-href использовали");*/
 
             if (!tasks.isEmpty()) {
-               /* for (HtmlParser task : tasks) {
+              /*  for (HtmlParser task : tasks) {
                     task.fork();
                     Logger.getLogger(HtmlParser.class.getName()).info(" task.fork() ");
                 }*/
@@ -152,9 +148,9 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
                     }
                     paths.addAll(task.join());
                 }
-              //  addResultsFromTasks(paths, tasks);
+                //  addResultsFromTasks(paths, tasks);
             }
-            Logger.getLogger(HtmlParser.class.getName()).info("tasks isEmpty and GO TO -> /return paths/");
+            Logger.getLogger(HtmlParser.class.getName()).info("paths собрал set and GO TO -> /return paths/ = " + paths.size());
 
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(HtmlParser.class.getName()).info("catch " + ex.getClass() + " ex");
@@ -170,9 +166,21 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
         }*/
         }
 
-        Logger.getLogger(HtmlParser.class.getName()).info("return paths");
+        Logger.getLogger(HtmlParser.class.getName()).info("return paths - size = " + paths.size());
         return paths;
     }
+
+    private boolean isPresentPathInPageRepository(String fullHref, PageRepository pageRepository) {
+        synchronized (IndexServiceImp.lock) {
+            return pageRepository.findByPath(fullHref).isPresent();
+        }
+    }
+
+   /* private PageEntity startCreatePageEntity(String relHref, SiteEntity siteEntity) {
+        PageEntity pageEntity = new PageEntity();
+        pageEntity.setPath(siteEntity.getUrl() + relHref);
+        return pageEntity;
+    }*/
 
     private void addResultsFromTasks(Set<String> paths, List<HtmlParser> tasks) throws InterruptedException {
         for (HtmlParser task : tasks) {
@@ -214,7 +222,9 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
         } else {
             Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + code);
             // throw new FailedSearching("ошибка в: " + url + " code " + code);
-            throw new IOException(" Ошибка индексации: сайт не доступен");
+            // throw new IOException(" Ошибка индексации: сайт не доступен");
+
+            //    documentParsed = new DocumentParsed(response.statusCode());
         }
         return documentParsed;
     }
@@ -231,13 +241,15 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
 
     private PageEntity createPageEntity(String relHref, SiteEntity siteEntity) throws IOException {
         PageEntity pageEntity = new PageEntity();
-        String path = siteEntity.getUrl() + relHref;
-        pageEntity.setSiteEntity(siteEntity);
-        pageEntity.setPath(path);
+        pageEntity.setPath(siteEntity.getUrl() + relHref);
 
-        DocumentParsed documentParsed = getParsedDocument(path);
+        DocumentParsed documentParsed = getParsedDocument(pageEntity.getPath());
         pageEntity.setCode(documentParsed.getCode());
+        pageEntity.setSiteEntity(siteEntity);
+        /* Optional<Elements> optionalElements = Optional.of(documentParsed.getDoc().getAllElements());*/
         Elements contentPage = documentParsed.getDoc().getAllElements();  // get all content of the page
+
+        // Elements contentPage = optionalElements.get();
 
         String contentViaString = "" + contentPage;
         pageEntity.setContent(contentViaString);
