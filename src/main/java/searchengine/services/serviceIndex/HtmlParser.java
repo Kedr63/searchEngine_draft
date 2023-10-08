@@ -7,7 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import searchengine.config.MyLogger;
 import searchengine.config.UserAgent;
 import searchengine.dto.indexing.DocumentParsed;
 import searchengine.dto.indexing.ThreadStopper;
@@ -20,12 +19,12 @@ import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.RecursiveAction;
 import java.util.logging.Logger;
 
 @Getter
 @Setter
-public class HtmlParser extends RecursiveTask<Set<String>> {
+public class HtmlParser extends RecursiveAction {
 
     private final String url;
     private final SiteEntity siteEntity;
@@ -40,9 +39,12 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
 
 
     @Override
-    protected Set<String> compute() {
+    protected void compute() {
         List<HtmlParser> tasks = new ArrayList<>();
-        Set<String> paths = new HashSet<>();
+       // Set<String> paths = new HashSet<>();
+
+       /* CopyOnWriteArrayList<Site> df;
+        ConcurrentSkipListSet<String> links;*/
 
         try {
             DocumentParsed documentParsed = getParsedDocument(url);
@@ -90,7 +92,7 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
                         Logger.getLogger(HtmlParser.class.getName()).info("save ENTITY in repository: IT path - " + pageEntity.getPath());
                     }
 
-                        paths.add(pageEntity.getPath());
+                       // paths.add(pageEntity.getPath());
 
 
                     siteEntity.setStatusTime(LocalDateTime.now()); // update time indexing
@@ -146,11 +148,13 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
                     if (ThreadStopper.stopper) {
                         throw new InterruptedException("Stop thread");
                     }
-                    paths.addAll(task.join());
+                   // paths.addAll(task.join());
+                    task.join();
+
                 }
                 //  addResultsFromTasks(paths, tasks);
             }
-            Logger.getLogger(HtmlParser.class.getName()).info("paths собрал set and GO TO -> /return paths/ = " + paths.size());
+         //   Logger.getLogger(HtmlParser.class.getName()).info("paths собрал set and GO TO -> /return paths/ = " + paths.size());
 
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(HtmlParser.class.getName()).info("catch " + ex.getClass() + " ex");
@@ -166,8 +170,8 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
         }*/
         }
 
-        Logger.getLogger(HtmlParser.class.getName()).info("return paths - size = " + paths.size());
-        return paths;
+      //  Logger.getLogger(HtmlParser.class.getName()).info("return paths - size = " + paths.size());
+      //  return paths;
     }
 
     private boolean isPresentPathInPageRepository(String fullHref, PageRepository pageRepository) {
@@ -182,14 +186,14 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
         return pageEntity;
     }*/
 
-    private void addResultsFromTasks(Set<String> paths, List<HtmlParser> tasks) throws InterruptedException {
+   /* private void addResultsFromTasks(Set<String> paths, List<HtmlParser> tasks) throws InterruptedException {
         for (HtmlParser task : tasks) {
             if (ThreadStopper.stopper) {
                 throw new InterruptedException("Stop thread");
             }
             paths.addAll(task.join());
         }
-    }
+    }*/
 
 /*    private void setLastErrorAndSave(Exception ex, SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
         siteEntity.setLastError(ex.getMessage());
@@ -207,8 +211,10 @@ public class HtmlParser extends RecursiveTask<Set<String>> {
         response = Jsoup.connect(url)
                 .userAgent(generateUserAgent())
                 .referrer("https://www.google.com")
-                .ignoreContentType(true)
-                .timeout(20000)
+                .ignoreHttpErrors(true)
+              //  .ignoreContentType(true)
+                .followRedirects(true)
+                .timeout(10000)
                 .execute();
         try {
             Thread.sleep(generateRandomRangeDelay()); // задержка между запросами

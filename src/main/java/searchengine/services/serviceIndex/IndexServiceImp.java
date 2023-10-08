@@ -55,11 +55,12 @@ public class IndexServiceImp implements IndexService {
 
         int sizeSitesList = indexServiceImp.getSitesList().getSites().size();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
-        List<Future<Set<String>>> futureResult = new ArrayList<>();
+       /* ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
+        List<Future<Set<String>>> futureResult = new ArrayList<>();*/
 
       /*  ThreadStopper threadStopper = new ThreadStopper();
         threadStopper.setStopper(false);*/
+ForkJoinPool forkJoinPool = new ForkJoinPool();
 
         for (int i = 0; i < sizeSitesList; i++) {
             Site site = indexServiceImp.getSitesList().getSites().get(i);
@@ -68,7 +69,22 @@ public class IndexServiceImp implements IndexService {
             SiteEntity siteEntity = createSiteEntity(site);
             indexServiceImp.getSiteRepository().save(siteEntity);
 
-            try {
+            HtmlParser parser = new HtmlParser(siteEntity.getUrl(), siteEntity, indexServiceImp);
+            forkJoinPool.invoke(parser);
+            Logger.getLogger(IndexServiceImp.class.getName()).info("forkJoinPool.execute(parser);");
+
+            do {
+                Logger.getLogger(IndexServiceImp.class.getName()).info("Work parser " + parser.getUrl());
+            }
+            while (!parser.isDone());
+            forkJoinPool.shutdown();
+            parser.join();
+          //  Logger.getLogger(IndexServiceImp.class.getName()).info("stringSet   size = " + stringSet.size());
+
+
+
+
+           /* try {
                 SiteForExecutorService siteForExecutorService = new SiteForExecutorService(siteEntity, indexServiceImp);
                 Future<Set<String>> futureSetString = executorService.submit(siteForExecutorService);
                 Logger.getLogger(IndexServiceImp.class.getName()).info("Future<Set<String>> futureSetString = executorService.submit(siteForExecutorService);");
@@ -90,7 +106,7 @@ public class IndexServiceImp implements IndexService {
                 siteEntity.setLastError(ex.getMessage() + " + поймали в классе IndexServiceImp");
                // ThreadStopper.stopper = true;
                 Logger.getLogger(IndexServiceImp.class.getName()).info("Ловим RuntimeException в классе IndexServiceImp в методе startIndexing и тормозим поток который его поймал");
-            }
+            }*/
 
 
 
@@ -138,6 +154,7 @@ public class IndexServiceImp implements IndexService {
             // }
 
         }
+
        /* for (Future<SiteEntity> result : futureResult) {
             try {
                 if (result.isDone()) {
@@ -166,7 +183,7 @@ public class IndexServiceImp implements IndexService {
 
         }*/
 
-        executorService.shutdown();
+       // executorService.shutdown();
         Logger.getLogger(IndexServiceImp.class.getName()).info("executorService.shutdown();");
 
        /* IndexResponse indexResponse = new IndexResponse(true);

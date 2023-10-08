@@ -34,9 +34,11 @@ public class SiteForExecutorService implements Callable<Set<String>> {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         try {
             HtmlParser htmlParser = new HtmlParser(siteEntity.getUrl(), siteEntity, indexServiceImp);
-            stringSetResult = forkJoinPool.invoke(htmlParser);
-            Logger.getLogger(SiteForExecutorService.class.getName()).info("Пришел результат stringSetResult size() = " + stringSetResult.size());
+            forkJoinPool.invoke(htmlParser);
+          //  forkJoinPool.execute(htmlParser);
 
+
+          //  Logger.getLogger(SiteForExecutorService.class.getName()).info("Пришел результат stringSetResult size() = " + stringSetResult.size());
             Logger.getLogger(SiteForExecutorService.class.getName()).info("Отработал forkJoinPool.invoke(htmlParser) !!!!!!!!!!!!!!");
 
               forkJoinPool.shutdown();
