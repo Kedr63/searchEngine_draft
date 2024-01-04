@@ -1,8 +1,7 @@
-package searchengine.services.serviceIndex;
+package searchengine.services.indexService;
 
 import lombok.Getter;
 import lombok.Setter;
-import searchengine.config.Site;
 import searchengine.model.SiteEntity;
 
 import java.util.Set;

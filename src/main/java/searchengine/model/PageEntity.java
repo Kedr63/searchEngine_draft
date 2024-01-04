@@ -10,7 +10,7 @@ public class PageEntity {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // add (fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id")
     private SiteEntity site;
 

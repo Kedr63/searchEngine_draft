@@ -3,8 +3,9 @@ package searchengine.dto.indexing;
 import org.jsoup.nodes.Document;
 
 public class DocumentParsed {
-    Document doc;
-    int code;
+
+    private Document doc;
+    private int code;
 
     public DocumentParsed(Document doc, int code) {
         this.doc = doc;

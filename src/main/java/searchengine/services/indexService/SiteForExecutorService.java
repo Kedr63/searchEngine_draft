@@ -1,8 +1,7 @@
-package searchengine.services.serviceIndex;
+package searchengine.services.indexService;
 
 import lombok.Getter;
 import lombok.Setter;
-import searchengine.config.Site;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
 
@@ -46,7 +45,7 @@ public class SiteForExecutorService implements Callable<Set<String>> {
                 Logger.getLogger(SiteForExecutorService.class.getName()).info("Вошли в условие  if(forkJoinPool.isShutdown())");
                 siteEntity.setStatus(StatusIndex.INDEXED);
                 siteEntity.setStatusTime(LocalDateTime.now());
-                indexServiceImp.getSiteRepository().save(siteEntity);
+                indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
                 Logger.getLogger(SiteForExecutorService.class.getName()).info("Проиндексировали сайт");
             }
 
@@ -54,7 +53,7 @@ public class SiteForExecutorService implements Callable<Set<String>> {
             siteEntity.setStatus(StatusIndex.FAILED);
             siteEntity.setLastError(ex.getMessage());
             siteEntity.setStatusTime(LocalDateTime.now());
-            indexServiceImp.getSiteRepository().save(siteEntity);
+            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
 
             Logger.getLogger(SiteForExecutorService.class.getName()).info("Поймали " + ex.getClass() + " из класса htmlParser");
         }

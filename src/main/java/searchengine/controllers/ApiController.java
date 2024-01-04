@@ -2,16 +2,13 @@ package searchengine.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import searchengine.dto.indexing.IndexResponse;
 import searchengine.dto.indexing.IndexResponseError;
 import searchengine.dto.statistics.StatisticsResponse;
-import searchengine.services.serviceIndex.IndexService;
+import searchengine.services.indexService.IndexService;
 import searchengine.services.StatisticsService;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")

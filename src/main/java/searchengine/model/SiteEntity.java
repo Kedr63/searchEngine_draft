@@ -1,5 +1,7 @@
 package searchengine.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +14,8 @@ public class SiteEntity {
     @Column(name="id", nullable = false)
     private int id;
 
-    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "site", cascade = CascadeType.ALL) // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c
+    @JsonIgnore                                                    //  add
     private List<PageEntity> pageEntities;
 
     @Enumerated(EnumType.STRING)
