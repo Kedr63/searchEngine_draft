@@ -41,6 +41,8 @@ public class IndexServiceImp implements IndexService {
   //  protected static long counter = 0;
     protected static int coreAmount = Runtime.getRuntime().availableProcessors();
 
+    protected static String tmp = "Return";
+
 
     public IndexServiceImp(SiteService siteService, PageService pageService, SitesList sitesList, UserAgentList userAgentList) {
         this.siteService = siteService;

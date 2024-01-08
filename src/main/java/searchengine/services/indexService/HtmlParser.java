@@ -44,43 +44,42 @@ public class HtmlParser extends RecursiveAction {
         this.indexServiceImp = indexServiceImp;
     }
 
+    public HtmlParser(String url) {
+        this.url = url;
+    }
+
     @Override
     protected void compute() {
         List<HtmlParser> tasks = new ArrayList<>();
+        //   StringBuilder builder = new StringBuilder();
 
-        // List<String> paths = new ArrayList<>();
-        // Set<String> paths = new HashSet<>();
-       // IndexServiceImp.counter++;
-
-        //  PageService pageService = indexServiceImp.getPageService();
-        //  SiteService siteService = indexServiceImp.getSiteService();
-
-
-       /* CopyOnWriteArrayList<Site> df;
-        ConcurrentSkipListSet<String> links;*/
-        /*synchronized (IndexServiceImp.lock2){
-            while (Runtime.getRuntime().freeMemory() > 999_999){
-               IndexServiceImp.lock2.notifyAll();
-                Logger.getLogger(HtmlParser.class.getName()).info("notifyAll");
-            }
-        }*/
+        String urlBase = siteEntity.getUrl();
+        String linkLocate = url.replace(urlBase, "");
+        if (linkLocate.isEmpty()) {
+            linkLocate = "/";
+        }
 
         try {
-            /*synchronized (IndexServiceImp.lock2){
-                while (Runtime.getRuntime().freeMemory() < 199_999){
-                    IndexServiceImp.lock2.wait();
-                    Logger.getLogger(HtmlParser.class.getName()).info("wait()");
-                }
-            }*/
-
-
-           /* if (isPresentPathsInPageRepository(url, pageService)) {
-                Thread.currentThread().interrupt();
-                Logger.getLogger(HtmlParser.class.getName()).info("Thread.currentThread().interrupt()");
-            }*/
             Document doc;
-            DocumentParsed documentParsed = getParsedDocument(url);
-            doc = documentParsed.getDoc();
+
+
+            synchronized (IndexServiceImp.lock) {
+                if (!isPresentPathsInPageRepository(linkLocate, indexServiceImp.getPageService())) {
+                   DocumentParsed documentParsed = getParsedDocument(url);
+                    doc = documentParsed.getDoc();
+
+                    PageService pageService = indexServiceImp.getPageService();
+                    PageEntity pageEntity = createPageEntity(documentParsed, siteEntity);
+                    pageService.savePageEntity(pageEntity);
+                    Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + url);
+
+                }  else {
+                    Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp ="return start");
+                    return;
+                    //  this.cancel(true);
+                 //   Logger.getLogger(HtmlParser.class.getName()).info("this.cancel " + this.isCancelled());
+                }
+            }
 
            /* // добавим проверку по тэгу title: если такая страница уже участвовала в обработке, то не будем повторно использовать эту страницу
             String titleString = doc.getElementsByTag("title").text();
@@ -100,23 +99,37 @@ public class HtmlParser extends RecursiveAction {
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-            for (String link : searchLinks) {
+            Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp ="return end");
 
+            for (String link : searchLinks) {
                 if (ThreadStopper.stopper) {
                     throw new InterruptedException("Stop thread");
                 }
 
-                synchronized (IndexServiceImp.lock) {
-                    if (!CollectionStorage.checkingAndAddToSetLink(link)) {
-                        continue;   // если false, т.е. есть уже в коллекции такой путь (существует), то идем к следующему элементу loop
-                    }
-                }
+//                synchronized (IndexServiceImp.lock) {
+//                    if (!CollectionStorage.checkingAndAddToSetLink(link)) {
+//                        continue;   // если false, т.е. есть уже в коллекции такой путь (существует), то идем к следующему элементу loop
+//                    }
+//                }
+//                synchronized (IndexServiceImp.lock) {
+//                    if (isPresentPathsInPageRepository(link, indexServiceImp.getPageService())) {
+//                        continue;
+//                    }
+//                }
 
-
-
-              //  String absHref = siteEntity.getUrl();
                 String fullHref = siteEntity.getUrl() + link;
                 Logger.getLogger(HtmlParser.class.getName()).info("fullHref: " + fullHref);
+
+                HtmlParser task = new HtmlParser(fullHref);
+                task.setIndexServiceImp(indexServiceImp);
+                task.setSiteEntity(siteEntity);
+                //  HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
+
+                System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
+
+                tasks.add(task);
+
+                // builder.append("'" + fullHref + "'")
 
 
                 // предварительно уберем повторяющиеся path
@@ -130,71 +143,23 @@ public class HtmlParser extends RecursiveAction {
                 }*/
 
 
-             /*   PageService pageService = indexServiceImp.getPageService();
-                SiteService siteService = indexServiceImp.getSiteService();*/
-
-
-                if (!isPresentPathsInPageRepository(fullHref, indexServiceImp.getPageService())) {
-                    PageEntity pageEntity;
-                    synchronized (IndexServiceImp.lock) {
-                        pageEntity = createPageEntity(link, siteEntity);
-                        indexServiceImp.getPageService().savePageEntity(pageEntity);
-
-                        Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + pageEntity.getPath());
-                    }
-
-                HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
-
-                    System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
-
-                    //  task.fork();
-                    tasks.add(task);
-
-//                    Logger.getLogger(HtmlParser.class.getName()).info("task.add(task)");
-//                    if (tasks.size() == IndexServiceImp.coreAmount) {
-//                        for (HtmlParser htmlParser : tasks) {
-//                            htmlParser.fork();
-//                        }
-//                        for (HtmlParser htmlParser : tasks) {
-//                            htmlParser.join();
-//                            Logger.getLogger(HtmlParser.class.getName()).info("htmlParser.join()");
+//                if (!isPresentPathsInPageRepository(fullHref, indexServiceImp.getPageService())) {
+//                    PageEntity pageEntity;
+//                    synchronized (IndexServiceImp.lock) {
+//                        pageEntity = createPageEntity(link, siteEntity);
+//                        indexServiceImp.getPageService().savePageEntity(pageEntity);
 //
-//                        }
-//                        tasks.clear();
+//                        Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + pageEntity.getPath());
 //                    }
-
-
-
-                    /*task.fork();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.fork()");*/
-
-
-                    // paths.add(pageEntity.getPath());
-
-
-                    /*siteEntity.setStatusTime(LocalDateTime.now()); // update time indexing
-                    siteService.saveSiteEntity(siteEntity);*/
-
-
-                    //   HtmlParser task = new HtmlParser(pageEntity.getPath(), siteEntity, indexServiceImp);
-
-                    //  tasks.add(task);
-                    //  task.fork();
-                    // task.cancel(true);
-                    //  tasks.add(task);
-
-
-                    // task.invoke();
-
-
-   //                 siteEntity.setStatusTime(LocalDateTime.now()); // update time indexing
-     //               indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
-                    // siteEntity = null;
-                    //  indexServiceImp =null;
-
-
-
-                }
+//
+//                HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
+//
+//                    System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
+//
+//                    //  task.fork();
+//                    tasks.add(task);
+//
+//                }
 
             }
 
@@ -263,8 +228,8 @@ public class HtmlParser extends RecursiveAction {
             } else {
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.isEmpty()  - список задач пуст 📌");
             }
-            int amount = CollectionStorage.setPaths.size();
-            Logger.getLogger(HtmlParser.class.getName()).info("setPaths.size() = " + amount);
+            //  int amount = CollectionStorage.setPaths.size();
+            //  Logger.getLogger(HtmlParser.class.getName()).info("setPaths.size() = " + amount);
 
 
 
@@ -342,7 +307,9 @@ public class HtmlParser extends RecursiveAction {
 
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex.getCause()); // пробросим RuntimeException, чтоб остановить forkJoinPool
+
         }
+
 
         //  Logger.getLogger(HtmlParser.class.getName()).info("return paths - size = " + paths.size());
         //  return paths;
@@ -366,18 +333,18 @@ public class HtmlParser extends RecursiveAction {
         }
     }*/
 
-    private void forkJoinForBigTasks(List<HtmlParser> tasks){
+    private void forkJoinForBigTasks(List<HtmlParser> tasks) {
         List<HtmlParser> beforeIterateTasks = new ArrayList<>(tasks);
         List<HtmlParser> afterIterateTasks = new ArrayList<>(beforeIterateTasks);
         List<HtmlParser> tasksForJoin = new ArrayList<>();
         int counterTasks = IndexServiceImp.coreAmount;
-        for (HtmlParser task : beforeIterateTasks){
+        for (HtmlParser task : beforeIterateTasks) {
             tasksForJoin.add(task);
             task.fork();
             Logger.getLogger(HtmlParser.class.getName()).info("task.fork()");
             afterIterateTasks.remove(task);
             counterTasks--;
-            if (counterTasks == 0){
+            if (counterTasks == 0) {
                 break;
             }
         }
@@ -395,10 +362,9 @@ public class HtmlParser extends RecursiveAction {
     }
 
     private boolean isPresentPathsInPageRepository(String fullHref, PageService pageService) {
-
-        synchronized (IndexServiceImp.lock) {
-            return pageService.isPresentPageEntityByPath(fullHref);
-        }
+        // synchronized (IndexServiceImp.lock) {
+        return pageService.isPresentPageEntityByPath(fullHref);
+        //  }
 
     }
 
@@ -448,7 +414,9 @@ public class HtmlParser extends RecursiveAction {
             code = response.statusCode();
             documentParsed = new DocumentParsed(doc, code);
         } else {
-            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + code);
+            int codeError = response.statusCode();
+            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + codeError);
+            // documentParsed = new DocumentParsed(doc.body() , codeError);
             // throw new FailedSearching("ошибка в: " + url + " code " + code);
             // throw new IOException(" Ошибка индексации: сайт не доступен");
 
@@ -467,11 +435,17 @@ public class HtmlParser extends RecursiveAction {
                                 .startsWith("/");
     }
 
-    private PageEntity createPageEntity(String relHref, SiteEntity siteEntity) throws IOException {
+    private PageEntity createPageEntity(DocumentParsed documentParsed, SiteEntity siteEntity) throws IOException {
         PageEntity pageEntity = new PageEntity();
-        pageEntity.setPath(siteEntity.getUrl() + relHref);
+        String urlBase = siteEntity.getUrl();
+        String baseUriDoc = documentParsed.getDoc().baseUri();
+        String linkLocate = baseUriDoc.replace(urlBase, "");
+        if (linkLocate.isEmpty()) {
+            linkLocate = "/";
+        }
+        pageEntity.setPath(linkLocate);
 
-        DocumentParsed documentParsed = getParsedDocument(pageEntity.getPath());
+        //  DocumentParsed documentParsed = getParsedDocument(pageEntity.getPath());
         pageEntity.setCode(documentParsed.getCode());
         pageEntity.setSiteEntity(siteEntity);
         /* Optional<Elements> optionalElements = Optional.of(documentParsed.getDoc().getAllElements());*/

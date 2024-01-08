@@ -1,10 +1,10 @@
 package searchengine.services;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import searchengine.model.PageEntity;
 import searchengine.repositories.PageRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +26,7 @@ public class PageServiceImp implements PageService {
     @Override
     @Transactional
     public void savePageEntity(PageEntity pageEntity) {
+        
         pageRepository.save(pageEntity);
     }
 
