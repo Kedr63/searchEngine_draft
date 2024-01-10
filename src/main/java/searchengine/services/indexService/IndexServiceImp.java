@@ -121,7 +121,7 @@ public class IndexServiceImp implements IndexService {
             } catch (Exception e) {
                 forkJoinPool.shutdown();
                 siteEntity.setStatus(StatusIndex.FAILED);
-                siteEntity.setLastError(e.getMessage());
+                siteEntity.setLastError(e.toString());
                 Logger.getLogger(IndexServiceImp.class.getName()).info("поймали  - " + e.getMessage());
 
                 // indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
@@ -286,7 +286,11 @@ public class IndexServiceImp implements IndexService {
         SiteEntity siteEntity = new SiteEntity();
         siteEntity.setStatus(StatusIndex.INDEXING);
         siteEntity.setStatusTime(LocalDateTime.now());
-        siteEntity.setUrl(site.getUrl());
+        String siteUrl = site.getUrl();
+        if (siteUrl.contains("www")){
+            siteUrl = siteUrl.replace("www.", "");
+        }
+        siteEntity.setUrl(siteUrl);
         siteEntity.setName(site.getName());
 
         return siteEntity;

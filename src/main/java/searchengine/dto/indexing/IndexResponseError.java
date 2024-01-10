@@ -1,5 +1,10 @@
 package searchengine.dto.indexing;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class IndexResponseError extends IndexResponse{
 
     private String error;
@@ -9,11 +14,4 @@ public class IndexResponseError extends IndexResponse{
         this.error=error;
     }
 
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
 }
