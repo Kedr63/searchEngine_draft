@@ -13,6 +13,7 @@ import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
 import searchengine.services.PageService;
 
+import javax.print.Doc;
 import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,25 +62,33 @@ public class HtmlParser extends RecursiveAction {
 
         try {
             Document doc;
-
-
+            PageEntity pageEntity;
             synchronized (IndexServiceImp.lock) {
                 if (!isPresentPathsInPageRepository(linkLocate, indexServiceImp.getPageService())) {
-                   DocumentParsed documentParsed = getParsedDocument(url);
-                    doc = documentParsed.getDoc();
-
+                    pageEntity = new PageEntity();
+                    pageEntity.setPath(linkLocate);
+                    pageEntity.setContent("");
                     PageService pageService = indexServiceImp.getPageService();
-                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
                     pageService.savePageEntity(pageEntity);
+
+
+//                   DocumentParsed documentParsed = getParsedDocument(url);
+//                    doc = documentParsed.getDoc();
+//
+//
+//                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
                     Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + url);
 
                 }  else {
                     Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp ="return start");
                     return;
-                    //  this.cancel(true);
-                 //   Logger.getLogger(HtmlParser.class.getName()).info("this.cancel " + this.isCancelled());
                 }
             }
+            DocumentParsed documentParsed = getParsedDocument(url);
+            doc = documentParsed.getDoc();
+            fillPageEntity(pageEntity, documentParsed, siteEntity);
+
+
 
            /* // добавим проверку по тэгу title: если такая страница уже участвовала в обработке, то не будем повторно использовать эту страницу
             String titleString = doc.getElementsByTag("title").text();
@@ -111,11 +120,11 @@ public class HtmlParser extends RecursiveAction {
 //                        continue;   // если false, т.е. есть уже в коллекции такой путь (существует), то идем к следующему элементу loop
 //                    }
 //                }
-//                synchronized (IndexServiceImp.lock) {
-//                    if (isPresentPathsInPageRepository(link, indexServiceImp.getPageService())) {
-//                        continue;
-//                    }
-//                }
+                synchronized (IndexServiceImp.lock) {
+                    if (isPresentPathsInPageRepository(link, indexServiceImp.getPageService())) {
+                        continue;
+                    }
+                }
 
                 String fullHref = siteEntity.getUrl() + link;
                 Logger.getLogger(HtmlParser.class.getName()).info("fullHref: " + fullHref);
@@ -139,55 +148,7 @@ public class HtmlParser extends RecursiveAction {
                 tasks.clear();
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.clear()");
 
-//                    for (HtmlParser task : tasks) {
-//                        task.fork();
-//                        Logger.getLogger(HtmlParser.class.getName()).info(" task.fork() ");
-//                    }
-
-
-                //  }
-//                if (tasks.size() >= IndexServiceImp.coreAmount) {
-//                    forkJoinForBigTasks(tasks);
-//                    Logger.getLogger(HtmlParser.class.getName()).info("tasks.size() >=    task.fork() + join()");
-//                }
-                //  }
-
-
-//            for (HtmlParser task : tasks) {
-//                task.join();
-//                Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
-//            }
-
-                /*int sizeTasks = tasks.size();
-                Logger.getLogger(HtmlParser.class.getName()).info("tasks.size() = " + tasks.size());
-                int middleHalf = sizeTasks/2;
-                Logger.getLogger(HtmlParser.class.getName()).info("middleHalf = " + sizeTasks/2);
-
-                for (int i = 0; i < middleHalf; i++) {
-                    tasks.get(i).fork();
-                    //task.fork();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.fork1");
-                 //   System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser--);
-                }
-                for (int i = 0; i < middleHalf; i++){
-                    tasks.get(i).join();
-                 //   task.join();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.join()1");
-                }
-
-
-                for (int i = middleHalf; i < sizeTasks; i++) {
-                    tasks.get(i).fork();
-                    //task.fork();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.fork2");
-                    //   System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser--);
-                }
-                for (int i = middleHalf; i < sizeTasks; i++){
-                    tasks.get(i).join();
-                    //   task.join();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.join()2");
-                }*/
-
+//
             } else {
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.isEmpty()  - список задач пуст 📌");
             }
@@ -206,6 +167,7 @@ public class HtmlParser extends RecursiveAction {
 
         }
     }
+
 
     private void forkJoinForBigTasks(List<HtmlParser> tasks) {
         List<HtmlParser> beforeIterateTasks = new ArrayList<>(tasks);
@@ -325,6 +287,15 @@ public class HtmlParser extends RecursiveAction {
         pageEntity.setContent(contentViaString);
 
         return pageEntity;
+    }
+
+    private void fillPageEntity(PageEntity pageEntity, DocumentParsed documentParsed, SiteEntity siteEntity) {
+        pageEntity.setCode(documentParsed.getCode());
+        pageEntity.setSiteEntity(siteEntity);
+        Elements contentPage = documentParsed.getDoc().getAllElements();  // get all content of the page
+        String contentViaString = "" + contentPage;
+        pageEntity.setContent(contentViaString);
+        indexServiceImp.getPageService().savePageEntity(pageEntity);
     }
 
     private String generateUserAgent() {

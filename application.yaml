@@ -23,10 +23,10 @@ indexing-settings:
   sites:
 #    - url: https://www.svetlovka.ru
 #      name: svetlovka.ru
-    - url: https://lenta.ru
-      name: Lenta
-#    - url: https://www.skillbox.ru
-#      name: Skillbox
+#    - url: https://lenta.ru
+#      name: Lenta
+    - url: https://www.skillbox.ru
+      name: Skillbox
 #    - url: https://www.playback.ru
 #      name: PlayBack.Ru
 #    - url: https://www.rbc.ru
