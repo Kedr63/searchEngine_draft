@@ -13,9 +13,9 @@ import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
 import searchengine.services.PageService;
 
-import javax.print.Doc;
 import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,17 +27,11 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class HtmlParser extends RecursiveAction {
+public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser> {
 
     private final String url;
     private SiteEntity siteEntity;
     private IndexServiceImp indexServiceImp;
-
-
-    //   private UserAgentList userAgentList;
-    // private IndexService indexService;
-    // private PageService pageService;
-    // private SiteService siteService;
 
     public HtmlParser(String url, SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
         this.url = url;
@@ -52,6 +46,7 @@ public class HtmlParser extends RecursiveAction {
     @Override
     protected void compute() {
         List<HtmlParser> tasks = new ArrayList<>();
+        // Url urlLink = new Url(url);
         //   StringBuilder builder = new StringBuilder();
 
         String urlBase = siteEntity.getUrl();
@@ -62,6 +57,7 @@ public class HtmlParser extends RecursiveAction {
 
         try {
             Document doc;
+            DocumentParsed documentParsed;
             PageEntity pageEntity;
             synchronized (IndexServiceImp.lock) {
                 if (!isPresentPathsInPageRepository(linkLocate, indexServiceImp.getPageService())) {
@@ -71,22 +67,33 @@ public class HtmlParser extends RecursiveAction {
                     PageService pageService = indexServiceImp.getPageService();
                     pageService.savePageEntity(pageEntity);
 
-
 //                   DocumentParsed documentParsed = getParsedDocument(url);
 //                    doc = documentParsed.getDoc();
 //
-//
 //                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
-                    Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + url);
+                    Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
 
-                }  else {
-                    Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp ="return start");
+                } else {
                     return;
                 }
             }
-            DocumentParsed documentParsed = getParsedDocument(url);
+
+            synchronized (this) {
+                documentParsed = getParsedDocument(url);
+            }
+            fillPageEntityAndSaveBD(pageEntity, documentParsed, siteEntity); // заполним pageEntity остальными данными
+
+
+//            if (documentParsed.getCode()!=200){
+//               String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
+//               siteEntity.setLastError(messageError);
+//            }
+//            synchronized (IndexServiceImp.lock2){
+//                updateSiteEntity(siteEntity);
+//            }
+
             doc = documentParsed.getDoc();
-            fillPageEntity(pageEntity, documentParsed, siteEntity);
+
 
 
 
@@ -108,7 +115,7 @@ public class HtmlParser extends RecursiveAction {
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-            Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp ="return end");
+            Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return end");
 
             for (String link : searchLinks) {
                 if (ThreadStopper.stopper) {
@@ -227,10 +234,10 @@ public class HtmlParser extends RecursiveAction {
     }*/
 
     private DocumentParsed getParsedDocument(String url) throws IOException {
-        DocumentParsed documentParsed = null;
+        DocumentParsed documentParsed;
         Document doc;
         Connection.Response response;
-        int code = 0;
+        int code;
 
         response = Jsoup.connect(url)
                 .userAgent(generateUserAgent())
@@ -248,16 +255,18 @@ public class HtmlParser extends RecursiveAction {
         if (response.statusCode() == 200) {
             doc = response.parse();
             code = response.statusCode();
-            documentParsed = new DocumentParsed(doc, code);
+            //  documentParsed = new DocumentParsed(doc, code);
         } else {
-            int codeError = response.statusCode();
-            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + codeError);
+            doc = new Document(url);
+            code = response.statusCode();
+            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + code);
             // documentParsed = new DocumentParsed(doc.body() , codeError);
             // throw new FailedSearching("ошибка в: " + url + " code " + code);
             // throw new IOException(" Ошибка индексации: сайт не доступен");
 
             //    documentParsed = new DocumentParsed(response.statusCode());
         }
+        documentParsed = new DocumentParsed(doc, code);
         return documentParsed;
     }
 
@@ -289,13 +298,15 @@ public class HtmlParser extends RecursiveAction {
         return pageEntity;
     }
 
-    private void fillPageEntity(PageEntity pageEntity, DocumentParsed documentParsed, SiteEntity siteEntity) {
+    private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed, SiteEntity siteEntity) {
         pageEntity.setCode(documentParsed.getCode());
         pageEntity.setSiteEntity(siteEntity);
         Elements contentPage = documentParsed.getDoc().getAllElements();  // get all content of the page
         String contentViaString = "" + contentPage;
         pageEntity.setContent(contentViaString);
-        indexServiceImp.getPageService().savePageEntity(pageEntity);
+        PageService pageService = indexServiceImp.getPageService();
+        pageService.savePageEntity(pageEntity);
+
     }
 
     private String generateUserAgent() {
@@ -327,4 +338,13 @@ public class HtmlParser extends RecursiveAction {
         return rangeRandom;
     }
 
+    private void updateSiteEntity(SiteEntity siteEntity) {
+        siteEntity.setStatusTime(LocalDateTime.now());
+        indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+    }
+
+    @Override
+    public int compareTo(HtmlParser o) {
+        return this.getUrl().compareTo(o.getUrl());
+    }
 }

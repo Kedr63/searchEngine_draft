@@ -15,9 +15,11 @@ import searchengine.services.PageService;
 import searchengine.services.SiteService;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service //при этой аннотации получим бины (объекты) прописанные в полях (но только если их добавим в конструктор)
 @Getter
@@ -121,13 +123,13 @@ public class IndexServiceImp implements IndexService {
             } catch (Exception e) {
                 forkJoinPool.shutdown();
                 siteEntity.setStatus(StatusIndex.FAILED);
-                siteEntity.setLastError(e.getMessage());
+                siteEntity.setLastError(getShortMessageOfException(e));
                 Logger.getLogger(IndexServiceImp.class.getName()).info("поймали  - " + e.getMessage());
 
                 // indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
-                this.getSiteService().saveSiteEntity(siteEntity);
+                siteService.saveSiteEntity(siteEntity);
 
-                return new IndexResponseError(false, e.getMessage());
+                return new IndexResponseError(false, siteEntity.getLastError());
             }
 
         }
@@ -290,6 +292,16 @@ public class IndexServiceImp implements IndexService {
         siteEntity.setName(site.getName());
 
         return siteEntity;
+    }
+
+
+    private String getShortMessageOfException(Exception e) {
+        StringBuilder builder = new StringBuilder();
+        String[] arrayMessage = e.getMessage().split(":");
+        List<String> stringList = Arrays.stream(arrayMessage).collect(Collectors.toList());
+        builder.append(stringList.get(stringList.size() - 2)).append(" - ");
+        builder.append(stringList.get(stringList.size() - 1));
+        return builder.toString();
     }
 
 }
