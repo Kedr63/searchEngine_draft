@@ -6,6 +6,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
 import searchengine.config.UserAgent;
 import searchengine.dto.indexing.DocumentParsed;
 import searchengine.dto.indexing.ThreadStopper;
@@ -80,17 +81,13 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
 
             synchronized (this) {
                 documentParsed = getParsedDocument(url);
+//                if (documentParsed.getCode()!=200) {
+//                    String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
+//                    siteEntity.setLastError(messageError);
+//                }
+                //              updateSiteEntity(siteEntity);
             }
-            fillPageEntityAndSaveBD(pageEntity, documentParsed, siteEntity); // заполним pageEntity остальными данными
-
-
-//            if (documentParsed.getCode()!=200){
-//               String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
-//               siteEntity.setLastError(messageError);
-//            }
-//            synchronized (IndexServiceImp.lock2){
-//                updateSiteEntity(siteEntity);
-//            }
+            fillPageEntityAndSaveBD(pageEntity, documentParsed); // заполним pageEntity остальными данными
 
             doc = documentParsed.getDoc();
 
@@ -136,11 +133,12 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
                 String fullHref = siteEntity.getUrl() + link;
                 Logger.getLogger(HtmlParser.class.getName()).info("fullHref: " + fullHref);
 
-                HtmlParser task = new HtmlParser(fullHref);
-                task.setIndexServiceImp(indexServiceImp);
-                task.setSiteEntity(siteEntity);
-                //  HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
+//                HtmlParser task = new HtmlParser(fullHref);
+//                task.setIndexServiceImp(indexServiceImp);
+//                task.setSiteEntity(siteEntity);
+                HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
 
+                task.fork();
                 System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
 
                 tasks.add(task);
@@ -149,8 +147,13 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
 
             if (!tasks.isEmpty()) {
 
-                forkJoinForBigTasks(tasks);
-                Logger.getLogger(HtmlParser.class.getName()).info("forkJoinForBigTasks(tasks)");
+//                forkJoinForBigTasks(tasks);
+//                Logger.getLogger(HtmlParser.class.getName()).info("forkJoinForBigTasks(tasks)");
+
+                for (HtmlParser task : tasks) {
+                    task.join();
+                    Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
+                }
 
                 tasks.clear();
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.clear()");
@@ -245,7 +248,7 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
                 .ignoreHttpErrors(true)
                 //  .ignoreContentType(true)
                 .followRedirects(true)
-                .timeout(30000)
+                .timeout(60000)
                 .execute();
         try {
             Thread.sleep(generateRandomRangeDelay()); // задержка между запросами
@@ -298,14 +301,18 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
         return pageEntity;
     }
 
-    private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed, SiteEntity siteEntity) {
+    private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed) {
         pageEntity.setCode(documentParsed.getCode());
         pageEntity.setSiteEntity(siteEntity);
         Elements contentPage = documentParsed.getDoc().getAllElements();  // get all content of the page
         String contentViaString = "" + contentPage;
         pageEntity.setContent(contentViaString);
         PageService pageService = indexServiceImp.getPageService();
-        pageService.savePageEntity(pageEntity);
+        synchronized (IndexServiceImp.lock) {
+            pageService.savePageEntity(pageEntity);
+        }
+
+        // updateSiteEntity(siteEntity, documentParsed);
 
     }
 
@@ -338,7 +345,11 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
         return rangeRandom;
     }
 
-    private void updateSiteEntity(SiteEntity siteEntity) {
+    private void updateSiteEntity(SiteEntity siteEntity, DocumentParsed documentParsed) {
+        if (documentParsed.getCode() != 200) {
+            String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
+            siteEntity.setLastError(messageError);
+        }
         siteEntity.setStatusTime(LocalDateTime.now());
         indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
     }
