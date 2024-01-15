@@ -6,6 +6,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
 import searchengine.config.UserAgent;
 import searchengine.dto.indexing.DocumentParsed;
 import searchengine.dto.indexing.ThreadStopper;
@@ -27,17 +28,11 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class HtmlParser extends RecursiveAction {
+public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser> {
 
     private final String url;
     private SiteEntity siteEntity;
     private IndexServiceImp indexServiceImp;
-
-
-    //   private UserAgentList userAgentList;
-    // private IndexService indexService;
-    // private PageService pageService;
-    // private SiteService siteService;
 
     public HtmlParser(String url, SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
         this.url = url;
@@ -52,43 +47,52 @@ public class HtmlParser extends RecursiveAction {
     @Override
     protected void compute() {
         List<HtmlParser> tasks = new ArrayList<>();
+        // Url urlLink = new Url(url);
         //   StringBuilder builder = new StringBuilder();
 
-        String urlBase = siteEntity.getUrl();    // уберем основную часть сайта от полного пути линк
+        String urlBase = siteEntity.getUrl();
         String linkLocate = url.replace(urlBase, "");
         if (linkLocate.isEmpty()) {
             linkLocate = "/";
         }
 
         try {
-            if (ThreadStopper.stopper) {
-                throw new InterruptedException("Stop thread");
-            }
-
             Document doc;
-
+            DocumentParsed documentParsed;
+            PageEntity pageEntity;
             synchronized (IndexServiceImp.lock) {
                 if (!isPresentPathsInPageRepository(linkLocate, indexServiceImp.getPageService())) {
-                    DocumentParsed documentParsed = getParsedDocument(url);
-                    if (documentParsed.getCode()!=200){
-                        throw new RuntimeException("" + documentParsed.getCode());
-                    }
-                    doc = documentParsed.getDoc();
-
+                    pageEntity = new PageEntity();
+                    pageEntity.setPath(linkLocate);
+                    pageEntity.setContent("");
                     PageService pageService = indexServiceImp.getPageService();
-                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
                     pageService.savePageEntity(pageEntity);
 
-                    Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + url);
-
+//                   DocumentParsed documentParsed = getParsedDocument(url);
+//                    doc = documentParsed.getDoc();
+//
+//                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
+                    Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
 
                 } else {
-                    //   Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return start");
                     return;
                 }
             }
-            siteEntity.setStatusTime(LocalDateTime.now());
-            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+
+            synchronized (this) {
+                documentParsed = getParsedDocument(url);
+//                if (documentParsed.getCode()!=200) {
+//                    String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
+//                    siteEntity.setLastError(messageError);
+//                }
+                //              updateSiteEntity(siteEntity);
+            }
+            fillPageEntityAndSaveBD(pageEntity, documentParsed); // заполним pageEntity остальными данными
+
+            doc = documentParsed.getDoc();
+
+
+
 
            /* // добавим проверку по тэгу title: если такая страница уже участвовала в обработке, то не будем повторно использовать эту страницу
             String titleString = doc.getElementsByTag("title").text();
@@ -108,75 +112,44 @@ public class HtmlParser extends RecursiveAction {
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-            //  Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return end");
+            Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return end");
 
             for (String link : searchLinks) {
-//                if (ThreadStopper.stopper) {
-//                    throw new InterruptedException("Stop thread");
-//                }
+                if (ThreadStopper.stopper) {
+                    throw new InterruptedException("Stop thread");
+                }
 
 //                synchronized (IndexServiceImp.lock) {
 //                    if (!CollectionStorage.checkingAndAddToSetLink(link)) {
 //                        continue;   // если false, т.е. есть уже в коллекции такой путь (существует), то идем к следующему элементу loop
 //                    }
 //                }
-//                synchronized (IndexServiceImp.lock) {
-//                    if (isPresentPathsInPageRepository(link, indexServiceImp.getPageService())) {
-//                        continue;
-//                    }
-//                }
-
-                String urlForEdit = siteEntity.getUrl();
-                if (urlForEdit.endsWith("/")){
-                    urlForEdit = urlForEdit.substring(0, urlForEdit.length() - 1);
-                }
-                String fullHref = urlForEdit + link;
-                Logger.getLogger(HtmlParser.class.getName()).info("fullHref: " + fullHref);
-
-                HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
-                tasks.add(task);
-                task.fork();
-
-                System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
-
-
-
-                // builder.append("'" + fullHref + "'")
-
-
-                // предварительно уберем повторяющиеся path
-                // if BD have /path/ -> то перейдем к следующему элементу цикла
-               /* synchronized (IndexServiceImp.lock2) {
-                    if (CollectionStorage.setPaths.contains(fullHref)) {
-                        // throw new IllegalPathStateException(" такой путь есть - не используем и идем дальше");
-                        Logger.getLogger(HtmlParser.class.getName()).info("такой путь есть - не используем и идем дальше -> use continue");
+                synchronized (IndexServiceImp.lock) {
+                    if (isPresentPathsInPageRepository(link, indexServiceImp.getPageService())) {
                         continue;
                     }
-                }*/
+                }
 
+                String fullHref = siteEntity.getUrl() + link;
+                Logger.getLogger(HtmlParser.class.getName()).info("fullHref: " + fullHref);
 
-//                if (!isPresentPathsInPageRepository(fullHref, indexServiceImp.getPageService())) {
-//                    PageEntity pageEntity;
-//                    synchronized (IndexServiceImp.lock) {
-//                        pageEntity = createPageEntity(link, siteEntity);
-//                        indexServiceImp.getPageService().savePageEntity(pageEntity);
-//
-//                        Logger.getLogger(HtmlParser.class.getName()).info("save PageEntity in repository: it path - " + pageEntity.getPath());
-//                    }
-//
-//                HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
-//
-//                    System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
-//
-//                    //  task.fork();
-//                    tasks.add(task);
-//
-//                }
+//                HtmlParser task = new HtmlParser(fullHref);
+//                task.setIndexServiceImp(indexServiceImp);
+//                task.setSiteEntity(siteEntity);
+                HtmlParser task = new HtmlParser(fullHref, siteEntity, indexServiceImp);
 
+                task.fork();
+                System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser++);
+
+                tasks.add(task);
             }
 
 
             if (!tasks.isEmpty()) {
+
+//                forkJoinForBigTasks(tasks);
+//                Logger.getLogger(HtmlParser.class.getName()).info("forkJoinForBigTasks(tasks)");
+
                 for (HtmlParser task : tasks) {
                     task.join();
                     Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
@@ -185,129 +158,14 @@ public class HtmlParser extends RecursiveAction {
                 tasks.clear();
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.clear()");
 
-//                    for (HtmlParser task : tasks) {
-//                        task.fork();
-//                        Logger.getLogger(HtmlParser.class.getName()).info(" task.fork() ");
-//                    }
-
-
-                //  }
-//                if (tasks.size() >= IndexServiceImp.coreAmount) {
-//                    forkJoinForBigTasks(tasks);
-//                    Logger.getLogger(HtmlParser.class.getName()).info("tasks.size() >=    task.fork() + join()");
-//                }
-                //  }
-
-
-
-
-                /*int sizeTasks = tasks.size();
-                Logger.getLogger(HtmlParser.class.getName()).info("tasks.size() = " + tasks.size());
-                int middleHalf = sizeTasks/2;
-                Logger.getLogger(HtmlParser.class.getName()).info("middleHalf = " + sizeTasks/2);
-
-                for (int i = 0; i < middleHalf; i++) {
-                    tasks.get(i).fork();
-                    //task.fork();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.fork1");
-                 //   System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser--);
-                }
-                for (int i = 0; i < middleHalf; i++){
-                    tasks.get(i).join();
-                 //   task.join();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.join()1");
-                }
-
-
-                for (int i = middleHalf; i < sizeTasks; i++) {
-                    tasks.get(i).fork();
-                    //task.fork();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.fork2");
-                    //   System.out.println("countOfHtmlParser = " + IndexServiceImp.countOfHtmlParser--);
-                }
-                for (int i = middleHalf; i < sizeTasks; i++){
-                    tasks.get(i).join();
-                    //   task.join();
-                    Logger.getLogger(HtmlParser.class.getName()).info("task.join()2");
-                }*/
-
+//
             } else {
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.isEmpty()  - список задач пуст 📌");
             }
-            //  int amount = CollectionStorage.setPaths.size();
-            //  Logger.getLogger(HtmlParser.class.getName()).info("setPaths.size() = " + amount);
-
-
-
-
-
-
-
-            /*for (HtmlParser task : tasks){
-                task.join();
-                Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
-            }*/
-           /* for (HtmlParser task : tasks){
-                task.cancel(true);
-                Logger.getLogger(HtmlParser.class.getName()).info("task.cancel(true)");
-                Logger.getLogger(HtmlParser.class.getName()).info("task.isCancelled()  - " + task.isCancelled());
-            }*/
-
-            // Thread.currentThread().interrupt();
-            // Logger.getLogger(HtmlParser.class.getName()).info("Thread.currentThread().interrupt()");
-
-           /* for (HtmlParser task : tasks){
-                task.quietlyComplete();
-                Logger.getLogger(HtmlParser.class.getName()).info(" task.quietlyComplete()");
-            }*/
-
-          /*  if (!paths.isEmpty()) {
-                for (HtmlParser task : tasks) {
-                    MyLogger.logger.info("Зашли в цикл /for (HtmlParser task : tasks)/  - task.fork();");
-                    task.fork();
-                }
-                for (HtmlParser task : tasks) {
-                    MyLogger.logger.info("Зашли в цикл /for (HtmlParser task : tasks)/  - paths.addAll(task.join());");
-                    paths.addAll(task.join());
-                }
-            } else
-                throw new IllegalStateException("Набор даже не набрался, здесь все пути-href использовали");*/
-
-
-            /* if (!tasks.isEmpty()) {
-                 for (HtmlParser task : tasks) {
-                     task.fork();
-                     Logger.getLogger(HtmlParser.class.getName()).info(" task.fork() ");
-                     // task.join();
-                     //  Logger.getLogger(HtmlParser.class.getName()).info("after  task.join() ");
-
-                 }
-             }*/
-             /*  for (HtmlParser task : tasks) {
-                    if (ThreadStopper.stopper) {
-                        throw new InterruptedException("Stop thread");
-                    }
-                   // task.fork();
-                  //  Logger.getLogger(HtmlParser.class.getName()).info(" task.fork() ");
-                    // paths.addAll(task.join());
-                    task.join();
-                    Logger.getLogger(HtmlParser.class.getName()).info("after  task.join() ");
-
-
-                }
-                //  addResultsFromTasks(paths, tasks);
-            }*/
-
-
-            // tasks.clear();
-            //   Logger.getLogger(HtmlParser.class.getName()).info("paths собрал set and GO TO -> /return paths/ = " + paths.size());
 
         } catch (IOException ex) {
             Logger.getLogger(HtmlParser.class.getName()).info("catch " + ex.getClass() + " ex");
-           // System.out.println("IO ex поймали для инф");
-             throw new RuntimeException(ex);
-
-            //  throw new RuntimeException(ex.getCause());
+            throw new RuntimeException(ex.getCause());
             //  setLastErrorAndSave(ex, siteEntity, indexServiceImp);
 
         } catch (IllegalPathStateException | NullPointerException ex) {
@@ -318,29 +176,8 @@ public class HtmlParser extends RecursiveAction {
             throw new RuntimeException(ex.getCause()); // пробросим RuntimeException, чтоб остановить forkJoinPool
 
         }
-
-
-        //  Logger.getLogger(HtmlParser.class.getName()).info("return paths - size = " + paths.size());
-        //  return paths;
     }
 
-
-
-
-   /* private void forkJoin(List<HtmlParser> tasks) {
-        for (HtmlParser task : tasks) {
-            task.fork();
-            Logger.getLogger(HtmlParser.class.getName()).info("task.fork()");
-
-        }
-        int indexTasks = 0;
-        for (HtmlParser task : tasks) {
-            task.join();
-            Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
-            tasks.remove(indexTasks);
-            indexTasks++;
-        }
-    }*/
 
     private void forkJoinForBigTasks(List<HtmlParser> tasks) {
         List<HtmlParser> beforeIterateTasks = new ArrayList<>(tasks);
@@ -400,7 +237,7 @@ public class HtmlParser extends RecursiveAction {
     }*/
 
     private DocumentParsed getParsedDocument(String url) throws IOException {
-        DocumentParsed documentParsed = null;
+        DocumentParsed documentParsed;
         Document doc;
         Connection.Response response;
         int code;
@@ -411,7 +248,7 @@ public class HtmlParser extends RecursiveAction {
                 .ignoreHttpErrors(true)
                 //  .ignoreContentType(true)
                 .followRedirects(true)
-                .timeout(30000)
+                .timeout(60000)
                 .execute();
         try {
             Thread.sleep(generateRandomRangeDelay()); // задержка между запросами
@@ -421,19 +258,18 @@ public class HtmlParser extends RecursiveAction {
         if (response.statusCode() == 200) {
             doc = response.parse();
             code = response.statusCode();
-            documentParsed = new DocumentParsed(doc, code);
+            //  documentParsed = new DocumentParsed(doc, code);
         } else {
-            int codeError = response.statusCode();
-            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + codeError);
             doc = new Document(url);
-            documentParsed = new DocumentParsed(doc, codeError);
-
+            code = response.statusCode();
+            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + code);
             // documentParsed = new DocumentParsed(doc.body() , codeError);
             // throw new FailedSearching("ошибка в: " + url + " code " + code);
             // throw new IOException(" Ошибка индексации: сайт не доступен");
 
             //    documentParsed = new DocumentParsed(response.statusCode());
         }
+        documentParsed = new DocumentParsed(doc, code);
         return documentParsed;
     }
 
@@ -447,14 +283,8 @@ public class HtmlParser extends RecursiveAction {
                                 .startsWith("/");
     }
 
-    private PageEntity createPageEntity(String link,  DocumentParsed documentParsed, SiteEntity siteEntity) throws IOException {
+    private PageEntity createPageEntity(String link, DocumentParsed documentParsed, SiteEntity siteEntity) throws IOException {
         PageEntity pageEntity = new PageEntity();
-//        String urlBase = siteEntity.getUrl();
-//        String baseUriDoc = documentParsed.getDoc().baseUri();
-//        String linkLocate = baseUriDoc.replace(urlBase, "");
-//        if (linkLocate.isEmpty()) {
-//            linkLocate = "/";
-//        }
         pageEntity.setPath(link);
 
         //  DocumentParsed documentParsed = getParsedDocument(pageEntity.getPath());
@@ -469,6 +299,21 @@ public class HtmlParser extends RecursiveAction {
         pageEntity.setContent(contentViaString);
 
         return pageEntity;
+    }
+
+    private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed) {
+        pageEntity.setCode(documentParsed.getCode());
+        pageEntity.setSiteEntity(siteEntity);
+        Elements contentPage = documentParsed.getDoc().getAllElements();  // get all content of the page
+        String contentViaString = "" + contentPage;
+        pageEntity.setContent(contentViaString);
+        PageService pageService = indexServiceImp.getPageService();
+        synchronized (IndexServiceImp.lock) {
+            pageService.savePageEntity(pageEntity);
+        }
+
+        // updateSiteEntity(siteEntity, documentParsed);
+
     }
 
     private String generateUserAgent() {
@@ -500,4 +345,17 @@ public class HtmlParser extends RecursiveAction {
         return rangeRandom;
     }
 
+    private void updateSiteEntity(SiteEntity siteEntity, DocumentParsed documentParsed) {
+        if (documentParsed.getCode() != 200) {
+            String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
+            siteEntity.setLastError(messageError);
+        }
+        siteEntity.setStatusTime(LocalDateTime.now());
+        indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+    }
+
+    @Override
+    public int compareTo(HtmlParser o) {
+        return this.getUrl().compareTo(o.getUrl());
+    }
 }

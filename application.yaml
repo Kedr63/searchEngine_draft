@@ -25,26 +25,26 @@ indexing-settings:
 #      name: svetlovka.ru
 #    - url: https://lenta.ru
 #      name: Lenta
-#    - url: https://www.skillbox.ru
-#      name: Skillbox
+    - url: https://www.skillbox.ru
+      name: Skillbox
 #    - url: https://www.playback.ru
 #      name: PlayBack.Ru
-#    - url: https://www.ipfran.ru/
-#      name: ipfran
+#    - url: https://www.rbc.ru
+#      name: Rbc.Ru
 #    - url: https://for-each.dev
 #      name: for-each
 #    - url: https://www.kotelnich.info
 #      name: Котельнич
-#    - url: https://dombulgakova.ru/
-#      name: dombulgakova
+#    - url: https://www.cdek.ru
+#      name: cdek
 #    - url: https://nosite.ru
-##      name: Nosite
-#    - url: https://fitstars.ru/
+#      name: Nosite
+#    - url: https://fitstars.ru
 #      name: fitstars.ru
-    - url: https://camper-ural.ru
-      name: camper-ural
-#    - url: http://radiomv.ru/
-#      name: radiomv
+#    - url: https://camper-ural.ru
+#      name: camper-ural
+#    - url: https://kemperus.ru
+#      name: kemperus
 
 user-agents-settings:
   userAgents:
