@@ -65,6 +65,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- добавим чтоб код автоматически добавлялся в файле со свойствами (из урока 2.3 Application Properties, профили и формат YAML) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
 
         <!--        <dependency>-->
 <!--            <groupId>org.apache.logging.log4j</groupId>-->

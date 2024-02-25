@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser> {
+public class HtmlParser extends RecursiveAction {
 
     private final String url;
     private SiteEntity siteEntity;
@@ -40,15 +40,9 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
         this.indexServiceImp = indexServiceImp;
     }
 
-    public HtmlParser(String url) {
-        this.url = url;
-    }
-
     @Override
     protected void compute() {
         List<HtmlParser> tasks = new ArrayList<>();
-        // Url urlLink = new Url(url);
-        //   StringBuilder builder = new StringBuilder();
 
         String urlBase = siteEntity.getUrl();
         String linkLocate = url.replace(urlBase, "");
@@ -65,29 +59,24 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
                     pageEntity = new PageEntity();
                     pageEntity.setPath(linkLocate);
                     pageEntity.setContent("");
+                  //  pageEntity.setSiteEntity(siteEntity);
                     PageService pageService = indexServiceImp.getPageService();
                     pageService.savePageEntity(pageEntity);
-
-//                   DocumentParsed documentParsed = getParsedDocument(url);
-//                    doc = documentParsed.getDoc();
 //
 //                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
                     Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
 
                 } else {
-                    return;
+                    return;  // иначе если path есть в базе, то останавливаем здесь код
                 }
             }
 
             synchronized (this) {
                 documentParsed = getParsedDocument(url);
-//                if (documentParsed.getCode()!=200) {
-//                    String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
-//                    siteEntity.setLastError(messageError);
-//                }
-                //              updateSiteEntity(siteEntity);
             }
             fillPageEntityAndSaveBD(pageEntity, documentParsed); // заполним pageEntity остальными данными
+            siteEntity.setStatusTime(LocalDateTime.now());
+            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
 
             doc = documentParsed.getDoc();
 
@@ -311,6 +300,8 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
         synchronized (IndexServiceImp.lock) {
             pageService.savePageEntity(pageEntity);
         }
+//        siteEntity.setStatusTime(LocalDateTime.now());
+//        indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
 
         // updateSiteEntity(siteEntity, documentParsed);
 
@@ -352,10 +343,5 @@ public class HtmlParser extends RecursiveAction implements Comparable<HtmlParser
         }
         siteEntity.setStatusTime(LocalDateTime.now());
         indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
-    }
-
-    @Override
-    public int compareTo(HtmlParser o) {
-        return this.getUrl().compareTo(o.getUrl());
     }
 }

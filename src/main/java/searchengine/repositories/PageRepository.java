@@ -1,6 +1,7 @@
 package searchengine.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import searchengine.model.PageEntity;
 
@@ -15,5 +16,9 @@ public interface PageRepository extends JpaRepository<PageEntity, Integer> {
 
     @Query(value = "SELECT path FROM search_engine.page where path LIKE :path", nativeQuery = true)
     Optional<String> findByPath(String path);
+
+    @Modifying
+    @Query(value = "delete FROM page", nativeQuery = false)
+    void deleteAllPageEntity();
 
 }

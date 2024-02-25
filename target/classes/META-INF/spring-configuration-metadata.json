@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "indexing-settings",
+      "type": "searchengine.config.SitesList",
+      "sourceType": "searchengine.config.SitesList"
+    },
+    {
+      "name": "user-agents-settings",
+      "type": "searchengine.config.UserAgentList",
+      "sourceType": "searchengine.config.UserAgentList"
+    }
+  ],
+  "properties": [
+    {
+      "name": "indexing-settings.sites",
+      "type": "java.util.List<searchengine.config.Site>",
+      "sourceType": "searchengine.config.SitesList"
+    },
+    {
+      "name": "user-agents-settings.user-agents",
+      "type": "java.util.List<searchengine.config.UserAgent>",
+      "sourceType": "searchengine.config.UserAgentList"
+    }
+  ],
+  "hints": []
+}

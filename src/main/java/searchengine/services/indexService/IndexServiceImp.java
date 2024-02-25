@@ -17,6 +17,8 @@ import searchengine.services.SiteService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -59,66 +61,42 @@ public class IndexServiceImp implements IndexService {
 
         long start = System.currentTimeMillis();
 
-        siteService.deleteAll();
+
         if (siteService.getAllSiteEntities().stream().anyMatch(o -> o.getStatus().equals(StatusIndex.INDEXING))) {
             return new IndexResponseError(false, "Индексация уже запущена");
 
         }
 
-        //  IndexService indexService = new IndexServiceImp(siteService, pageService, sitesList, userAgentList);
-
+        siteService.deleteAll();
 
         int sizeSitesList = this.getSitesList().getSites().size();
         //  int sizeSitesList = sitesList.getSites().size();
-
-
-       /* ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
-        List<Future<Set<String>>> futureResult = new ArrayList<>();*/
-
-      /*  ThreadStopper threadStopper = new ThreadStopper();
-        threadStopper.setStopper(false);*/
-
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
 
         for (int i = 0; i < sizeSitesList; i++) {
+            ForkJoinPool forkJoinPool = new ForkJoinPool();
+
             Site site = sitesList.getSites().get(i);
-            //   String url = site.getUrl();
 
             SiteEntity siteEntity = createSiteEntity(site);
             siteService.saveSiteEntity(siteEntity);
 
             try {
                 HtmlParser parser = new HtmlParser(siteEntity.getUrl(), siteEntity, this);
-                forkJoinPool.invoke(parser);
-                //  forkJoinPool.execute(parser);
-                // forkJoinPool.submit(parser);
+                forkJoinPool.invoke(parser); // пока метод не отработает со всеми fork код дальше не пойдет
 
                 // parser.join();
                 Logger.getLogger(IndexServiceImp.class.getName()).info("invoke(parser)");
                 Logger.getLogger(IndexServiceImp.class.getName()).info("forkJoinPool.invoke(parser);");
 
-
-                /*do {
-                    Logger.getLogger(IndexServiceImp.class.getName()).info("Work parser " + parser.getUrl());
-                }
-                while (!parser.isDone());
-                Logger.getLogger(IndexServiceImp.class.getName()).info("parser.isDone() - " + parser.isDone());*/
-
-
-               /* parser.join();
-                Logger.getLogger(IndexServiceImp.class.getName()).info("parser.join()");
-
-                forkJoinPool.shutdown();
-                Logger.getLogger(IndexServiceImp.class.getName()).info("shutdown()");*/
-
                 if (parser.isDone()) {
+                    forkJoinPool.shutdown();
                     siteEntity.setStatus(StatusIndex.INDEXED);
                     //  indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
                     Logger.getLogger(IndexServiceImp.class.getName()).info("siteEntity.setStatus(StatusIndex.INDEXED)");
                     this.getSiteService().saveSiteEntity(siteEntity);
+                } // else return new IndexResponseError(false, "error indexing");
 
-
-                } else return new IndexResponseError(false, "error indexing");
 
             } catch (Exception e) {
                 forkJoinPool.shutdown();
@@ -253,7 +231,7 @@ public class IndexServiceImp implements IndexService {
             return new IndexResponse(true);
         }
 
-        return new IndexResponseError(false, "что-то пошло тне так");
+        return new IndexResponseError(false, "что-то пошло не так");
     }
 
     @Override

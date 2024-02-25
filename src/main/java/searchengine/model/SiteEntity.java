@@ -1,7 +1,5 @@
 package searchengine.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,9 +12,15 @@ public class SiteEntity {
     @Column(name="id", nullable = false)
     private int id;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "site", cascade = CascadeType.ALL) // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c
-    @JsonIgnore                                                    //  add
+    @OneToMany(mappedBy = "site", fetch = FetchType.LAZY) // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c
+   // @JsonIgnore                                                    //  add
     private List<PageEntity> pageEntities;
+
+
+//    @OneToMany(targetEntity = PageEntity.class, fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL, orphanRemoval = true) // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c
+//    @JoinColumn(name = "site_id", referencedColumnName = "id")
+//    private List<PageEntity> pageEntities;
 
     @Enumerated(EnumType.STRING)
    // @Column(columnDefinition = "ENUM")
@@ -25,7 +29,8 @@ public class SiteEntity {
     @Column(columnDefinition = "DATETIME", nullable = false)
     private LocalDateTime statusTime;
 
-    @Column(columnDefinition = "TEXT")
+ //   @Column(columnDefinition = "TEXT")
+ @Column(columnDefinition = "TEXT(100)") // попробую TEXT чтоб не получить /java heap space/ -2
     private String lastError;
 
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)
@@ -84,5 +89,9 @@ public class SiteEntity {
 
     public void setPages(List<PageEntity> pageEntities) {
         this.pageEntities = pageEntities;
+    }
+
+    public void removePageEntities(){
+        pageEntities.clear();
     }
 }

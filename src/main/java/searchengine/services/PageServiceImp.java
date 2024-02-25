@@ -18,7 +18,7 @@ public class PageServiceImp implements PageService {
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public List<PageEntity> getAllPageEntities() {
         return pageRepository.findAll();
     }
@@ -28,10 +28,11 @@ public class PageServiceImp implements PageService {
     public void savePageEntity(PageEntity pageEntity) {
         
         pageRepository.save(pageEntity);
+
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public PageEntity getPageEntity(int id) {
         PageEntity pageEntity = null;
         Optional<PageEntity> optional = pageRepository.findById(id);
@@ -42,16 +43,30 @@ public class PageServiceImp implements PageService {
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public boolean isPresentPageEntityByPath(String path) {
         Optional<String> optional = pageRepository.findByPath(path);
         return optional.isPresent();
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public void deletePageEntity(int id) {
         pageRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllPageEntity() {
+       // pageRepository.deleteAllPageEntity();
+        pageRepository.deleteAllPageEntity();
+      /*  //   pageRepository.deleteAll();
+        StringBuilder stringBuilder = null;
+        Logger.getLogger(PageServiceImp.class.getName()).info(" в методе - deleteAllPageEntity()");
+        List<PageEntity> pageEntityList = pageRepository.findAll();
+        for (PageEntity pageEntity : pageEntityList){
+            stringBuilder.append(pageEntityList.indexOf(pageEntity) == 0 ? pageEntity.getId() : ", " + pageEntity.getId());
+        }*/
     }
 
 }

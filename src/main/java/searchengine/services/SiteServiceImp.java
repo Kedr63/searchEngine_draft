@@ -7,14 +7,17 @@ import searchengine.repositories.SiteRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class SiteServiceImp implements SiteService {
 
     private final SiteRepository siteRepository;
+    private final PageService pageService;
 
-    public SiteServiceImp(SiteRepository siteRepository) {
+    public SiteServiceImp(SiteRepository siteRepository, PageService pageService) {
         this.siteRepository = siteRepository;
+        this.pageService = pageService;
     }
 
     @Override
@@ -49,6 +52,8 @@ public class SiteServiceImp implements SiteService {
     @Override
     @Transactional
     public void deleteAll() {
+        Logger.getLogger(SiteServiceImp.class.getName()).info(" в методе - deleteAll");
+        pageService.deleteAllPageEntity();
         siteRepository.deleteAll();
     }
 }

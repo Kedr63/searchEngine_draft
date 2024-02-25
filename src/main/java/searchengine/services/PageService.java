@@ -16,4 +16,6 @@ public interface PageService {
 
     void deletePageEntity(int id);
 
+    void deleteAllPageEntity();
+
 }
