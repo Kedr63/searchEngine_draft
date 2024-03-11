@@ -44,8 +44,8 @@ public class PageServiceImp implements PageService {
 
     @Override
     @Transactional
-    public boolean isPresentPageEntityByPath(String path) {
-        Optional<String> optional = pageRepository.findByPath(path);
+    public boolean isPresentPageEntityByPath(String path, int siteId) {
+        Optional<String> optional = pageRepository.findByPath(path, siteId);
         return optional.isPresent();
     }
 

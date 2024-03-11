@@ -12,6 +12,7 @@ import searchengine.dto.indexing.DocumentParsed;
 import searchengine.dto.indexing.ThreadStopper;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
+import searchengine.model.StatusIndex;
 import searchengine.services.PageService;
 
 import java.awt.geom.IllegalPathStateException;
@@ -38,6 +39,7 @@ public class HtmlParser extends RecursiveAction {
         this.url = url;
         this.siteEntity = siteEntity;
         this.indexServiceImp = indexServiceImp;
+        Logger.getLogger(HtmlParser.class.getName()).info("htmlParser " + "\"" + url + "\" " + siteEntity);
     }
 
     @Override
@@ -50,42 +52,41 @@ public class HtmlParser extends RecursiveAction {
             linkLocate = "/";
         }
 
-        try {
-            Document doc;
-            DocumentParsed documentParsed;
-            PageEntity pageEntity;
-            synchronized (IndexServiceImp.lock) {
-                if (!isPresentPathsInPageRepository(linkLocate, indexServiceImp.getPageService())) {
-                    pageEntity = new PageEntity();
-                    pageEntity.setPath(linkLocate);
-                    pageEntity.setContent("");
-                  //  pageEntity.setSiteEntity(siteEntity);
-                    PageService pageService = indexServiceImp.getPageService();
-                    pageService.savePageEntity(pageEntity);
+        Document doc;
+        DocumentParsed documentParsed;
+        PageEntity pageEntity;
+        synchronized (IndexServiceImp.lock) {
+            if (!isPresentPathsInPageRepository(linkLocate, siteEntity.getId(), indexServiceImp.getPageService())) {
+                pageEntity = new PageEntity();
+                pageEntity.setPath(linkLocate);
+                pageEntity.setContent("");
+                pageEntity.setSiteEntity(siteEntity);
+                PageService pageService = indexServiceImp.getPageService();
+                pageService.savePageEntity(pageEntity);
 //
 //                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
-                    Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
+                Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
 
-                } else {
-                    return;  // иначе если path есть в базе, то останавливаем здесь код
-                }
+            } else {
+                return;  // иначе если path есть в базе, то останавливаем здесь код
             }
+        }
 
-            synchronized (this) {
-                documentParsed = getParsedDocument(url);
-            }
-            fillPageEntityAndSaveBD(pageEntity, documentParsed); // заполним pageEntity остальными данными
+        try {
+            documentParsed = getParsedDocument(url); // если этот метод выбросит IOException, то в catch блоке удалим pageEntity,
+            // который начали добавлять в БД
+
+            // и далее заполним pageEntity остальными данными, если нет IOException
+            fillPageEntityAndSaveBD(pageEntity, documentParsed);
+
+//            if (documentParsed.getErrorMessage()!=null){
+//                siteEntity.setLastError(documentParsed.getErrorMessage());
+//                siteEntity.setStatus(StatusIndex.FAILED);
+//            }
             siteEntity.setStatusTime(LocalDateTime.now());
             indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
 
             doc = documentParsed.getDoc();
-
-
-
-
-           /* // добавим проверку по тэгу title: если такая страница уже участвовала в обработке, то не будем повторно использовать эту страницу
-            String titleString = doc.getElementsByTag("title").text();
-            CollectionStorage.checkingAndAddToSetTitle(titleString);*/
 
 
 //            Elements searchLinks = doc.select("a[href^=/][href~=(/\\w*\\z|\\w/\\z|.html)]")
@@ -101,7 +102,7 @@ public class HtmlParser extends RecursiveAction {
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-            Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return end");
+            //      Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return end");
 
             for (String link : searchLinks) {
                 if (ThreadStopper.stopper) {
@@ -114,7 +115,7 @@ public class HtmlParser extends RecursiveAction {
 //                    }
 //                }
                 synchronized (IndexServiceImp.lock) {
-                    if (isPresentPathsInPageRepository(link, indexServiceImp.getPageService())) {
+                    if (isPresentPathsInPageRepository(link, siteEntity.getId(), indexServiceImp.getPageService())) {
                         continue;
                     }
                 }
@@ -153,18 +154,34 @@ public class HtmlParser extends RecursiveAction {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(HtmlParser.class.getName()).info("catch " + ex.getClass() + " ex");
-            throw new RuntimeException(ex.getCause());
-            //  setLastErrorAndSave(ex, siteEntity, indexServiceImp);
+            Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx " + ex.getClass() + " ex ");
+
+            synchronized (IndexServiceImp.lock) {
+                Logger.getLogger(HtmlParser.class.getName()).info("deletePageEntity(pageEntity.getId() = " + pageEntity.getId() + "  " + siteEntity.getName());
+                indexServiceImp.getPageService().deletePageEntity(pageEntity.getId()); //
+            }
+
+            catchExceptionAndSaveLastError(ex, siteEntity, indexServiceImp);
+
 
         } catch (IllegalPathStateException | NullPointerException ex) {
-            Logger.getLogger(HtmlParser.class.getName()).info(ex.getMessage() + " check ?");
-            throw new NullPointerException(ex.getLocalizedMessage());
+            Logger.getLogger(HtmlParser.class.getName()).info(ex.getMessage() + " check ? - (IllegalPathStateException | NullPointerException ex)");
+            //  throw new NullPointerException(ex.getLocalizedMessage());
 
         } catch (InterruptedException ex) {
-            throw new RuntimeException(ex.getCause()); // пробросим RuntimeException, чтоб остановить forkJoinPool
-
+            // throw new RuntimeException(ex.getCause()); // пробросим RuntimeException, чтоб остановить forkJoinPool
+          //  throw new StopThreadException(ex.getMessage());
         }
+    }
+
+    private void catchExceptionAndSaveLastError(IOException ex, SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
+
+//        String error = ex.getClass() + ": " + ex.getMessage();
+//        siteEntity.setLastError(error);
+        siteEntity.setLastError(ex.getClass() + ": " + ex.getMessage());
+        Logger.getLogger(HtmlParser.class.getName()).info(" в методе catchExceptionAndSaveLastError - " + ex.getClass() + ": " + ex.getMessage());
+        siteEntity.setStatus(StatusIndex.FAILED);
+        indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
     }
 
 
@@ -196,9 +213,9 @@ public class HtmlParser extends RecursiveAction {
         }*/
     }
 
-    private boolean isPresentPathsInPageRepository(String fullHref, PageService pageService) {
+    private boolean isPresentPathsInPageRepository(String fullHref, int siteId, PageService pageService) {
         // synchronized (IndexServiceImp.lock) {
-        return pageService.isPresentPageEntityByPath(fullHref);
+        return pageService.isPresentPageEntityByPath(fullHref, siteId);
         //  }
 
     }
@@ -226,7 +243,7 @@ public class HtmlParser extends RecursiveAction {
     }*/
 
     private DocumentParsed getParsedDocument(String url) throws IOException {
-        DocumentParsed documentParsed;
+        DocumentParsed documentParsed = new DocumentParsed();
         Document doc;
         Connection.Response response;
         int code;
@@ -244,21 +261,23 @@ public class HtmlParser extends RecursiveAction {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        if (response.statusCode() == 200) {
+        code = response.statusCode();
+
+        if (code == 200) {
             doc = response.parse();
-            code = response.statusCode();
-            //  documentParsed = new DocumentParsed(doc, code);
+            documentParsed.setDoc(doc);
+            documentParsed.setCode(code);
         } else {
             doc = new Document(url);
-            code = response.statusCode();
+           // String errorMessage = response.statusMessage();
+            // code = response.map(Connection.Response::statusCode).orElse(404);
             Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + code);
-            // documentParsed = new DocumentParsed(doc.body() , codeError);
-            // throw new FailedSearching("ошибка в: " + url + " code " + code);
-            // throw new IOException(" Ошибка индексации: сайт не доступен");
 
-            //    documentParsed = new DocumentParsed(response.statusCode());
+            documentParsed.setDoc(doc);
+            documentParsed.setCode(code);
+            documentParsed.setErrorMessage(response.statusMessage());
         }
-        documentParsed = new DocumentParsed(doc, code);
+      //  documentParsed = new DocumentParsed(doc, code);
         return documentParsed;
     }
 
@@ -292,7 +311,6 @@ public class HtmlParser extends RecursiveAction {
 
     private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed) {
         pageEntity.setCode(documentParsed.getCode());
-        pageEntity.setSiteEntity(siteEntity);
         Elements contentPage = documentParsed.getDoc().getAllElements();  // get all content of the page
         String contentViaString = "" + contentPage;
         pageEntity.setContent(contentViaString);
@@ -344,4 +362,6 @@ public class HtmlParser extends RecursiveAction {
         siteEntity.setStatusTime(LocalDateTime.now());
         indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
     }
+
+
 }

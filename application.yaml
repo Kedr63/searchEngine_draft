@@ -15,7 +15,7 @@ spring:
 
     hibernate:
       ddl-auto: create
-    show-sql: true
+#    show-sql: true
 
 
 
@@ -24,10 +24,10 @@ indexing-settings:
   sites:
 #    - url: https://www.svetlovka.ru
 #      name: svetlovka.ru
-#    - url: https://lenta.ru
-#      name: Lenta
-    - url: https://www.skillbox.ru
-      name: Skillbox
+#    - url: https://volochek.life
+#      name: volochek.life
+    - url: https://camper-ural.ru
+      name: camper-ural
 #    - url: https://www.playback.ru
 #      name: PlayBack.Ru
 #    - url: https://www.rbc.ru
@@ -36,14 +36,14 @@ indexing-settings:
 #      name: for-each
 #    - url: https://www.kotelnich.info
 #      name: Котельнич
-#    - url: https://www.cdek.ru
-#      name: cdek
-#    - url: https://nosite.ru
-#      name: Nosite
+#    - url: https://skillbox.ru
+#      name: skillbox.ru
+    - url: https://nosite.ru
+      name: Nosite
 #    - url: https://fitstars.ru
 #      name: fitstars.ru
-    - url: https://camper-ural.ru
-      name: camper-ural
+#    - url: https://camper-ural.ru
+#      name: camper-ural
 #    - url: https://kemperus.ru
 #      name: kemperus
 

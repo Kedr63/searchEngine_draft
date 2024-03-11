@@ -9,6 +9,9 @@ public class IndexResponseError extends IndexResponse{
 
     private String error;
 
+    public IndexResponseError() {
+    }
+
     public IndexResponseError(boolean result, String error) {
         super(result);
         this.error=error;

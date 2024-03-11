@@ -6,6 +6,10 @@ public class DocumentParsed {
 
     private Document doc;
     private int code;
+    private String errorMessage;
+
+    public DocumentParsed() {
+    }
 
     public DocumentParsed(Document doc, int code) {
         this.doc = doc;
@@ -26,5 +30,13 @@ public class DocumentParsed {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

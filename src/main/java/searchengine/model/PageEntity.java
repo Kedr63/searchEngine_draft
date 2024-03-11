@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(indexes = {@Index(name = "PATH_INDEX", columnList = "path")})
 public class PageEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -22,7 +22,9 @@ public class PageEntity {
     @JoinColumn(name = "site_id", referencedColumnName = "id")
     private SiteEntity site;
 
-   @Column(columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
+ //  @Column(columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
+   @Column(columnDefinition = "VARCHAR(255)", nullable = false, unique = false) // уберем unique = true, т.к. у сайтов пути могут быть
+   // одинаковые, например ("/")
   // @Column(columnDefinition = "TEXT(100)", nullable = false, unique = true)
     private String path;
 

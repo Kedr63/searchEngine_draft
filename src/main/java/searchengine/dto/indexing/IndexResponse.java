@@ -10,6 +10,9 @@ public class IndexResponse {
         this.result = result;
     }
 
+    public IndexResponse() {
+    }
+
     public void setResult(boolean result) {
         this.result = result;
     }
