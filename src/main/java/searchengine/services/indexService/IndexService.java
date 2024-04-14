@@ -1,13 +1,12 @@
 package searchengine.services.indexService;
 
+import org.springframework.http.ResponseEntity;
 import searchengine.dto.indexing.IndexResponse;
-import searchengine.dto.indexing.IndexResponseError;
 
 public interface IndexService {
+    ResponseEntity<IndexResponse> startIndexing();
 
-    IndexResponse startIndexing();
-
-    IndexResponseError stopIndexing() throws InterruptedException;
+     ResponseEntity<IndexResponse> stopIndexing();
 
  //   public IndexResponseError throwsException() throws IOException;
 }

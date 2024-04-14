@@ -6,7 +6,7 @@ public class DocumentParsed {
 
     private Document doc;
     private int code;
-    private String errorMessage;
+   // private String errorMessage;
 
     public DocumentParsed() {
     }
@@ -32,11 +32,11 @@ public class DocumentParsed {
         this.code = code;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+//    public String getErrorMessage() {
+//        return errorMessage;
+//    }
+//
+//    public void setErrorMessage(String errorMessage) {
+//        this.errorMessage = errorMessage;
+//    }
 }

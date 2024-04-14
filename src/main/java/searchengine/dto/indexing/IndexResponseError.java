@@ -8,6 +8,7 @@ import lombok.Setter;
 public class IndexResponseError extends IndexResponse{
 
     private String error;
+  //  private int codeError;
 
     public IndexResponseError() {
     }
@@ -16,5 +17,4 @@ public class IndexResponseError extends IndexResponse{
         super(result);
         this.error=error;
     }
-
 }

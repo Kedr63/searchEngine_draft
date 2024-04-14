@@ -1,11 +1,11 @@
 package searchengine.exceptions;
 
-public class StopThreadException extends Exception{
-    private String message;
+public class StopThreadException extends RuntimeException{
 
-    public StopThreadException(String message) {
-        this.message = message;
+    public StopThreadException() {
     }
 
-
+    public StopThreadException(String message) {
+        super(message);
+    }
 }

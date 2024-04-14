@@ -3,19 +3,19 @@ package searchengine.services.indexService;
 import lombok.Getter;
 import lombok.Setter;
 import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import searchengine.config.UserAgent;
 import searchengine.dto.indexing.DocumentParsed;
-import searchengine.dto.indexing.ThreadStopper;
+import searchengine.dto.indexing.UtilitiesIndexing;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
 import searchengine.services.PageService;
 
-import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,7 +43,13 @@ public class HtmlParser extends RecursiveAction {
     }
 
     @Override
-    protected void compute() {
+    protected void compute() throws RuntimeException{
+
+        if (UtilitiesIndexing.stopStartIndexing){
+            Logger.getLogger(HtmlParser.class.getName()).info("делаем стоп потоки if (StatusThreadsRun.threadsStopping   +  return");
+            return;
+        }
+
         List<HtmlParser> tasks = new ArrayList<>();
 
         String urlBase = siteEntity.getUrl();
@@ -76,13 +82,28 @@ public class HtmlParser extends RecursiveAction {
             documentParsed = getParsedDocument(url); // если этот метод выбросит IOException, то в catch блоке удалим pageEntity,
             // который начали добавлять в БД
 
-            // и далее заполним pageEntity остальными данными, если нет IOException
+        } catch (IOException ex) {
+            Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx " + ex.getClass() + " ex ");
+
+            synchronized (IndexServiceImp.lock) {
+                Logger.getLogger(HtmlParser.class.getName()).info("deletePageEntity(pageEntity.getId() = " + pageEntity.getId() + "  " + siteEntity.getName());
+                indexServiceImp.getPageService().deletePageEntity(pageEntity.getId()); //
+            }
+
+            getLastErrorOfException(ex); // из этого метода выбросится new RuntimeException(ex.getMessage(), ex.getCause());
+            // а если ловили исключение из-за Http, то выполним метод и остановим код с помощью return
+            return;
+        }
+//        catch (IllegalPathStateException | NullPointerException ex) {
+//            Logger.getLogger(HtmlParser.class.getName()).info(ex.getMessage() + " check ? - (IllegalPathStateException | NullPointerException ex)");
+//            //  throw new NullPointerException(ex.getLocalizedMessage());
+//
+//        }
+
+
+        // и далее заполним pageEntity остальными данными, если нет IOException
             fillPageEntityAndSaveBD(pageEntity, documentParsed);
 
-//            if (documentParsed.getErrorMessage()!=null){
-//                siteEntity.setLastError(documentParsed.getErrorMessage());
-//                siteEntity.setStatus(StatusIndex.FAILED);
-//            }
             siteEntity.setStatusTime(LocalDateTime.now());
             indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
 
@@ -102,11 +123,9 @@ public class HtmlParser extends RecursiveAction {
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-            //      Logger.getLogger(HtmlParser.class.getName()).info(IndexServiceImp.tmp = "return end");
-
             for (String link : searchLinks) {
-                if (ThreadStopper.stopper) {
-                    throw new InterruptedException("Stop thread");
+                if (UtilitiesIndexing.stopStartIndexing) {
+                  //  throw new InterruptedException("Stop thread");
                 }
 
 //                synchronized (IndexServiceImp.lock) {
@@ -115,6 +134,7 @@ public class HtmlParser extends RecursiveAction {
 //                    }
 //                }
                 synchronized (IndexServiceImp.lock) {
+                    // если такая ссылка link есть в БД, то переходим к следующему элементу цикла
                     if (isPresentPathsInPageRepository(link, siteEntity.getId(), indexServiceImp.getPageService())) {
                         continue;
                     }
@@ -136,54 +156,51 @@ public class HtmlParser extends RecursiveAction {
 
 
             if (!tasks.isEmpty()) {
-
-//                forkJoinForBigTasks(tasks);
-//                Logger.getLogger(HtmlParser.class.getName()).info("forkJoinForBigTasks(tasks)");
-
                 for (HtmlParser task : tasks) {
                     task.join();
                     Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
                 }
-
                 tasks.clear();
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.clear()");
-
-//
             } else {
                 Logger.getLogger(HtmlParser.class.getName()).info("tasks.isEmpty()  - список задач пуст 📌");
             }
 
-        } catch (IOException ex) {
-            Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx " + ex.getClass() + " ex ");
-
-            synchronized (IndexServiceImp.lock) {
-                Logger.getLogger(HtmlParser.class.getName()).info("deletePageEntity(pageEntity.getId() = " + pageEntity.getId() + "  " + siteEntity.getName());
-                indexServiceImp.getPageService().deletePageEntity(pageEntity.getId()); //
-            }
-
-            catchExceptionAndSaveLastError(ex, siteEntity, indexServiceImp);
-
-
-        } catch (IllegalPathStateException | NullPointerException ex) {
-            Logger.getLogger(HtmlParser.class.getName()).info(ex.getMessage() + " check ? - (IllegalPathStateException | NullPointerException ex)");
-            //  throw new NullPointerException(ex.getLocalizedMessage());
-
-        } catch (InterruptedException ex) {
-            // throw new RuntimeException(ex.getCause()); // пробросим RuntimeException, чтоб остановить forkJoinPool
-          //  throw new StopThreadException(ex.getMessage());
-        }
     }
 
-    private void catchExceptionAndSaveLastError(IOException ex, SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
+    private void getLastErrorOfException(Exception ex) throws RuntimeException{
 
-//        String error = ex.getClass() + ": " + ex.getMessage();
-//        siteEntity.setLastError(error);
-        siteEntity.setLastError(ex.getClass() + ": " + ex.getMessage());
-        Logger.getLogger(HtmlParser.class.getName()).info(" в методе catchExceptionAndSaveLastError - " + ex.getClass() + ": " + ex.getMessage());
+        if (ex.getClass()== HttpStatusException.class){
+//            siteEntity.setLastError(ex.getClass() + ": - " + ex.getMessage() + " ошибка: " + ((HttpStatusException) ex).getStatusCode()
+//                    + " при попытке обработать URL: " + ((HttpStatusException) ex).getUrl());
+            saveLastErrorInSiteEntity(ex);
+
+            Logger.getLogger(HtmlParser.class.getName()).info("1 before throws : throw new HttpFailedConnectionException(ex.getMessage(), ((HttpStatusException) ex).getStatusCode())");
+            // throw new HttpStatusException(ex.getMessage(), ((HttpStatusException) ex).getStatusCode(), url);
+
+          //  throw new HttpFailedConnectionException(ex.getMessage(), ((HttpStatusException) ex).getStatusCode());
+       //   throw new RuntimeException(ex.getMessage(), ex.getCause());
+
+        } else {
+            saveLastErrorInSiteEntity(ex);
+            Logger.getLogger(HtmlParser.class.getName()).info("2 before throws : throw new RuntimeException(ex)");
+            throw new RuntimeException(ex);
+        }
+
+//        siteEntity.setLastError(ex.getClass() + ": - " + ex.getMessage());
+//            siteEntity.setStatus(StatusIndex.FAILED);
+//            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+//
+//            Logger.getLogger(HtmlParser.class.getName()).info("slE before throws : throw new RuntimeException(ex)");
+//            throw new RuntimeException(ex);
+
+    }
+
+    private void saveLastErrorInSiteEntity(Exception ex){
+        siteEntity.setLastError(ex.getClass() + " - " + ex.getMessage());
         siteEntity.setStatus(StatusIndex.FAILED);
         indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
     }
-
 
     private void forkJoinForBigTasks(List<HtmlParser> tasks) {
         List<HtmlParser> beforeIterateTasks = new ArrayList<>(tasks);
@@ -248,14 +265,21 @@ public class HtmlParser extends RecursiveAction {
         Connection.Response response;
         int code;
 
-        response = Jsoup.connect(url)
-                .userAgent(generateUserAgent())
-                .referrer("https://www.google.com")
-                .ignoreHttpErrors(true)
-                //  .ignoreContentType(true)
-                .followRedirects(true)
-                .timeout(60000)
-                .execute();
+    //    try {
+            response = Jsoup.connect(url)
+                    .userAgent(generateUserAgent())
+                    .referrer("https://www.google.com")
+                    .ignoreHttpErrors(false)
+                    //  .ignoreContentType(true)
+                    .followRedirects(true)
+                    .timeout(30000)
+                    .execute();
+//        } catch (HttpStatusException e) {
+//            throw new HttpStatusException(e.getMessage(), e.getStatusCode(), url);
+//        } catch (IOException e) {
+//            throw new IOException("Проблема с соединением", e.getCause());
+//            //  throw new FailedConnectionException(e.getMessage() + " response пустой");
+//        }
         try {
             Thread.sleep(generateRandomRangeDelay()); // задержка между запросами
         } catch (InterruptedException e) {
@@ -269,15 +293,15 @@ public class HtmlParser extends RecursiveAction {
             documentParsed.setCode(code);
         } else {
             doc = new Document(url);
-           // String errorMessage = response.statusMessage();
+            // String errorMessage = response.statusMessage();
             // code = response.map(Connection.Response::statusCode).orElse(404);
-            Logger.getLogger(HtmlParser.class.getName()).info("ошибка в: " + url + " code " + code);
+            Logger.getLogger(HtmlParser.class.getName()).info("ошибка HttpErrors в: " + url + " code " + code);
 
             documentParsed.setDoc(doc);
             documentParsed.setCode(code);
-            documentParsed.setErrorMessage(response.statusMessage());
+           // documentParsed.setErrorMessage(response.statusMessage());
         }
-      //  documentParsed = new DocumentParsed(doc, code);
+        //  documentParsed = new DocumentParsed(doc, code);
         return documentParsed;
     }
 
