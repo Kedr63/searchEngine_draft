@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import searchengine.dto.indexing.IndexResponse;
-import searchengine.dto.indexing.UtilitiesIndexing;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
 

@@ -34,8 +34,8 @@ indexing-settings:
 #      name: for-each
 #    - url: https://www.kotelnich.info
 #      name: Котельнич
-    - url: https://skillbox.ru
-      name: skillbox.ru
+#    - url: https://skillbox.ru
+#      name: skillbox.ru
 #    - url: https://nosite.ru
 #      name: Nosite
 #    - url: https://fitstars.ru

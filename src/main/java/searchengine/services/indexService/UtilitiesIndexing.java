@@ -1,10 +1,10 @@
-package searchengine.dto.indexing;
+package searchengine.services.indexService;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import searchengine.services.indexService.IndexServiceImp;
+import searchengine.dto.indexing.IndexResponse;
 
 import java.util.logging.Logger;
 
@@ -28,4 +28,8 @@ public class UtilitiesIndexing {
         return new ResponseEntity<IndexResponse>(new IndexResponse(true), HttpStatus.GONE);
       //  throw new StopThreadException();
     }
+
+    public static final Object lockPageRepository = new Object();
+
+    public static final Object lockLemmaRepository = new Object();
 }

@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import searchengine.dto.indexing.IndexResponse;
 import searchengine.dto.statistics.StatisticsResponse;
-import searchengine.model.SiteEntity;
+import searchengine.model.PageEntity;
 import searchengine.services.StatisticsService;
 import searchengine.services.indexService.IndexService;
 
@@ -44,7 +44,7 @@ public class ApiController {
     }*/
 
     @PostMapping("/indexPage")
-    public ResponseEntity<IndexResponse> addOrUpdateIndexPage(@RequestBody SiteEntity siteEntity) {
+    public ResponseEntity<IndexResponse> addOrUpdateIndexPage(@RequestBody PageEntity pageEntity) {
         return null;
     }
 }

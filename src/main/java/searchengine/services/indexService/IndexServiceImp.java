@@ -11,11 +11,12 @@ import searchengine.config.SitesList;
 import searchengine.config.UserAgentList;
 import searchengine.dto.indexing.IndexResponse;
 import searchengine.dto.indexing.IndexResponseError;
-import searchengine.dto.indexing.UtilitiesIndexing;
 import searchengine.exceptions.IllegalMethodException;
 import searchengine.exceptions.UtilityException;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
+import searchengine.services.IndexLemmaService;
+import searchengine.services.LemmaService;
 import searchengine.services.PageService;
 import searchengine.services.SiteService;
 
@@ -40,6 +41,10 @@ public class IndexServiceImp implements IndexService {
 
     private final PageService pageService;
 
+    private final LemmaService lemmaService;
+
+    private final IndexLemmaService indexLemmaService;
+
     private final SitesList sitesList;
 
     private final UserAgentList userAgentList;
@@ -50,8 +55,6 @@ public class IndexServiceImp implements IndexService {
     @Value("${errorIndexingAlreadyRunning}")
     private String errorIndexingAlreadyRunning;
 
-    protected static final Object lock = new Object();
-    protected static final Object lock2 = new Object();
 
     protected static long countOfHtmlParser = 1;
     //  protected static long counter = 0;
@@ -59,10 +62,15 @@ public class IndexServiceImp implements IndexService {
 
     protected static String tmp = "Return";
 
+    long start;
 
-    public IndexServiceImp(SiteService siteService, PageService pageService, SitesList sitesList, UserAgentList userAgentList) {
+
+
+    public IndexServiceImp(SiteService siteService, PageService pageService, LemmaService lemmaService, IndexLemmaService indexLemmaService, SitesList sitesList, UserAgentList userAgentList) {
         this.siteService = siteService;
         this.pageService = pageService;
+        this.lemmaService = lemmaService;
+        this.indexLemmaService = indexLemmaService;
         this.sitesList = sitesList;
         this.userAgentList = userAgentList;
     }
@@ -78,7 +86,7 @@ public class IndexServiceImp implements IndexService {
         //   UtilitiesIndexing.StopStartIndexing = true; // при запущенной индексации это значение - true
         UtilitiesIndexing.executionOfMethodStartIndexing = true; // при запущенной индексации это значение - true
 
-        long start = System.currentTimeMillis();
+        start = System.currentTimeMillis();
 
         siteService.deleteAll();
 
@@ -154,7 +162,7 @@ public class IndexServiceImp implements IndexService {
                 //  Logger.getLogger(IndexServiceImp.class.getName()).info("    indexResponseFuture.get()   - in catch block -1");
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
-                Logger.getLogger(IndexServiceImp.class.getName()).info("  after catch block   -- ExecutionException e");
+                Logger.getLogger(IndexServiceImp.class.getName()).info("  after catch block   -- ExecutionException e" + e.getCause());
                 indexResponseEntity = new ResponseEntity<>(new IndexResponseError(false, UtilityException.getShortMessageOfException(e)), HttpStatus.BAD_REQUEST);
                 responseEntityList.add(indexResponseEntity);
             }
@@ -204,7 +212,7 @@ public class IndexServiceImp implements IndexService {
 
     private double computeTimeExecution() {
         long end = System.currentTimeMillis();
-        long start = 0;
+       // long start = 0;
         return (double) (end - start) / 60_000;
     }
 }
