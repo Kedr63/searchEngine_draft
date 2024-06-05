@@ -1,53 +1,36 @@
 package searchengine.services.indexService;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
-import searchengine.config.UserAgentList;
 import searchengine.dto.indexing.IndexResponse;
 import searchengine.dto.indexing.IndexResponseError;
 import searchengine.exceptions.IllegalMethodException;
+import searchengine.exceptions.NoSuchSiteException;
 import searchengine.exceptions.UtilityException;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
-import searchengine.services.IndexLemmaService;
-import searchengine.services.LemmaService;
 import searchengine.services.PageService;
-import searchengine.services.SiteService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service //при этой аннотации получим бины (объекты) прописанные в полях (но только если их добавим в конструктор)
-@Getter
-@Setter
+//@Getter
+//@Setter
 public class IndexServiceImp implements IndexService {
 
-    private final SiteService siteService;
-
-    private final PageService pageService;
-
-    private final LemmaService lemmaService;
-
-    private final IndexLemmaService indexLemmaService;
+    private final PoolService poolService;
 
     private final SitesList sitesList;
-
-    private final UserAgentList userAgentList;
 
     @Value("${errorIndexingNotRunning}")
     private String errorIndexingNotRunning;
@@ -55,9 +38,11 @@ public class IndexServiceImp implements IndexService {
     @Value("${errorIndexingAlreadyRunning}")
     private String errorIndexingAlreadyRunning;
 
+    @Value("${errorMatchingSiteUrlOfSiteList}")
+    private String errorMatchingSiteUrlOfSiteList;
 
     protected static long countOfHtmlParser = 1;
-    //  protected static long counter = 0;
+
     protected static int coreAmount = Runtime.getRuntime().availableProcessors();
 
     protected static String tmp = "Return";
@@ -65,30 +50,24 @@ public class IndexServiceImp implements IndexService {
     long start;
 
 
-
-    public IndexServiceImp(SiteService siteService, PageService pageService, LemmaService lemmaService, IndexLemmaService indexLemmaService, SitesList sitesList, UserAgentList userAgentList) {
-        this.siteService = siteService;
-        this.pageService = pageService;
-        this.lemmaService = lemmaService;
-        this.indexLemmaService = indexLemmaService;
+    public IndexServiceImp(PoolService poolService, SitesList sitesList) {
+        this.poolService = poolService;
         this.sitesList = sitesList;
-        this.userAgentList = userAgentList;
     }
-
 
     @Override
     public ResponseEntity<IndexResponse> startIndexing() {
-        if (UtilitiesIndexing.executionOfMethodStartIndexing) {
+        if (UtilitiesIndexing.executeStartIndexing) {
             IndexResponseError indexResponseError = new IndexResponseError(false, errorIndexingAlreadyRunning);
             return new ResponseEntity<>(indexResponseError, HttpStatus.FORBIDDEN);
         }
 
         //   UtilitiesIndexing.StopStartIndexing = true; // при запущенной индексации это значение - true
-        UtilitiesIndexing.executionOfMethodStartIndexing = true; // при запущенной индексации это значение - true
+        UtilitiesIndexing.executeStartIndexing = true; // при запущенной индексации это значение - true
 
         start = System.currentTimeMillis();
 
-        siteService.deleteAll();
+        cascadeDeletionAllEntities();
 
         int sizeSitesList = sitesList.getSites().size();
         ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
@@ -101,9 +80,9 @@ public class IndexServiceImp implements IndexService {
             Site site = sitesList.getSites().get(i);
 
             SiteEntity siteEntity = createSiteEntity(site);
-            siteService.saveSiteEntity(siteEntity);
+            poolService.getSiteService().saveSiteEntity(siteEntity);
 
-            ExecutorServiceForParsingSiteEntity executorServiceForParsingSiteEntity = new ExecutorServiceForParsingSiteEntity(siteEntity, this);
+            ExecutorServiceForParsingSiteEntity executorServiceForParsingSiteEntity = new ExecutorServiceForParsingSiteEntity(siteEntity, poolService);
             Future<ResponseEntity<IndexResponse>> futureResponseEntity = executorService.submit(executorServiceForParsingSiteEntity);
 
             futureList.add(futureResponseEntity);
@@ -119,13 +98,40 @@ public class IndexServiceImp implements IndexService {
     @Override
     public ResponseEntity<IndexResponse> stopIndexing() {
 
-        if (!UtilitiesIndexing.executionOfMethodStartIndexing) {
+        if (!UtilitiesIndexing.executeStartIndexing) {
             throw new IllegalMethodException(errorIndexingNotRunning);
         }
 
         UtilitiesIndexing.stopStartIndexing = true;
 
-       return UtilitiesIndexing.waitForCompleteStartIndexingAndTerminateStopIndexing();
+        return UtilitiesIndexing.waitForCompleteStartIndexingAndTerminateStopIndexing();
+    }
+
+    @Override
+    public ResponseEntity<IndexResponse> indexPage(String page) {
+        PageService pageService = poolService.getPageService();
+        String regex = "(https://[^,\\s/]+)([^,\\s]+)";
+        String siteBaseUrl = page.replaceAll(regex, "$1");
+
+        if (sitesList.getSites().stream().noneMatch(s -> s.getUrl().equals(siteBaseUrl))) {
+            throw new NoSuchSiteException(errorMatchingSiteUrlOfSiteList);
+        }
+
+        SiteEntity siteEntity = poolService.getSiteService().getSiteEntityByUrl(siteBaseUrl);
+        String pageLocalUrl = page.replaceAll(regex, "$2");
+
+        if (pageService.isPresentPageEntityByPath(pageLocalUrl, siteEntity.getId())) {
+            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteEntity.getId());
+            cascadeDeletionPageEntities(idPageEntity);
+            Logger.getLogger(IndexServiceImp.class.getName()).info("delete Page cascade - " + pageLocalUrl);
+        }
+        UtilitiesIndexing.isStartLaunchPageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser чтоб пропарсить только одну страницу
+        HtmlParser htmlParser = new HtmlParser(page, siteEntity, poolService);
+        htmlParser.compute();
+        UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был после \indexPage(String page)\
+
+
+        return new ResponseEntity<>(new IndexResponse(true), HttpStatus.OK);
     }
 
 
@@ -143,7 +149,7 @@ public class IndexServiceImp implements IndexService {
     private String getShortMessageOfException(Exception e) {
         StringBuilder builder = new StringBuilder();
         String[] arrayMessage = e.getMessage().split(":");
-        List<String> stringList = Arrays.stream(arrayMessage).collect(Collectors.toList());
+        List<String> stringList = Arrays.stream(arrayMessage).toList();
         builder.append(stringList.get(stringList.size() - 2)).append(" - ");
         builder.append(stringList.get(stringList.size() - 1));
         return builder.toString();
@@ -210,11 +216,31 @@ public class IndexServiceImp implements IndexService {
         }
     }
 
+
+    private void cascadeDeletionAllEntities() {
+        poolService.getIndexEntityService().deleteAllIndexEntity();
+        poolService.getLemmaService().deleteAllLemmaEntities();
+        poolService.getPageService().deleteAllPageEntity();
+        poolService.getSiteService().deleteAllSiteEntity();
+    }
+
+    private void cascadeDeletionPageEntities(int idPageEntity) {
+        List<Integer> idLemmaList = poolService.getIndexEntityService().getIdLemmaByPageId(idPageEntity);
+        poolService.getIndexEntityService().deleteIndexEntityWherePageId(idPageEntity);
+        poolService.getLemmaService().updateLemmaFrequency(idLemmaList);
+        // poolService.getLemmaService().deleteLemmaEntityById(idLemmaList);
+        poolService.getPageService().deletePageEntity(idPageEntity);
+
+
+    }
+
+
     private double computeTimeExecution() {
         long end = System.currentTimeMillis();
-       // long start = 0;
+        // long start = 0;
         return (double) (end - start) / 60_000;
     }
+
 }
 
 

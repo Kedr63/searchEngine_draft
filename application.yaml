@@ -15,7 +15,7 @@ spring:
 
     hibernate:
       ddl-auto: create
-#    show-sql: true
+    show-sql: true
 
 
 indexing-settings:
@@ -42,8 +42,8 @@ indexing-settings:
 #      name: fitstars.ru
     - url: https://camper-ural.ru
       name: camper-ural
-#    - url: https://kemperus.ru
-#      name: kemperus
+    - url: https://kemperus.ru
+      name: kemperus
 
 user-agents-settings:
   userAgents:
@@ -59,3 +59,7 @@ user-agents-settings:
 
 errorIndexingNotRunning: "Индексация не запущена"
 errorIndexingAlreadyRunning: "Индексация уже запущена"
+errorMatchingSiteUrlOfSiteList: "Данная страница находится за пределами сайтов, указанных в конфигурационном файле"
+
+errorSearchNotIndexedSite: "Отсутствуют проиндексированные сайты"
+errorSearchQueryEmpty: "Задан пустой поисковый запрос"

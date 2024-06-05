@@ -3,8 +3,8 @@ package searchengine.dto.indexing;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 public class IndexResponse {
     private boolean result;
 
@@ -15,7 +15,4 @@ public class IndexResponse {
     public IndexResponse() {
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
-    }
 }

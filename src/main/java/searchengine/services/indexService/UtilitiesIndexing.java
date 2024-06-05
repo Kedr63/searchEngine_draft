@@ -13,14 +13,25 @@ import java.util.logging.Logger;
 public class UtilitiesIndexing {
 
     public volatile static boolean stopStartIndexing;
-    public volatile static boolean executionOfMethodStartIndexing;
+    public volatile static boolean executeStartIndexing;
+    public static boolean computeIndexingSinglePage;
 
     public static void isDoneStartIndexing(){
-        executionOfMethodStartIndexing = false;
+        executeStartIndexing = false;
+        stopStartIndexing = false;
     }
 
+    public static void isDoneIndexingSinglePage(){
+        computeIndexingSinglePage = false;
+    }
+
+    public static void isStartLaunchPageIndexing(){
+        computeIndexingSinglePage = true;
+    }
+
+
     public static ResponseEntity<IndexResponse> waitForCompleteStartIndexingAndTerminateStopIndexing(){
-        while (executionOfMethodStartIndexing){
+        while (executeStartIndexing){ // ждем завершение метода startIndex()
             Logger.getLogger(IndexServiceImp.class.getName()).info("in loop while _onSpinWait");
             Thread.onSpinWait();
         }
@@ -32,4 +43,6 @@ public class UtilitiesIndexing {
     public static final Object lockPageRepository = new Object();
 
     public static final Object lockLemmaRepository = new Object();
+
+    public static  final Object lockIndexLemmaService = new Object();
 }

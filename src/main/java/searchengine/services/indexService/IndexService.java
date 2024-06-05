@@ -7,7 +7,11 @@ public interface IndexService {
 
     ResponseEntity<IndexResponse> startIndexing();
 
-     ResponseEntity<IndexResponse> stopIndexing();
+    ResponseEntity<IndexResponse> stopIndexing();
 
- //   public IndexResponseError throwsException() throws IOException;
+    ResponseEntity<IndexResponse> indexPage(String page);
+
+
+
+    //   public IndexResponseError throwsException() throws IOException;
 }

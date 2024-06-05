@@ -14,5 +14,9 @@ public interface SiteService {
 
     void deleteSiteEntity(int id);
 
-    void deleteAll();
+    void deleteAllSiteEntity();
+
+    SiteEntity getSiteEntityByUrl(String url);
+
+    int getIdSiteEntityByUrl(String siteBaseUrl);
 }

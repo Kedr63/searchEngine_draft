@@ -18,4 +18,9 @@ public interface PageService {
 
     void deleteAllPageEntity();
 
+  //  void deletePageEntityWhereSiteId(int id);
+
+    int getIdPageEntity(String pageLocalUrl, int idSiteEntity);
+
+    int getCountPagesOfSite(int idSiteEntity);
 }

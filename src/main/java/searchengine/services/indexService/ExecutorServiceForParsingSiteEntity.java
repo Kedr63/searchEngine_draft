@@ -17,11 +17,11 @@ import java.util.logging.Logger;
 public class ExecutorServiceForParsingSiteEntity implements Callable<ResponseEntity<IndexResponse>> {
     // private Site url;
     private SiteEntity siteEntity;
-    private IndexServiceImp indexServiceImp;
+    private PoolService poolService;
 
-    public ExecutorServiceForParsingSiteEntity(SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
+    public ExecutorServiceForParsingSiteEntity(SiteEntity siteEntity, PoolService poolService) {
         this.siteEntity = siteEntity;
-        this.indexServiceImp = indexServiceImp;
+        this.poolService = poolService;
     }
 
     @Override
@@ -29,18 +29,18 @@ public class ExecutorServiceForParsingSiteEntity implements Callable<ResponseEnt
         ResponseEntity<IndexResponse> futureResponseEntity = null;
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         //   try {
-        HtmlParser parser = new HtmlParser(siteEntity.getUrl(), siteEntity, indexServiceImp);
+        HtmlParser parser = new HtmlParser(siteEntity.getUrl(), siteEntity, poolService);
         forkJoinPool.invoke(parser); // пока метод не отработает со всеми fork код дальше не пойдет
 
         if (parser.isDone() && siteEntity.getStatus().compareTo(StatusIndex.FAILED) != 0 && !UtilitiesIndexing.stopStartIndexing) {
             siteEntity.setStatus(StatusIndex.INDEXED);
             Logger.getLogger(IndexServiceImp.class.getName()).info("siteEntity.setStatus(StatusIndex.INDEXED)");
-            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+            poolService.getSiteService().saveSiteEntity(siteEntity);
         }
         if (parser.isDone() && UtilitiesIndexing.stopStartIndexing) {
             siteEntity.setStatus(StatusIndex.FAILED);
             siteEntity.setLastError("Индексация остановлена пользователем");
-            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+            poolService.getSiteService().saveSiteEntity(siteEntity);
             Logger.getLogger(IndexServiceImp.class.getName()).info("siteEntity.setLastError(\"Индексация остановлена пользователем\");");
         }
 

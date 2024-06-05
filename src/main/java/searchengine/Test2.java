@@ -17,7 +17,7 @@ public class Test2 {
 
 
         List<String> wordFormsInfo =
-                luceneMorphology.getMorphInfo("м");
+                luceneMorphology.getMorphInfo("кофе");
 
         wordFormsInfo.forEach(System.out::println);
     }

@@ -14,4 +14,8 @@ import java.util.List;
 public class UserAgentList {
 
     private List<UserAgent> userAgents;
+
+    public UserAgentList(List<UserAgent> userAgents) {
+        this.userAgents = userAgents;
+    }
 }

@@ -15,15 +15,13 @@ import java.util.logging.Logger;
 @Getter
 @Setter
 public class SiteForExecutorService implements Callable<Set<String>> {
-    // private Site url;
+
     private SiteEntity siteEntity;
+    private final PoolService poolService;
 
-    private IndexServiceImp indexServiceImp;
-
-    public SiteForExecutorService(SiteEntity siteEntity, IndexServiceImp indexServiceImp) {
-        //  this.url = url;
+    public SiteForExecutorService(SiteEntity siteEntity, PoolService poolService) {
         this.siteEntity = siteEntity;
-        this.indexServiceImp = indexServiceImp;
+        this.poolService = poolService;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class SiteForExecutorService implements Callable<Set<String>> {
         //  SiteEntityToSetString siteEntityToSetString = new SiteEntityToSetString();
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         try {
-            HtmlParser htmlParser = new HtmlParser(siteEntity.getUrl(), siteEntity, indexServiceImp);
+            HtmlParser htmlParser = new HtmlParser(siteEntity.getUrl(), siteEntity, poolService);
             forkJoinPool.invoke(htmlParser);
           //  forkJoinPool.execute(htmlParser);
 
@@ -45,7 +43,7 @@ public class SiteForExecutorService implements Callable<Set<String>> {
                 Logger.getLogger(SiteForExecutorService.class.getName()).info("Вошли в условие  if(forkJoinPool.isShutdown())");
                 siteEntity.setStatus(StatusIndex.INDEXED);
                 siteEntity.setStatusTime(LocalDateTime.now());
-                indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+                poolService.getSiteService().saveSiteEntity(siteEntity);
                 Logger.getLogger(SiteForExecutorService.class.getName()).info("Проиндексировали сайт");
             }
 
@@ -53,7 +51,7 @@ public class SiteForExecutorService implements Callable<Set<String>> {
             siteEntity.setStatus(StatusIndex.FAILED);
             siteEntity.setLastError(ex.getMessage());
             siteEntity.setStatusTime(LocalDateTime.now());
-            indexServiceImp.getSiteService().saveSiteEntity(siteEntity);
+            poolService.getSiteService().saveSiteEntity(siteEntity);
 
             Logger.getLogger(SiteForExecutorService.class.getName()).info("Поймали " + ex.getClass() + " из класса htmlParser");
         }

@@ -20,8 +20,18 @@ public interface PageRepository extends JpaRepository<PageEntity, Integer> {
     Optional<String> findByPath(String path, int siteId);
 
     @Modifying // без этой аннотации не сработает запрос на изменение таблицы
-    @Query(value = "delete FROM page", nativeQuery = false)
+    @Query(value = "delete FROM page", nativeQuery = true)
     void deleteAllPageEntity();   // этот метод вместо каскадного удаления page в классе site (при каскаде запрос на удаление шел на каждую
     // страницу и получали \JAVA HEAP SPACE\
 
+    @Modifying // без этой аннотации не сработает запрос на изменение таблицы
+    @Query(value = "delete FROM page where site_id =:siteId", nativeQuery = true)
+    void deletePageEntityWhereSiteId(int siteId);
+
+    @Query(value = "select id from page where path LIKE :pageLocalUrl AND site_id=:idSiteEntity", nativeQuery = true)
+    Optional<Integer> findIdByPageUrlAndIdSite(String pageLocalUrl, int idSiteEntity);
+
+
+    @Query(value = "select count(*) FROM page WHERE site_id=:idSiteEntity", nativeQuery = true)
+    int getCountPagesWhereSiteId(int idSiteEntity);
 }

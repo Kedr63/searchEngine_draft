@@ -1,7 +1,11 @@
 package searchengine.dto.indexing;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jsoup.nodes.Document;
 
+@Setter
+@Getter
 public class DocumentParsed {
 
     private Document doc;
@@ -16,23 +20,7 @@ public class DocumentParsed {
         this.code = code;
     }
 
-    public Document getDoc() {
-        return doc;
-    }
-
-    public void setDoc(Document doc) {
-        this.doc = doc;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-//    public String getErrorMessage() {
+    //    public String getErrorMessage() {
 //        return errorMessage;
 //    }
 //

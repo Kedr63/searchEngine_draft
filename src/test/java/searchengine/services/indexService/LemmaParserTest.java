@@ -1,8 +1,9 @@
 package searchengine.services.indexService;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class LemmaParserTest {
+        public LemmaParser lemmaParser;
 
+        public void setUp(){
+        }
 
 }

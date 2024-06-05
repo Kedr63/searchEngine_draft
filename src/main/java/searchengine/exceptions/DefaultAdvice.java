@@ -62,6 +62,12 @@ public class DefaultAdvice {
 
     }
 
+    @ExceptionHandler(NoSuchSiteException.class)
+    public ResponseEntity<IndexResponseError> handleException (NoSuchSiteException ex){
+        IndexResponseError indexResponseError = new IndexResponseError(false, ex.getMessage());
+        return new ResponseEntity<>(indexResponseError, HttpStatus.NOT_FOUND);
+    }
+
 
 
 }

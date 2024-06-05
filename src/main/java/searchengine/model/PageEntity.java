@@ -1,10 +1,12 @@
 package searchengine.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
 @Entity(name = "page")  // проиндексированные страницы сайта
 @Table(indexes = {@Index(name = "PATH_INDEX", columnList = "path")})
 public class PageEntity {
@@ -12,11 +14,6 @@ public class PageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
-
-  //  @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})// add (fetch = FetchType.LAZY)
-//   @ManyToOne (cascade = {CascadeType.REFRESH})
-//    @JoinColumn(name = "site_id")
-//    private SiteEntity site;
 
     @ManyToOne
     @JoinColumn(name = "site_id", referencedColumnName = "id")
@@ -35,27 +32,27 @@ public class PageEntity {
     //  @Column(columnDefinition = "TEXT", nullable = false) // попробую TEXT чтоб не получить /java heap space/ -1
     private String content;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public SiteEntity getSiteEntity() {
-        return site;
-    }
-
+//    public void setId(int id) {
+//        this.id = id;
+//    }
+//
+//    public SiteEntity getSiteEntity() {
+//        return site;
+//    }
+//
     public void setSiteEntity(SiteEntity site) {
         this.site = site;
     }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
+//
+//    public void setPath(String path) {
+//        this.path = path;
+//    }
+//
+//    public void setCode(int code) {
+//        this.code = code;
+//    }
+//
+//    public void setContent(String content) {
+//        this.content = content;
+//    }
 }

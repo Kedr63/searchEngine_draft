@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface LemmaService {
 
-    // Object lockLemmaRepository = new Object();
-
 
     List<LemmaEntity> getAllLemmaEntities();
 
@@ -24,4 +22,12 @@ public interface LemmaService {
     String getNormalBaseFormWord(String word);
 
     boolean isValidWord(String word);
+
+    void deleteAllLemmaEntities();
+
+    void deleteLemmaEntityById(int lemmaId);
+
+    void updateLemmaFrequency(List<Integer> idLemmaList);
+
+    int getCountLemmasOfSite(int idSiteEntity);
 }

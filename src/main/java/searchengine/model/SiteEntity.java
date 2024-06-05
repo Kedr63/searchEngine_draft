@@ -1,9 +1,14 @@
 package searchengine.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity(name = "site")
 public class SiteEntity {
 
@@ -12,9 +17,8 @@ public class SiteEntity {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @OneToMany(mappedBy = "site", fetch = FetchType.LAZY)
-    // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c
-    // @JsonIgnore                                                    //  add
+    @OneToMany(mappedBy = "site")
+    // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c     //  add
     private List<PageEntity> pages;
 
 
@@ -44,59 +48,27 @@ public class SiteEntity {
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)
     private String name;
 
-    public int getId() {
-        return id;
-    }
-
-    public StatusIndex getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusIndex status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getStatusTime() {
-        return statusTime;
-    }
-
-    public void setStatusTime(LocalDateTime statusTime) {
-        this.statusTime = statusTime;
-    }
-
-    public String getLastError() {
-        return lastError;
-    }
-
-    public void setLastError(String lastError) {
-        this.lastError = lastError;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<PageEntity> getPages() {
-        return pages;
-    }
-
-    public void setPages(List<PageEntity> pageEntities) {
-        this.pages = pageEntities;
-    }
-
-    public void removePageEntities() {
-        pages.clear();
-    }
+//    public void setStatus(StatusIndex status) {
+//        this.status = status;
+//    }
+//
+//    public void setStatusTime(LocalDateTime statusTime) {
+//        this.statusTime = statusTime;
+//    }
+//
+//    public void setLastError(String lastError) {
+//        this.lastError = lastError;
+//    }
+//
+//    public void setUrl(String url) {
+//        this.url = url;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public void setPages(List<PageEntity> pageEntities) {
+//        this.pages = pageEntities;
+//    }
 }
