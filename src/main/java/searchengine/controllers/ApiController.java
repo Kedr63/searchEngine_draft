@@ -1,12 +1,14 @@
 package searchengine.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import searchengine.dto.indexing.IndexResponse;
-import searchengine.dto.searching.SearchResult;
+import searchengine.dto.indexing.IndexingResponse;
+import searchengine.dto.searching.SearchQuery;
+import searchengine.dto.searching.SearchingResponse;
 import searchengine.dto.statistics.StatisticsResponse;
-import searchengine.services.searchService.SearchService;
 import searchengine.services.indexService.IndexService;
+import searchengine.services.searchService.SearchService;
 import searchengine.services.statisticService.StatisticsService;
 
 @RestController
@@ -28,29 +30,35 @@ public class ApiController {
 
     @GetMapping("/statistics")
     public ResponseEntity<StatisticsResponse> statistics() {
-       // return ResponseEntity.ok(statisticsService.getStatistics());
-        return statisticsService.getStatistics();
+        return ResponseEntity.ok(statisticsService.getStatistics());
+        /* аналог  */
+ ///        StatisticsResponse statisticsResponse = statisticsService.getStatistics();
+ //        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
     }
 
     @GetMapping("/startIndexing")
-    public ResponseEntity<IndexResponse> startIndexing() {
-        return indexService.startIndexing();
+    public ResponseEntity<IndexingResponse> startIndexing() {
+       IndexingResponse indexingResponse = indexService.startIndexing();
+       return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
 
     }
 
     @GetMapping("/stopIndexing")
-    public ResponseEntity<IndexResponse> stopIndexing() {
-        return indexService.stopIndexing();
+    public ResponseEntity<IndexingResponse> stopIndexing() {
+        IndexingResponse indexingResponse = indexService.stopIndexing();
+        return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
     }
 
 
     @PostMapping("/indexPage")
-    public ResponseEntity<IndexResponse> indexPage(@RequestBody String page) {
-        return indexService.indexPage(page);
+    public ResponseEntity<IndexingResponse> indexPage(@RequestBody String page) {
+        IndexingResponse indexingResponse = indexService.indexSinglePage(page);
+        return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<SearchResult> search(@RequestBody String query){
-            return searchService.search(query);
+    public ResponseEntity<SearchingResponse> search(@RequestBody SearchQuery query){
+            SearchingResponse searchingResponse = searchService.search(query);
+            return new ResponseEntity<>(searchingResponse, HttpStatus.OK);
     }
 }

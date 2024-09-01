@@ -10,11 +10,11 @@ public interface PageService {
 
     void savePageEntity(PageEntity pageEntity);
 
-    PageEntity getPageEntity(int id);
+    PageEntity getPageEntityById(int id);
 
     boolean isPresentPageEntityByPath(String path, int siteId);
 
-    void deletePageEntity(int id);
+    void deletePageById(int id);
 
     void deleteAllPageEntity();
 

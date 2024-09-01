@@ -1,10 +1,9 @@
 package searchengine.services.searchService;
 
-import org.springframework.http.ResponseEntity;
-import searchengine.dto.searching.SearchResult;
+import searchengine.dto.searching.SearchQuery;
+import searchengine.dto.searching.SearchingResponse;
 
 public interface SearchService {
 
-
-    ResponseEntity<SearchResult> search(String query);
+    SearchingResponse search(SearchQuery query);
 }

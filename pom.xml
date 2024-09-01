@@ -25,6 +25,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
 <!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
@@ -58,12 +63,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.15.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-api</artifactId>-->
+<!--            <version>5.9.3</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <!-- добавим чтоб код автоматически добавлялся в файле со свойствами (из урока 2.3 Application Properties, профили и формат YAML) -->
         <dependency>
@@ -117,6 +122,33 @@
             <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.testcontainers/postgresql -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.19.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.testcontainers/testcontainers -->
+<!--        <dependency>-->
+<!--            <groupId>org.testcontainers</groupId>-->
+<!--            <artifactId>testcontainers</artifactId>-->
+<!--            <version>1.19.7</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+
     </dependencies>
 
 

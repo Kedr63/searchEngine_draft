@@ -1,10 +1,9 @@
 package searchengine.services.indexService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import searchengine.dto.indexing.IndexResponse;
+import searchengine.dto.indexing.IndexingResponse;
 
 import java.util.logging.Logger;
 
@@ -12,37 +11,40 @@ import java.util.logging.Logger;
 @Setter
 public class UtilitiesIndexing {
 
-    public volatile static boolean stopStartIndexing;
-    public volatile static boolean executeStartIndexing;
+    public volatile static boolean stopStartIndexingMethod;
+    public volatile static boolean indexingInProgress;
     public static boolean computeIndexingSinglePage;
 
     public static void isDoneStartIndexing(){
-        executeStartIndexing = false;
-        stopStartIndexing = false;
+        indexingInProgress = false;
+        stopStartIndexingMethod = false;
     }
 
     public static void isDoneIndexingSinglePage(){
         computeIndexingSinglePage = false;
     }
 
-    public static void isStartLaunchPageIndexing(){
+    public static void isStartLaunchSinglePageIndexing(){
         computeIndexingSinglePage = true;
     }
 
 
-    public static ResponseEntity<IndexResponse> waitForCompleteStartIndexingAndTerminateStopIndexing(){
-        while (executeStartIndexing){ // ждем завершение метода startIndex()
+    public static IndexingResponse waitForCompleteStartIndexingAndTerminateStopIndexing(){
+        while (indexingInProgress){ // ждем завершение метода startIndex()
             Logger.getLogger(IndexServiceImp.class.getName()).info("in loop while _onSpinWait");
             Thread.onSpinWait();
         }
-        Logger.getLogger(IndexServiceImp.class.getName()).info("перед методом - throw new StopThreadException");
-        return new ResponseEntity<IndexResponse>(new IndexResponse(true), HttpStatus.GONE);
-      //  throw new StopThreadException();
+        return new IndexingResponse(true);
     }
+
+
 
     public static final Object lockPageRepository = new Object();
 
     public static final Object lockLemmaRepository = new Object();
 
     public static  final Object lockIndexLemmaService = new Object();
+
+
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 }

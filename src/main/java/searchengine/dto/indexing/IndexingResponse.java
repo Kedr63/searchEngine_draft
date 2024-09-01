@@ -5,14 +5,10 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class IndexResponse {
+public class IndexingResponse {
     private boolean result;
 
-    public IndexResponse(boolean result) {
+    public IndexingResponse(boolean result) {
         this.result = result;
     }
-
-    public IndexResponse() {
-    }
-
 }

@@ -1,15 +1,14 @@
 package searchengine.services.indexService;
 
-import org.springframework.http.ResponseEntity;
-import searchengine.dto.indexing.IndexResponse;
+import searchengine.dto.indexing.IndexingResponse;
 
 public interface IndexService {
 
-    ResponseEntity<IndexResponse> startIndexing();
+    IndexingResponse startIndexing();
 
-    ResponseEntity<IndexResponse> stopIndexing();
+    IndexingResponse stopIndexing();
 
-    ResponseEntity<IndexResponse> indexPage(String page);
+    IndexingResponse indexSinglePage(String page);
 
 
 

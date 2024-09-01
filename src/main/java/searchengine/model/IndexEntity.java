@@ -18,7 +18,7 @@ public class IndexEntity {
 
     @ManyToOne
     @JoinColumn(name = "page_id", referencedColumnName = "id")
-    private PageEntity page;
+    private PageEntity pageEntity;
 
     @ManyToOne
     @JoinColumn(name = "lemma_id", referencedColumnName = "id")

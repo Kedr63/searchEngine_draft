@@ -23,30 +23,30 @@ public class SiteServiceImp implements SiteService {
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public List<SiteEntity> getAllSiteEntities() {
         return siteRepository.findAll();
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public void saveSiteEntity(SiteEntity siteEntity) {
         siteRepository.save(siteEntity);
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public SiteEntity getSiteEntity(int id) {
-        SiteEntity siteEntity = null;
-        Optional<SiteEntity> optional = siteRepository.findById(id);
-        if (optional.isPresent()) {
-            siteEntity = optional.get();
+        Optional<SiteEntity> optionalSiteEntity = siteRepository.findById(id);
+        SiteEntity siteEntity = new SiteEntity();
+        if (optionalSiteEntity.isPresent()) {
+            siteEntity = optionalSiteEntity.get();
         }
         return siteEntity;
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public void deleteSiteEntity(int id) {
         siteRepository.deleteById(id);
     }
@@ -65,9 +65,9 @@ public class SiteServiceImp implements SiteService {
 
     @Override
     @Transactional
-    public SiteEntity getSiteEntityByUrl(String url) throws NoSuchElementException {
+    public SiteEntity getSiteEntityByUrl(String domainPartUrl) throws NoSuchElementException {
        Optional<SiteEntity> optionalSiteEntity = siteRepository.findAll().stream()
-               .filter(siteEntity -> siteEntity.getUrl().contains(url)).findFirst();
+               .filter(siteEntity -> siteEntity.getUrl().contains(domainPartUrl)).findFirst();
         return optionalSiteEntity.orElse(null);
     }
 

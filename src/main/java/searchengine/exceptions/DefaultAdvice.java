@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import searchengine.dto.indexing.IndexResponse;
-import searchengine.dto.indexing.IndexResponseError;
+import searchengine.dto.ResultResponseError;
+import searchengine.dto.indexing.IndexingResponse;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 @ControllerAdvice
 public class DefaultAdvice {
     @ExceptionHandler(FailedSearching.class)
-    public ResponseEntity<IndexResponseError> handleException(FailedSearching ex) {
-        IndexResponseError response = new IndexResponseError(false, ex.getMessage());
+    public ResponseEntity<ResultResponseError> handleException(FailedSearching ex) {
+        ResultResponseError response = new ResultResponseError(false, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -27,47 +27,57 @@ public class DefaultAdvice {
 //    }
 
     @ExceptionHandler(HttpFailedConnectionException.class)
-    public ResponseEntity<IndexResponseError> handleException (HttpFailedConnectionException ex, int codeError){
-        IndexResponseError indexResponseError = new IndexResponseError(false, ex.getMessage());
+    public ResponseEntity<ResultResponseError> handleException (HttpFailedConnectionException ex, int codeError){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage());
         Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException (HttpFailedConnectionException ex)");
-            return new ResponseEntity<>(indexResponseError, HttpStatus.valueOf(codeError));
+            return new ResponseEntity<>(responseError, HttpStatus.valueOf(codeError));
     }
 
     @ExceptionHandler(FailedConnectionException.class)
-    public ResponseEntity<IndexResponseError> handleException (FailedConnectionException ex){
-        IndexResponseError indexResponseError = new IndexResponseError(false, UtilityException.getShortMessageOfException(ex));
+    public ResponseEntity<ResultResponseError> handleException (FailedConnectionException ex){
+        ResultResponseError responseError = new ResultResponseError(false, UtilityException.getShortMessageOfException(ex));
         Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException (FailedConnectionException ex)");
-        return new ResponseEntity<>(indexResponseError, HttpStatus.SEE_OTHER);
+        return new ResponseEntity<>(responseError, HttpStatus.SEE_OTHER);
     }
 
     @ExceptionHandler(HttpStatusException.class)
-    public ResponseEntity<IndexResponseError> handleException (HttpStatusException ex){
-        IndexResponseError indexResponseError = new IndexResponseError(false, ex.getMessage() + "httpStatus error " + ex.getStatusCode());
+    public ResponseEntity<ResultResponseError> handleException (HttpStatusException ex){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage() + "httpStatus error " + ex.getStatusCode());
         Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException (HttpStatusException ex)");
-        return new ResponseEntity<>(indexResponseError, Objects.requireNonNull(HttpStatus.resolve(ex.getStatusCode())));
+        return new ResponseEntity<>(responseError, Objects.requireNonNull(HttpStatus.resolve(ex.getStatusCode())));
     }
 
     @ExceptionHandler(StopThreadException.class)
-    public ResponseEntity<IndexResponse> handleException (StopThreadException ex){
-        IndexResponse indexResponse = new IndexResponse(true);
+    public ResponseEntity<IndexingResponse> handleException (StopThreadException ex){
+        IndexingResponse indexingResponse = new IndexingResponse(true);
         Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException handleException (StopThreadException ex)");
-        return new ResponseEntity<>(indexResponse, HttpStatus.SEE_OTHER);
+        return new ResponseEntity<>(indexingResponse, HttpStatus.SEE_OTHER);
     }
 
     @ExceptionHandler(IllegalMethodException.class)
-    public ResponseEntity<IndexResponseError> handleException (IllegalMethodException ex){
-        IndexResponseError indexResponseError = new IndexResponseError(false, ex.getMessage());
+    public ResponseEntity<ResultResponseError> handleException (IllegalMethodException ex){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage());
         Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException (IllegalMethodException)");
-        return new ResponseEntity<>(indexResponseError, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(responseError, HttpStatus.FORBIDDEN);
 
     }
 
     @ExceptionHandler(NoSuchSiteException.class)
-    public ResponseEntity<IndexResponseError> handleException (NoSuchSiteException ex){
-        IndexResponseError indexResponseError = new IndexResponseError(false, ex.getMessage());
-        return new ResponseEntity<>(indexResponseError, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ResultResponseError> handleException (NoSuchSiteException ex){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage());
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EmptyQuerySearchingException.class)
+    public ResponseEntity<ResultResponseError> handleException (EmptyQuerySearchingException ex){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage());
+        return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
+    }
 
+    @ExceptionHandler(IncompleteIndexingException.class)
+    public ResponseEntity<ResultResponseError> handleException (IncompleteIndexingException ex){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage());
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_ACCEPTABLE);
+    }
 
 }

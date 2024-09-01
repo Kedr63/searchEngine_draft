@@ -1,14 +1,13 @@
 package searchengine.services.indexService;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
-import searchengine.dto.indexing.IndexResponse;
-import searchengine.dto.indexing.IndexResponseError;
+import searchengine.dto.ResultResponseError;
+import searchengine.dto.indexing.IndexingResponse;
 import searchengine.exceptions.IllegalMethodException;
+import searchengine.exceptions.IncompleteIndexingException;
 import searchengine.exceptions.NoSuchSiteException;
 import searchengine.exceptions.UtilityException;
 import searchengine.model.SiteEntity;
@@ -16,7 +15,9 @@ import searchengine.model.StatusIndex;
 import searchengine.services.PageService;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,13 +34,16 @@ public class IndexServiceImp implements IndexService {
     private final SitesList sitesList;
 
     @Value("${errorIndexingNotRunning}")
-    private String errorIndexingNotRunning;
+    private String indexingNotProgressError;
 
     @Value("${errorIndexingAlreadyRunning}")
     private String errorIndexingAlreadyRunning;
 
     @Value("${errorMatchingSiteUrlOfSiteList}")
     private String errorMatchingSiteUrlOfSiteList;
+
+    @Value("${errorIncompleteIndexing}")
+    private String errorIncompleteIndexing;
 
     protected static long countOfHtmlParser = 1;
 
@@ -56,14 +60,13 @@ public class IndexServiceImp implements IndexService {
     }
 
     @Override
-    public ResponseEntity<IndexResponse> startIndexing() {
-        if (UtilitiesIndexing.executeStartIndexing) {
-            IndexResponseError indexResponseError = new IndexResponseError(false, errorIndexingAlreadyRunning);
-            return new ResponseEntity<>(indexResponseError, HttpStatus.FORBIDDEN);
+    public IndexingResponse startIndexing() {
+        if (UtilitiesIndexing.indexingInProgress) {
+            throw new IllegalMethodException(errorIndexingAlreadyRunning);
         }
 
         //   UtilitiesIndexing.StopStartIndexing = true; // при запущенной индексации это значение - true
-        UtilitiesIndexing.executeStartIndexing = true; // при запущенной индексации это значение - true
+        UtilitiesIndexing.indexingInProgress = true; // при запущенной индексации это значение - true
 
         start = System.currentTimeMillis();
 
@@ -71,10 +74,7 @@ public class IndexServiceImp implements IndexService {
 
         int sizeSitesList = sitesList.getSites().size();
         ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
-        List<Future<ResponseEntity<IndexResponse>>> futureList = new ArrayList<>();
-
-        //   futureList = new ArrayList<>();
-        //  ResponseEntity<IndexResponse> indexResponseEntity= null;
+        List<Future<IndexingResponse>> futureList = new ArrayList<>();
 
         for (int i = 0; i < sizeSitesList; i++) {
             Site site = sitesList.getSites().get(i);
@@ -82,56 +82,60 @@ public class IndexServiceImp implements IndexService {
             SiteEntity siteEntity = createSiteEntity(site);
             poolService.getSiteService().saveSiteEntity(siteEntity);
 
-            ExecutorServiceForParsingSiteEntity executorServiceForParsingSiteEntity = new ExecutorServiceForParsingSiteEntity(siteEntity, poolService);
-            Future<ResponseEntity<IndexResponse>> futureResponseEntity = executorService.submit(executorServiceForParsingSiteEntity);
+            ExecutorServiceForParsingSite executorServiceForParsingSite = new ExecutorServiceForParsingSite(siteEntity, poolService);
+            Future<IndexingResponse> futureResponseEntity = executorService.submit(executorServiceForParsingSite);
 
             futureList.add(futureResponseEntity);
         }
 
-        List<ResponseEntity<IndexResponse>> responseEntityList = getResponseEntityListOfIndexingFromFutureList(futureList);
-        //  UtilitiesIndexing.StopStartIndexing = false;
-        return getResultIndexingResponseEntity(responseEntityList);
+        executorService.shutdown();
+        List<IndexingResponse> IndexingResponseList = getIndexingResponseListFromFutureList(futureList);
+        return getResultIndexingResponse(IndexingResponseList);
 
     }
 
 
     @Override
-    public ResponseEntity<IndexResponse> stopIndexing() {
+    public IndexingResponse stopIndexing() {
 
-        if (!UtilitiesIndexing.executeStartIndexing) {
-            throw new IllegalMethodException(errorIndexingNotRunning);
+        if (!UtilitiesIndexing.indexingInProgress) {
+            throw new IllegalMethodException(indexingNotProgressError);
         }
 
-        UtilitiesIndexing.stopStartIndexing = true;
+        UtilitiesIndexing.stopStartIndexingMethod = true; // в классе HtmlParser поменяется флаг и рекурсия начнет останавливаться
+        // и join-ы будут ждать результатов и возвращать рузультаты наверх в класс ExecutorServiceForParsingSite
 
         return UtilitiesIndexing.waitForCompleteStartIndexingAndTerminateStopIndexing();
     }
 
     @Override
-    public ResponseEntity<IndexResponse> indexPage(String page) {
+    public IndexingResponse indexSinglePage(String page) {
         PageService pageService = poolService.getPageService();
         String regex = "(https://[^,\\s/]+)([^,\\s]+)";
-        String siteBaseUrl = page.replaceAll(regex, "$1");
+        String domainPartOfAddressUrl = page.replaceAll(regex, "$1");
 
-        if (sitesList.getSites().stream().noneMatch(s -> s.getUrl().equals(siteBaseUrl))) {
+        if (sitesList.getSites()
+                .stream()
+                .noneMatch(s -> s.getUrl().equals(domainPartOfAddressUrl))) {
             throw new NoSuchSiteException(errorMatchingSiteUrlOfSiteList);
         }
 
-        SiteEntity siteEntity = poolService.getSiteService().getSiteEntityByUrl(siteBaseUrl);
+        SiteEntity siteDto = poolService.getSiteService().getSiteEntityByUrl(domainPartOfAddressUrl);
         String pageLocalUrl = page.replaceAll(regex, "$2");
 
-        if (pageService.isPresentPageEntityByPath(pageLocalUrl, siteEntity.getId())) {
-            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteEntity.getId());
+        if (pageService.isPresentPageEntityByPath(pageLocalUrl, siteDto.getId())) {
+            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteDto.getId());
             cascadeDeletionPageEntities(idPageEntity);
             Logger.getLogger(IndexServiceImp.class.getName()).info("delete Page cascade - " + pageLocalUrl);
         }
-        UtilitiesIndexing.isStartLaunchPageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser чтоб пропарсить только одну страницу
-        HtmlParser htmlParser = new HtmlParser(page, siteEntity, poolService);
+        UtilitiesIndexing.isStartLaunchSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
+        // чтоб пропарсить только одну страницу
+        HtmlParser htmlParser = new HtmlParser(page, siteDto, poolService);
         htmlParser.compute();
         UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был после \indexPage(String page)\
 
 
-        return new ResponseEntity<>(new IndexResponse(true), HttpStatus.OK);
+        return new IndexingResponse(true);
     }
 
 
@@ -141,6 +145,7 @@ public class IndexServiceImp implements IndexService {
         siteEntity.setStatusTime(LocalDateTime.now());
         siteEntity.setUrl(site.getUrl());
         siteEntity.setName(site.getName());
+       // siteEntity.setLastError("");
 
         return siteEntity;
     }
@@ -156,63 +161,69 @@ public class IndexServiceImp implements IndexService {
     }
 
 
-    private List<ResponseEntity<IndexResponse>> getResponseEntityListOfIndexingFromFutureList(List<Future<ResponseEntity<IndexResponse>>> futureList) {
-        List<ResponseEntity<IndexResponse>> responseEntityList = new ArrayList<>();
-        ResponseEntity<IndexResponse> indexResponseEntity;
-        for (Future<ResponseEntity<IndexResponse>> indexResponseFuture : futureList) {
+    private List<IndexingResponse> getIndexingResponseListFromFutureList(List<Future<IndexingResponse>> futureList) {
+        List<IndexingResponse> indexingResponseList = new ArrayList<>();
+        IndexingResponse indexingResponse;
+        for (Future<IndexingResponse> indexResponseFuture : futureList) {
             try {
-                indexResponseEntity = indexResponseFuture.get();
-                responseEntityList.add(indexResponseEntity);
-                Logger.getLogger(IndexServiceImp.class.getName()).info("    indexResponseFuture.get() = ");
+                indexingResponse = indexResponseFuture.get(); // если в HtmlParser выбросим RuntimeException(ex) в методе \saveLastErrorInSiteEntity\,
+                // ExecutorService wrapper (обернет) RuntimeException in Future и метод \get\ выдаст исключение
+                // и здесь поймаем как (ExecutionException e) и обработаем ниже
+                indexingResponseList.add(indexingResponse);
             } catch (InterruptedException e) {
-                //  Logger.getLogger(IndexServiceImp.class.getName()).info("    indexResponseFuture.get()   - in catch block -1");
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
-                Logger.getLogger(IndexServiceImp.class.getName()).info("  after catch block   -- ExecutionException e" + e.getCause());
-                indexResponseEntity = new ResponseEntity<>(new IndexResponseError(false, UtilityException.getShortMessageOfException(e)), HttpStatus.BAD_REQUEST);
-                responseEntityList.add(indexResponseEntity);
+                Logger.getLogger(IndexServiceImp.class.getName()).info("  after catch block   -- ExecutionException e - " + e.getCause());
+                indexingResponse = new ResultResponseError(false, UtilityException.getShortMessageOfException(e));
+                indexingResponseList.add(indexingResponse);
             }
         }
-        return responseEntityList;
+        return indexingResponseList;
     }
 
 
-    private ResponseEntity<IndexResponse> getResultIndexingResponseEntity(List<ResponseEntity<IndexResponse>> responseEntityList) {
-        int sizeList = responseEntityList.size();
-        Logger.getLogger(IndexServiceImp.class.getName()).info("size list = " + responseEntityList.size());
+    private IndexingResponse getResultIndexingResponse(List<IndexingResponse> indexingResponseList) {
+        int sizeList = indexingResponseList.size();
+        boolean hasIndexingResponseHavingValueFalse = false;
+        String error = "";
 
-        if (!responseEntityList.isEmpty()) {
-            int numberIndexOfResultFalse = -1;
+        if (!indexingResponseList.isEmpty()) {
+           // int numberIndexHavingValueFalse = 0;
 
-            // цикл ниже если будет получать boolean=false - то значение изменится на положительное
+            // цикл ниже: если будет получать boolean=false - то значение изменится на положительное
             for (int i = 0; i < sizeList; i++) {
-                if (!Objects.requireNonNull(responseEntityList.get(i).getBody()).isResult()) {
-                    numberIndexOfResultFalse = i;
+                if (!(indexingResponseList.get(i)).isResult()) {
+                    hasIndexingResponseHavingValueFalse = true;
+                    ResultResponseError responseError = (ResultResponseError) indexingResponseList.get(i);
+                    error = responseError.getError();
+                  //  numberIndexHavingValueFalse = i;
                 }
             }
-            if (numberIndexOfResultFalse != -1) {
-                Logger.getLogger(IndexServiceImp.class.getName()).info("перед ---- responseEntityList.get(numberIndexOfResultFalse)");
-                //  return responseEntityList.get(numberIndexOfResultFalse);
 
-                double totalTime = computeTimeExecution();
-                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
-
+            double totalTime;
+            if (hasIndexingResponseHavingValueFalse) {
                 UtilitiesIndexing.isDoneStartIndexing();
-                return responseEntityList.get(numberIndexOfResultFalse);
+
+                totalTime = computeTimeExecution();
+                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime haveError = " + totalTime);
+
+                throw new IncompleteIndexingException(errorIncompleteIndexing + ": " + error);
+               // return indexingResponseList.get(numberIndexHavingValueFalse);
             } else {
-                Logger.getLogger(IndexServiceImp.class.getName()).info("перед ====  return responseEntityList.get(sizeList -1)");
-
-                double totalTime = computeTimeExecution();
-                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
 
                 UtilitiesIndexing.isDoneStartIndexing();
-                return responseEntityList.get(sizeList - 1);
+
+                totalTime = computeTimeExecution();
+                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
+
+                return indexingResponseList.get(sizeList - 1);
             }
+
 
         } else {
             double totalTime = computeTimeExecution();
             Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
-            return new ResponseEntity<>(new IndexResponseError(false, "что то пошло не так"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResultResponseError(false, "что то пошло не так");
         }
     }
 
@@ -229,7 +240,7 @@ public class IndexServiceImp implements IndexService {
         poolService.getIndexEntityService().deleteIndexEntityWherePageId(idPageEntity);
         poolService.getLemmaService().updateLemmaFrequency(idLemmaList);
         // poolService.getLemmaService().deleteLemmaEntityById(idLemmaList);
-        poolService.getPageService().deletePageEntity(idPageEntity);
+        poolService.getPageService().deletePageById(idPageEntity);
 
 
     }

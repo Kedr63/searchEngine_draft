@@ -35,7 +35,7 @@ public class PageServiceImp implements PageService {
 
     @Override
     @Transactional
-    public PageEntity getPageEntity(int id) {
+    public PageEntity getPageEntityById(int id) {
         PageEntity pageEntity = null;
         Optional<PageEntity> optional = pageRepository.findById(id);
         if (optional.isPresent()) {
@@ -53,7 +53,7 @@ public class PageServiceImp implements PageService {
 
     @Override
     @Transactional
-    public void deletePageEntity(int id) {
+    public void deletePageById(int id) {
      //   indexEntityService.deleteIndexEntityWherePageId(id);
         pageRepository.deleteById(id);
     }
@@ -62,6 +62,7 @@ public class PageServiceImp implements PageService {
     @Transactional
     public void deleteAllPageEntity() {
         Logger.getLogger(PageServiceImp.class.getName()).info("Deleting all pages    pageRepository.deleteAllPageEntity();");
+
         pageRepository.deleteAllPageEntity();
     }
 

@@ -16,7 +16,8 @@ public class PoolServiceImpl implements PoolService {
     private final IndexEntityService indexEntityService;
     private final UserAgentList userAgentList;
 
-    public PoolServiceImpl(SiteService siteService, PageService pageService, LemmaService lemmaService, IndexEntityService indexEntityService, UserAgentList userAgentList) {
+    public PoolServiceImpl(SiteService siteService, PageService pageService, LemmaService lemmaService,
+                           IndexEntityService indexEntityService, UserAgentList userAgentList) {
         this.siteService = siteService;
         this.pageService = pageService;
         this.lemmaService = lemmaService;

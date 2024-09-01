@@ -19,7 +19,7 @@ public class SiteEntity {
 
     @OneToMany(mappedBy = "site")
     // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c     //  add
-    private List<PageEntity> pages;
+    private List<PageEntity> pageEntities;
 
 
 //    @OneToMany(targetEntity = PageEntity.class, fetch = FetchType.LAZY,

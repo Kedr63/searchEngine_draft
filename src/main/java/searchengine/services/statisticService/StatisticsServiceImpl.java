@@ -1,8 +1,6 @@
 package searchengine.services.statisticService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
@@ -24,12 +22,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final SitesList sites;
 
     @Override
-    public ResponseEntity<StatisticsResponse> getStatistics() {
-     //   String[] statuses = { "INDEXED", "FAILED", "INDEXING" };
-//        String[] errors = {
-//                "Ошибка индексации: главная страница сайта не доступна",
-//                "Ошибка индексации: сайт не доступен",
-//                ""};
+    public StatisticsResponse getStatistics() {
 
         TotalStatistics total = new TotalStatistics();
         total.setSites(sites.getSites().size());
@@ -51,12 +44,18 @@ public class StatisticsServiceImpl implements StatisticsService {
             item.setStatus(String.valueOf(siteService.getSiteEntity(idSiteEntity).getStatus()));
             item.setError(siteService.getSiteEntity(idSiteEntity).getLastError());
             item.setStatusTime(siteService.getSiteEntity(idSiteEntity).getStatusTime());
+
             total.setPages(total.getPages() + pages);
             total.setLemmas(total.getLemmas() + lemmas);
-            if (item.getError()==null){
-                total.setIndexing(true);
-            }
+
             statisticsItems.add(item);
+        }
+
+        for (DetailedStatisticsItem item : statisticsItems) {
+            if (item.getError() != null){
+                total.setIndexing(false);
+                break;
+            } else total.setIndexing(true);
         }
 
         StatisticsResponse statisticsResponse = new StatisticsResponse();
@@ -64,7 +63,8 @@ public class StatisticsServiceImpl implements StatisticsService {
         data.setTotal(total);
         data.setDetailed(statisticsItems);
         statisticsResponse.setStatistics(data);
-        statisticsResponse.setResult(true);
-        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
+        statisticsResponse.setResult(total.isIndexing());
+
+        return statisticsResponse;
     }
 }

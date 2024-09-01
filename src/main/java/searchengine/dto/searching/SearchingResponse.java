@@ -1,13 +1,23 @@
 package searchengine.dto.searching;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.naming.directory.SearchResult;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class SearchingResponse {
     private boolean result;
     private int count;
-    private List<SearchResult> data;
+    private List<SearchingResult> data;
+
+    public SearchingResponse() {
+    }
+
+    public SearchingResponse(boolean result, int count, List<SearchingResult> data) {
+        this.result = result;
+        this.count = count;
+        this.data = data;
+    }
 }

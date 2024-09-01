@@ -8,11 +8,13 @@ import java.util.List;
 
 public class Test2 {
 
+    
     public static void main(String[] args) throws IOException {
 
         LuceneMorphology luceneMorphology = new RussianLuceneMorphology();
+
         List<String> wordBaseForms =
-                luceneMorphology.getNormalForms("м");
+                luceneMorphology.getNormalForms("море");
         wordBaseForms.forEach(System.out::println);
 
 
@@ -20,5 +22,12 @@ public class Test2 {
                 luceneMorphology.getMorphInfo("кофе");
 
         wordFormsInfo.forEach(System.out::println);
+
+
+        
+        
+        
     }
+    
+    
 }

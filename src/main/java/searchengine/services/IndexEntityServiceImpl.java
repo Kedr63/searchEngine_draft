@@ -38,9 +38,7 @@ public class IndexEntityServiceImpl implements IndexEntityService {
     public void saveIndexEntity(IndexEntity indexEntity) {
        // synchronized (UtilitiesIndexing.lockIndexLemmaService) {
             indexEntityLemmaToPageRepository.save(indexEntity);
-
     }
-
 
     @Override
     @Transactional
