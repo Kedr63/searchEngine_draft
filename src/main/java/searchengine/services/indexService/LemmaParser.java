@@ -28,7 +28,7 @@ public class LemmaParser {
 
     public Map<String, Integer> getLemmaFromContentPage(String contentPage) throws IOException {
         Map<String, Integer> map = new HashMap<>();
-        String regex = ">([^><]+)</";
+        String regex = ">([^><]+[^\\s ])</";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(contentPage.toLowerCase());
         while (matcher.find()) {

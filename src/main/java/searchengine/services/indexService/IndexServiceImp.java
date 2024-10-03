@@ -120,19 +120,19 @@ public class IndexServiceImp implements IndexService {
             throw new NoSuchSiteException(errorMatchingSiteUrlOfSiteList);
         }
 
-        SiteEntity siteDto = poolService.getSiteService().getSiteEntityByUrl(domainPartOfAddressUrl);
+        SiteEntity siteEntity = poolService.getSiteService().getSiteEntityByUrl(domainPartOfAddressUrl);
         String pageLocalUrl = page.replaceAll(regex, "$2");
 
-        if (pageService.isPresentPageEntityByPath(pageLocalUrl, siteDto.getId())) {
-            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteDto.getId());
+        if (pageService.isPresentPageEntityWithThatPath(pageLocalUrl, siteEntity.getId())) {
+            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteEntity.getId());
             cascadeDeletionPageEntities(idPageEntity);
             Logger.getLogger(IndexServiceImp.class.getName()).info("delete Page cascade - " + pageLocalUrl);
         }
-        UtilitiesIndexing.isStartLaunchSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
+        UtilitiesIndexing.isStartSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
         // чтоб пропарсить только одну страницу
-        HtmlParser htmlParser = new HtmlParser(page, siteDto, poolService);
+        HtmlParser htmlParser = new HtmlParser(page, siteEntity, poolService);
         htmlParser.compute();
-        UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был после \indexPage(String page)\
+        UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был, после \indexPage(String page)\
 
 
         return new IndexingResponse(true);

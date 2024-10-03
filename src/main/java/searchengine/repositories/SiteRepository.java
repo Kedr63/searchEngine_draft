@@ -21,4 +21,6 @@ public interface SiteRepository extends JpaRepository<SiteEntity, Integer> {
 
     @Query(value = "SELECT id FROM site WHERE url like :siteBaseUrl")
     Optional<Integer> findIdSiteEntityByUrl(String siteBaseUrl);
+
+
 }

@@ -68,7 +68,9 @@ public class SiteServiceImp implements SiteService {
     public SiteEntity getSiteEntityByUrl(String domainPartUrl) throws NoSuchElementException {
        Optional<SiteEntity> optionalSiteEntity = siteRepository.findAll().stream()
                .filter(siteEntity -> siteEntity.getUrl().contains(domainPartUrl)).findFirst();
-        return optionalSiteEntity.orElse(null);
+       if (optionalSiteEntity.isPresent()) {
+           return optionalSiteEntity.get();
+       } else throw new NoSuchElementException();
     }
 
     @Override

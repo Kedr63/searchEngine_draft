@@ -111,13 +111,7 @@ public class HtmlParser extends RecursiveAction {
 
         List<String> searchLinks = documentParsed.getDoc()
                 .select("body")
-              //  .select("a[href^=/][href~=(/\\w*\\z|\\w/\\z|.html)]")
-                .select("a[href~=(^(" + url + ")|^(/[^A-Z#@?\\.]*))(/[^A-Z#@?\\.]*$|(.*\\.html))]")
-               // .select("a[href^=/|https://]")
-//                .not("[href*=#]")
-//                .not("[href*=?]")
-//                .not("[href*=@]")
-               // .stream().map(element -> element.attr("href"))
+                .select("a[href~=(^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$)|^(/[^A-Z#@?\\.]*)$]")
                 .stream().map(element -> element.attr("href"))
                 .distinct().toList();
         //📌 a[href^=/][href~=(/\w+\z|\w/\z|.html)] - в теге /а/ будет искать href начинающийся на "/", далее href с регулярным
@@ -191,7 +185,7 @@ public class HtmlParser extends RecursiveAction {
 
     private boolean isPresentPathInPageRepository(String fullHref, int siteId, PageService pageService) {
         // synchronized (IndexServiceImp.lock) {
-        return pageService.isPresentPageEntityByPath(fullHref, siteId);
+        return pageService.isPresentPageEntityWithThatPath(fullHref, siteId);
         //  }
 
     }
@@ -249,7 +243,8 @@ public class HtmlParser extends RecursiveAction {
      //   Elements contentPage = documentParsed.getDoc().getAllElements();
         Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
         String contentViaString = "" + contentPage;
-        pageEntity.setContent(contentViaString);
+        String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " "); // очистим String от смайликов в тексте (https://sky.pro/wiki/java/udalenie-emodzi-i-znakov-iz-strok-na-java-reshenie/)
+        pageEntity.setContent(cleanContent);
         PageService pageService = poolService.getPageService();
         synchronized (UtilitiesIndexing.lockPageRepository) {
             pageService.savePageEntity(pageEntity);

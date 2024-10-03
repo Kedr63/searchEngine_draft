@@ -24,7 +24,7 @@ public class UtilitiesIndexing {
         computeIndexingSinglePage = false;
     }
 
-    public static void isStartLaunchSinglePageIndexing(){
+    public static void isStartSinglePageIndexing(){
         computeIndexingSinglePage = true;
     }
 

@@ -12,7 +12,7 @@ public interface PageService {
 
     PageEntity getPageEntityById(int id);
 
-    boolean isPresentPageEntityByPath(String path, int siteId);
+    boolean isPresentPageEntityWithThatPath(String path, int siteId);
 
     void deletePageById(int id);
 
