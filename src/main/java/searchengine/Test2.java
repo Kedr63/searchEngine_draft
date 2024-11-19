@@ -14,16 +14,29 @@ public class Test2 {
         LuceneMorphology luceneMorphology = new RussianLuceneMorphology();
 
         List<String> wordBaseForms =
-                luceneMorphology.getNormalForms("море");
+                luceneMorphology.getNormalForms("прайс");
         wordBaseForms.forEach(System.out::println);
 
+        boolean wordFormsInfoCheck =
+                luceneMorphology.checkString("фы");
+
+        System.out.println(wordFormsInfoCheck);
 
         List<String> wordFormsInfo =
-                luceneMorphology.getMorphInfo("кофе");
+                luceneMorphology.getMorphInfo("прайс");
 
         wordFormsInfo.forEach(System.out::println);
 
+        System.out.println("__________________");
 
+        String page = "https://www.svetlovka.ru/events/master-klassy/";
+        String regex = "(https://[^,\\s/]+)([^,\\s]+)";
+        String domainPartOfAddressUrl = page.replaceAll(regex, "$1");
+        String otherPartOfAddressUrl = page.replaceAll(regex, "$2");
+
+
+        System.out.println(domainPartOfAddressUrl);
+        System.out.println(otherPartOfAddressUrl);
         
         
         

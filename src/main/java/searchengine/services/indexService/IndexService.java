@@ -8,7 +8,7 @@ public interface IndexService {
 
     IndexingResponse stopIndexing();
 
-    IndexingResponse indexSinglePage(String page);
+    IndexingResponse indexSinglePage(String pageUrl);
 
 
 

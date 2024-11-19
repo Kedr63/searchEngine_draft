@@ -14,6 +14,8 @@ import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
 import searchengine.services.PageService;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,9 +112,11 @@ public class IndexServiceImp implements IndexService {
 
     @Override
     public IndexingResponse indexSinglePage(String page) {
+        String decodedUrl = URLDecoder.decode(page, StandardCharsets.UTF_8);
         PageService pageService = poolService.getPageService();
         String regex = "(https://[^,\\s/]+)([^,\\s]+)";
-        String domainPartOfAddressUrl = page.replaceAll(regex, "$1");
+       // String pageUrl = page.getUrl();
+        String domainPartOfAddressUrl = decodedUrl.replaceAll(regex, "$1");
 
         if (sitesList.getSites()
                 .stream()
@@ -121,7 +125,7 @@ public class IndexServiceImp implements IndexService {
         }
 
         SiteEntity siteEntity = poolService.getSiteService().getSiteEntityByUrl(domainPartOfAddressUrl);
-        String pageLocalUrl = page.replaceAll(regex, "$2");
+        String pageLocalUrl = decodedUrl.replaceAll(regex, "$2");
 
         if (pageService.isPresentPageEntityWithThatPath(pageLocalUrl, siteEntity.getId())) {
             int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteEntity.getId());
@@ -130,7 +134,7 @@ public class IndexServiceImp implements IndexService {
         }
         UtilitiesIndexing.isStartSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
         // чтоб пропарсить только одну страницу
-        HtmlParser htmlParser = new HtmlParser(page, siteEntity, poolService);
+        HtmlParser htmlParser = new HtmlParser(decodedUrl, siteEntity, poolService);
         htmlParser.compute();
         UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был, после \indexPage(String page)\
 

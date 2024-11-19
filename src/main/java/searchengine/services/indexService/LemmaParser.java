@@ -28,11 +28,13 @@ public class LemmaParser {
 
     public Map<String, Integer> getLemmaFromContentPage(String contentPage) throws IOException {
         Map<String, Integer> map = new HashMap<>();
-        String regex = ">([^><]+[^\\s ])</";
+      //  String regex = ">([^><]+[^\\s ])</";
+        String regex = ">(\\s*[а-яА-Яa-zA-Z\\d:;,.!-]+\\s*[а-яА-Яa-zA-Z\\d\\s:;.,!-]*)<"; // group 1 inner tags > <
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(contentPage.toLowerCase());
         while (matcher.find()) {
-            String textInnerTag = matcher.group(1).replaceAll("&[a-z]+;", " ").trim();
+            String textInnerTag = matcher.group(1).replaceAll("&[a-z]+;", " ").trim(); // заберем группу 1 и избавимся от амперсанд
+            textInnerTag = textInnerTag.replaceAll("[а-я]*\\.", " ").trim(); // избавимся от сокращений (например ул. пр.)
             if (!textInnerTag.isBlank()) {
                 extractLemmaFromTextToMap(textInnerTag, map);
             }
@@ -41,8 +43,22 @@ public class LemmaParser {
         return map;
     }
 
+    public void extractLemmaFromTextToMap(String text, Map<String, Integer> map) throws IOException {
+        List<String> wordsText = Arrays.stream(text.split("[^а-яё]")).toList();
+        LemmaService lemmaService = poolService.getLemmaService();
+        for (String word : wordsText) {
+            if (!word.isBlank() && lemmaService.isValidWord(word) && !isOfficialPartsSpeech(word) && word.length() > 1) {
+                String lemma = lemmaService.getNormalBaseFormWord(word);
+                if (map.containsKey(lemma)) {
+                    map.put(lemma, map.get(lemma) + 1);
+                } else
+                    map.put(lemma, 1);
+            }
+        }
+    }
+
     private boolean isOfficialPartsSpeech(String word) throws IOException {  // является служебной Частью Речи
-        List<String> valuesForChecking = List.of("МЕЖД", "ПРЕДЛ", "СОЮЗ", "Н");
+        List<String> valuesForChecking = List.of("МС", "МЕЖД", "ПРЕДЛ", "СОЮЗ", "Н");
         List<String> stringList = poolService.getLemmaService().getMorphologyForms(word);
         boolean result = false;
         for (String value : valuesForChecking) {
@@ -71,6 +87,7 @@ public class LemmaParser {
                     lemmaService.saveLemmaEntity(lemmaEntity);
                 }
             }
+            // TODO fix count lemma in page (now many)
             indexEntity = createIndexEntity(lemmaEntity, pageEntity, entry.getValue());
             poolService.getIndexEntityService().saveIndexEntity(indexEntity);
         }
@@ -94,20 +111,6 @@ public class LemmaParser {
             lemmaEntity.setFrequency(1);
             return lemmaEntity;
        // }
-    }
-
-    public void extractLemmaFromTextToMap(String text, Map<String, Integer> map) throws IOException {
-        List<String> wordsText = Arrays.stream(text.split("[^а-яё]")).toList();
-        LemmaService lemmaService = poolService.getLemmaService();
-        for (String word : wordsText) {
-            if (!word.isBlank() && lemmaService.isValidWord(word) && !isOfficialPartsSpeech(word)) {
-                String lemma = lemmaService.getNormalBaseFormWord(word);
-                if (map.containsKey(lemma)) {
-                    map.put(lemma, map.get(lemma) + 1);
-                } else
-                    map.put(lemma, 1);
-            }
-        }
     }
 
 

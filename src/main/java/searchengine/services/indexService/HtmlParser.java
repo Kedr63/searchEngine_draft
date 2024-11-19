@@ -87,6 +87,7 @@ public class HtmlParser extends RecursiveAction {
             return;
         }
 
+        // TODO определить как контент заполняет pageEntity
         // и далее заполним pageEntity остальными данными, если нет IOException
         fillPageEntityAndSaveBD(pageEntity, documentParsed);
 
@@ -240,8 +241,8 @@ public class HtmlParser extends RecursiveAction {
 
     private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed) {
         pageEntity.setCode(documentParsed.getCode());
-     //   Elements contentPage = documentParsed.getDoc().getAllElements();
-        Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
+        Elements contentPage = documentParsed.getDoc().getAllElements();
+      //  Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
         String contentViaString = "" + contentPage;
         String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " "); // очистим String от смайликов в тексте (https://sky.pro/wiki/java/udalenie-emodzi-i-znakov-iz-strok-na-java-reshenie/)
         pageEntity.setContent(cleanContent);

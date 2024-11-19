@@ -17,11 +17,12 @@ public class IndexEntity {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "page_id", referencedColumnName = "id")
+    @JoinColumn(name = "page_id")
     private PageEntity pageEntity;
 
     @ManyToOne
-    @JoinColumn(name = "lemma_id", referencedColumnName = "id")
+    // @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "lemma_id")
     private LemmaEntity lemma;
  
     @Column(columnDefinition = "FLOAT", nullable = false)

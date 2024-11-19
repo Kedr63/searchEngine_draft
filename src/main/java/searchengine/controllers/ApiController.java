@@ -1,7 +1,9 @@
 package searchengine.controllers;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.dto.searching.SearchQuery;
@@ -32,14 +34,14 @@ public class ApiController {
     public ResponseEntity<StatisticsResponse> statistics() {
         return ResponseEntity.ok(statisticsService.getStatistics());
         /* аналог  */
- ///        StatisticsResponse statisticsResponse = statisticsService.getStatistics();
- //        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
+        ///        StatisticsResponse statisticsResponse = statisticsService.getStatistics();
+        //        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
     }
 
     @GetMapping("/startIndexing")
     public ResponseEntity<IndexingResponse> startIndexing() {
-       IndexingResponse indexingResponse = indexService.startIndexing();
-       return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
+        IndexingResponse indexingResponse = indexService.startIndexing();
+        return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
 
     }
 
@@ -50,15 +52,17 @@ public class ApiController {
     }
 
 
-    @PostMapping("/indexPage")
-    public ResponseEntity<IndexingResponse> indexPage(@RequestBody String page) {
+    @PostMapping(value = "/indexPage",
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE}) // из формы браузера приходит запрос K-V: \ url	"https://kemperus.ru/special_camper" \
+    public ResponseEntity<IndexingResponse> indexPage(@RequestParam MultiValueMap<String,String> paramMap) { // и здесь в контроллере декодируем адрес страницы в строку
+        String page = paramMap.get("url").get(0);
         IndexingResponse indexingResponse = indexService.indexSinglePage(page);
         return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<SearchingResponse> search(@RequestBody SearchQuery query){
-            SearchingResponse searchingResponse = searchService.search(query);
-            return new ResponseEntity<>(searchingResponse, HttpStatus.OK);
+    public ResponseEntity<SearchingResponse> search(@RequestBody SearchQuery query) {
+        SearchingResponse searchingResponse = searchService.search(query);
+        return new ResponseEntity<>(searchingResponse, HttpStatus.OK);
     }
 }

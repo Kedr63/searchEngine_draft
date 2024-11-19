@@ -15,13 +15,13 @@ spring:
 
     hibernate:
       ddl-auto: create
-#    show-sql: true
+    show-sql: true
 
 
 indexing-settings:
   sites:
-    - url: https://www.svetlovka.ru
-      name: svetlovka.ru
+#    - url: https://www.svetlovka.ru
+#      name: svetlovka.ru
 #    - url: https://volochek.life
 #      name: volochek.life
 #    - url: https://www.kp.ru
@@ -42,10 +42,10 @@ indexing-settings:
 #      name: Nosite
 #    - url: https://fitstars.ru
 #      name: fitstars.ru
-#    - url: https://camper-ural.ru
-#      name: camper-ural
-    - url: https://kemperus.ru
-      name: kemperus
+    - url: https://camper-ural.ru
+      name: camper-ural
+#    - url: https://kemperus.ru
+#      name: kemperus
 
 
 user-agents-settings:
