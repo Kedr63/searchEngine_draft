@@ -3,13 +3,17 @@ package searchengine.services;
 import searchengine.model.LemmaEntity;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public interface LemmaService {
 
 
     List<LemmaEntity> getAllLemmaEntities();
 
-    LemmaEntity getLemmaEntity(int id);
+    LemmaEntity getLemmaEntityById(int id);
+
+    Optional<Set<LemmaEntity>> getSetLemmaEntityByLemmaWordForm(String lemmaWord);
 
     void saveLemmaEntity(LemmaEntity lemmaEntity);
 

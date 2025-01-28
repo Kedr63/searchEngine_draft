@@ -44,8 +44,8 @@ indexing-settings:
 #      name: fitstars.ru
     - url: https://camper-ural.ru
       name: camper-ural
-#    - url: https://kemperus.ru
-#      name: kemperus
+    - url: https://kemperus.ru
+      name: kemperus
 
 
 user-agents-settings:
@@ -66,5 +66,10 @@ errorMatchingSiteUrlOfSiteList: "Данная страница находитс�
 
 errorSearchNotIndexedSite: "Отсутствуют проиндексированные сайты"
 errorSearchQueryEmpty: "Задан пустой поисковый запрос"
-
 errorIncompleteIndexing: "Индексация не удалась"
+errorSearchLemmaInContent: "Данные слова отсутствуют в контенте страниц сайтов"
+
+offset: 5
+limit: 20
+
+percentageAllowedNumberOfPages: 0.7

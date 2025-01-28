@@ -80,4 +80,10 @@ public class DefaultAdvice {
         return new ResponseEntity<>(responseError, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(NoSuchLemmaForSearchingInContentException.class)
+    public ResponseEntity<ResultResponseError> handleException (NoSuchLemmaForSearchingInContentException ex){
+        ResultResponseError responseError = new ResultResponseError(false, ex.getMessage());
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
+    }
+
 }

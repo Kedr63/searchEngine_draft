@@ -82,7 +82,7 @@ public class LemmaParser {
                     lemmaEntity = createLemmaEntity(entry.getKey(), siteEntity);
                     lemmaService.saveLemmaEntity(lemmaEntity);
                 } else {
-                    lemmaEntity = lemmaService.getLemmaEntity(lemmaId);
+                    lemmaEntity = lemmaService.getLemmaEntityById(lemmaId);
                     lemmaEntity.setFrequency(lemmaEntity.getFrequency() + 1);
                     lemmaService.saveLemmaEntity(lemmaEntity);
                 }

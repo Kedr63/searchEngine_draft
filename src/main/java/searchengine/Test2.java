@@ -14,7 +14,7 @@ public class Test2 {
         LuceneMorphology luceneMorphology = new RussianLuceneMorphology();
 
         List<String> wordBaseForms =
-                luceneMorphology.getNormalForms("прайс");
+                luceneMorphology.getNormalForms("авто");
         wordBaseForms.forEach(System.out::println);
 
         boolean wordFormsInfoCheck =

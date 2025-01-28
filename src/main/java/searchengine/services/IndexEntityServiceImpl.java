@@ -61,9 +61,19 @@ public class IndexEntityServiceImpl implements IndexEntityService {
 
     }
 
+
+
     @Override
     @Transactional
     public List<Integer> getIdLemmaByPageId(int idPageEntity) {
         return indexEntityLemmaToPageRepository.findIdLemmaByIdPage(idPageEntity);
     }
+
+    @Override
+    @Transactional
+    public List<IndexEntity> getIndexEntityListByLemmaId(int idLemma) {
+        return indexEntityLemmaToPageRepository.findIndexEntityBy(idLemma);
+    }
+
+
 }

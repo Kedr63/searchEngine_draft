@@ -17,4 +17,6 @@ public interface IndexEntityService {
     void deleteIndexEntityWherePageId(int PageId);
 
     List<Integer> getIdLemmaByPageId(int idPageEntity);
+
+    List<IndexEntity> getIndexEntityListByLemmaId(int lemmaId);
 }

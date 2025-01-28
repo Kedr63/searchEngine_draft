@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import searchengine.model.LemmaEntity;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface LemmaRepository extends JpaRepository<LemmaEntity, Integer> {
@@ -27,4 +28,7 @@ public interface LemmaRepository extends JpaRepository<LemmaEntity, Integer> {
 
     @Query(value = "select COUNT(*) FROM search_engine.lemma where site_id=:idSiteEntity", nativeQuery = true)
     int getCountLemmasWhereSiteId(int idSiteEntity);
+
+    @Query(value = "SELECT * FROM search_engine.lemma where lemma=:lemmaWord", nativeQuery = true)
+    Optional<Set<LemmaEntity>> findByLemmaWord(String lemmaWord);
 }

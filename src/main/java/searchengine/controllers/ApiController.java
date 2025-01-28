@@ -52,6 +52,7 @@ public class ApiController {
     }
 
 
+    // метод POST - Способ передачи данных: В теле HTTP-запроса
     @PostMapping(value = "/indexPage",
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE}) // из формы браузера приходит запрос K-V: \ url	"https://kemperus.ru/special_camper" \
     public ResponseEntity<IndexingResponse> indexPage(@RequestParam MultiValueMap<String,String> paramMap) { // и здесь в контроллере декодируем адрес страницы в строку
@@ -60,8 +61,9 @@ public class ApiController {
         return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<SearchingResponse> search(@RequestBody SearchQuery query) {
+    @GetMapping( "/search") // метод GET - Способ передачи данных: через URL
+    // про @ModelAttribute - https://sky.pro/wiki/java/peredacha-slozhnogo-obyekta-kak-get-parametra-v-spring-mvc/
+    public ResponseEntity<SearchingResponse> search(@ModelAttribute SearchQuery query) {
         SearchingResponse searchingResponse = searchService.search(query);
         return new ResponseEntity<>(searchingResponse, HttpStatus.OK);
     }

@@ -232,7 +232,7 @@ public class IndexServiceImp implements IndexService {
     }
 
 
-    private void cascadeDeletionAllEntities() {
+    private void cascadeDeletionAllEntities() {  // каскадно удаляем сущности начиная с дочерних до родительских
         poolService.getIndexEntityService().deleteAllIndexEntity();
         poolService.getLemmaService().deleteAllLemmaEntities();
         poolService.getPageService().deleteAllPageEntity();

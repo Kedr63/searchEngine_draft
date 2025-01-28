@@ -25,4 +25,7 @@ public interface IndexEntityLemmaToPageRepository extends JpaRepository<IndexEnt
 
     @Query(value = "select lemma_id from search_engine.index_search where page_id=:idPage", nativeQuery = true)
     List<Integer> findIdLemmaByIdPage(int idPage);
+
+    @Query(value = "select * from search_engine.index_search where lemma_id=:lemmaId", nativeQuery = true)
+    List<IndexEntity> findIndexEntityBy(int lemmaId);
 }

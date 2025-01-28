@@ -11,6 +11,9 @@ public class SearchingResult {
     private String snippet;
     private float relevance;
 
+    public SearchingResult(){
+    }
+
     public SearchingResult(String site, String siteName, String uri, String title, String snippet, float relevance) {
         this.site = site;
         this.siteName = siteName;

@@ -8,6 +8,7 @@ import searchengine.repositories.LemmaRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 @Service
@@ -29,15 +30,21 @@ public class LemmaServiceImpl implements LemmaService {
     public List<LemmaEntity> getAllLemmaEntities() {
         return List.of();
     }
+
     @Transactional
     @Override
-    public LemmaEntity getLemmaEntity(int id) {
+    public LemmaEntity getLemmaEntityById(int id) {
       //  synchronized (UtilitiesIndexing.lockLemmaRepository) {
           if (lemmaRepository.findById(id).isPresent()) {
               return lemmaRepository.findById(id).get();
             }
           else throw new RuntimeException("Lemma not found");
 
+    }
+
+    @Override
+    public Optional<Set<LemmaEntity>> getSetLemmaEntityByLemmaWordForm(String lemmaWord) {
+        return lemmaRepository.findByLemmaWord(lemmaWord);
     }
 
     @Transactional
