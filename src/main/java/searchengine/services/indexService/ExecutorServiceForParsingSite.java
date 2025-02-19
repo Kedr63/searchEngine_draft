@@ -6,6 +6,7 @@ import searchengine.dto.ResultResponseError;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
+import searchengine.services.PoolService;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;

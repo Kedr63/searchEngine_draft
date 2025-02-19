@@ -1,18 +1,18 @@
 package searchengine.services.indexService;
 
+import org.jsoup.nodes.Document;
 import searchengine.model.IndexEntity;
 import searchengine.model.LemmaEntity;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
-import searchengine.services.LemmaService;
+import searchengine.services.PoolService;
+import searchengine.services.lemmaService.LemmaService;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LemmaParser {
 
@@ -26,7 +26,7 @@ public class LemmaParser {
         this.poolService = poolService;
     }
 
-    public Map<String, Integer> getLemmaFromContentPage(String contentPage) throws IOException {
+   /* public Map<String, Integer> getLemmaFromContentPage(String contentPage) throws IOException {
         Map<String, Integer> map = new HashMap<>();
       //  String regex = ">([^><]+[^\\s ])</";
         String regex = ">(\\s*[а-яА-Яa-zA-Z\\d:;,.!-]+\\s*[а-яА-Яa-zA-Z\\d\\s:;.,!-]*)<"; // group 1 inner tags > <
@@ -41,13 +41,23 @@ public class LemmaParser {
         }
        // Logger.getLogger(LemmaParser.class.getName()).info("before return - map: " + map);
         return map;
+    }*/
+
+    public Map<String, Integer> getLemmaFromDocumentPage(Document document) throws IOException {
+        Map<String, Integer> mappingLemmaToAmountOnPage = new HashMap<>();
+        String textOfContentFromPage = document.body().text().toLowerCase();
+        extractLemmasFromPageTextForMap(textOfContentFromPage, mappingLemmaToAmountOnPage);
+        return mappingLemmaToAmountOnPage;
     }
 
-    public void extractLemmaFromTextToMap(String text, Map<String, Integer> map) throws IOException {
+
+
+
+   /* public void extractLemmaFromTextToMap(String text, Map<String, Integer> map) throws IOException {
         List<String> wordsText = Arrays.stream(text.split("[^а-яё]")).toList();
         LemmaService lemmaService = poolService.getLemmaService();
         for (String word : wordsText) {
-            if (!word.isBlank() && lemmaService.isValidWord(word) && !isOfficialPartsSpeech(word) && word.length() > 1) {
+            if (!word.isBlank() && lemmaService.hasWordInDictionary(word) && !isOfficialPartsSpeech(word) && word.length() > 1) {
                 String lemma = lemmaService.getNormalBaseFormWord(word);
                 if (map.containsKey(lemma)) {
                     map.put(lemma, map.get(lemma) + 1);
@@ -55,11 +65,31 @@ public class LemmaParser {
                     map.put(lemma, 1);
             }
         }
-    }
+    }*/
+   public void extractLemmasFromPageTextForMap(String text, Map<String, Integer> map) throws IOException {
+       List<String> wordsText = Arrays.stream(text.split("[^а-яё]")).toList();
+       LemmaService lemmaService = poolService.getLemmaService();
+       for (String word : wordsText) {
+           if (word.isBlank() || word.length()==1){
+               continue;
+           }
+           if (!lemmaService.hasWordInDictionary(word)){
+               continue;
+           }
+           if (!isOfficialPartsSpeech(word)){
+               String lemma = lemmaService.getNormalBaseFormWord(word);
+               if (map.containsKey(lemma)) {
+                   map.put(lemma, map.get(lemma) + 1);
+               } else
+                   map.put(lemma, 1);
+           }
+       }
+   }
 
-    private boolean isOfficialPartsSpeech(String word) throws IOException {  // является служебной Частью Речи
-        List<String> valuesForChecking = List.of("МС", "МЕЖД", "ПРЕДЛ", "СОЮЗ", "Н");
-        List<String> stringList = poolService.getLemmaService().getMorphologyForms(word);
+    private boolean isOfficialPartsSpeech(String word) throws IOException {  // является служебной Частью Речи?
+        List<String> valuesForChecking = List.of("МС", "МЕЖД", "ПРЕДЛ", "СОЮЗ", "Н", "ЧАСТ");
+        List<String> stringList = poolService.getLemmaService().getMorphologyFormsInfo(word);
+
         boolean result = false;
         for (String value : valuesForChecking) {
             result = stringList.stream().anyMatch(w -> w.contains(value));
@@ -112,6 +142,20 @@ public class LemmaParser {
             return lemmaEntity;
        // }
     }
+
+ /*   private static String getBaseFormFromNormalForms(String word, List<String> wordNormalForms) {
+        String baseFormWord = "";
+        for (String wordNormalForm : wordNormalForms) {
+            if (wordNormalForm.compareTo(word) == 0) {
+                baseFormWord = wordNormalForm;
+                break;
+            }
+        }
+        if (baseFormWord.isEmpty()) {
+            baseFormWord = wordNormalForms.get(0);
+        }
+        return baseFormWord;
+    }*/
 
 
 }

@@ -6,7 +6,7 @@ import org.mockito.Mockito;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
 import searchengine.repositories.PageRepository;
-import searchengine.services.PageServiceImp;
+import searchengine.services.pageService.PageServiceImp;
 
 import java.util.ArrayList;
 import java.util.Collection;

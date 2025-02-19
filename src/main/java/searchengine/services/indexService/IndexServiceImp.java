@@ -12,7 +12,8 @@ import searchengine.exceptions.NoSuchSiteException;
 import searchengine.exceptions.UtilityException;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
-import searchengine.services.PageService;
+import searchengine.services.pageService.PageService;
+import searchengine.services.PoolService;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;

@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "user-agents-settings")
+@ConfigurationProperties(prefix = "user-agents-settings") // прописанные в файле 'application.yaml' UserAgent-ы появятся в этом объекте
 public class UserAgentList {
 
     private List<UserAgent> userAgents;

@@ -1,4 +1,4 @@
-package searchengine.services;
+package searchengine.services.pageService;
 
 import searchengine.model.PageEntity;
 

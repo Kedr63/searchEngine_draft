@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 import searchengine.model.SiteEntity;
 import searchengine.repositories.SiteRepository;
+import searchengine.services.PoolService;
 
 import java.util.List;
 

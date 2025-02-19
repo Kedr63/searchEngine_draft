@@ -9,11 +9,11 @@ import searchengine.exceptions.NoSuchLemmaForSearchingInContentException;
 import searchengine.exceptions.NoSuchSiteException;
 import searchengine.model.*;
 import searchengine.repositories.IndexEntityLemmaToPageRepository;
-import searchengine.services.IndexEntityService;
-import searchengine.services.LemmaService;
-import searchengine.services.PageService;
+import searchengine.services.indexEntityService.IndexEntityService;
+import searchengine.services.lemmaService.LemmaService;
+import searchengine.services.pageService.PageService;
 import searchengine.services.indexService.LemmaParser;
-import searchengine.services.indexService.PoolService;
+import searchengine.services.PoolService;
 
 import java.io.IOException;
 import java.util.*;
@@ -150,7 +150,7 @@ public class SearchServiceImpl implements SearchService {
         Set<LemmaEntity> lemmaEntitySet = new HashSet<>();
         Map<String, Integer> map = new HashMap<>();
         LemmaParser lemmaParser = new LemmaParser(poolService);
-        lemmaParser.extractLemmaFromTextToMap(textQuery, map);
+        lemmaParser.extractLemmasFromPageTextForMap(textQuery, map);
         Set<String> setLemmaWord = map.keySet();
         LemmaService lemmaService = poolService.getLemmaService();
         for (String lemma : setLemmaWord) {

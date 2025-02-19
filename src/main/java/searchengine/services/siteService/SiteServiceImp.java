@@ -1,4 +1,4 @@
-package searchengine.services;
+package searchengine.services.siteService;
 
 import org.springframework.stereotype.Service;
 import searchengine.model.SiteEntity;

@@ -1,10 +1,10 @@
-package searchengine.services.indexService;
+package searchengine.services;
 
 import searchengine.config.UserAgentList;
-import searchengine.services.IndexEntityService;
-import searchengine.services.LemmaService;
-import searchengine.services.PageService;
-import searchengine.services.SiteService;
+import searchengine.services.indexEntityService.IndexEntityService;
+import searchengine.services.lemmaService.LemmaService;
+import searchengine.services.pageService.PageService;
+import searchengine.services.siteService.SiteService;
 
 public interface PoolService {
 

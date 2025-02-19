@@ -8,14 +8,14 @@ import searchengine.dto.statistics.DetailedStatisticsItem;
 import searchengine.dto.statistics.StatisticsData;
 import searchengine.dto.statistics.StatisticsResponse;
 import searchengine.dto.statistics.TotalStatistics;
-import searchengine.services.SiteService;
-import searchengine.services.indexService.PoolService;
+import searchengine.services.siteService.SiteService;
+import searchengine.services.PoolService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor // добавляет конструктор с аргументами, соответствующими неинициализированным final-полям класса
 public class StatisticsServiceImpl implements StatisticsService {
 
     private final PoolService poolService;

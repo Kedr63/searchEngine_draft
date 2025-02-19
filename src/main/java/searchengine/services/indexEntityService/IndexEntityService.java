@@ -1,4 +1,4 @@
-package searchengine.services;
+package searchengine.services.indexEntityService;
 
 import searchengine.model.IndexEntity;
 

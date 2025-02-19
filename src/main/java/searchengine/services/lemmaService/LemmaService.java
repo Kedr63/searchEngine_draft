@@ -1,4 +1,4 @@
-package searchengine.services;
+package searchengine.services.lemmaService;
 
 import searchengine.model.LemmaEntity;
 
@@ -21,11 +21,11 @@ public interface LemmaService {
 
     int getLemmaId(String lemma, int siteId);
 
-    List<String> getMorphologyForms(String word);
+    List<String> getMorphologyFormsInfo(String word);
 
     String getNormalBaseFormWord(String word);
 
-    boolean isValidWord(String word);
+    boolean hasWordInDictionary(String word);
 
     void deleteAllLemmaEntities();
 

@@ -13,8 +13,9 @@ import searchengine.services.indexService.IndexService;
 import searchengine.services.searchService.SearchService;
 import searchengine.services.statisticService.StatisticsService;
 
-@RestController
-@RequestMapping("/api")
+@RestController  // этот контроллер будет работать по стандарту REST и, в частности, возвращать ответы в формате JSON
+@RequestMapping("/api")  // устанавливает префикс в пути запроса: все запросы, начинающиеся с /api, будут направляться
+// на методы этого контроллера
 public class ApiController {
 
     private final StatisticsService statisticsService;

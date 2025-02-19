@@ -44,8 +44,8 @@ indexing-settings:
 #      name: fitstars.ru
     - url: https://camper-ural.ru
       name: camper-ural
-    - url: https://kemperus.ru
-      name: kemperus
+#    - url: https://kemperus.ru
+#      name: kemperus
 
 
 user-agents-settings:

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
+// эти аннотации приводят к автоматической инициализации объекта этого класса данными из файла "application.yaml"
 @Component
 @ConfigurationProperties(prefix = "indexing-settings")
 public class SitesList {

@@ -17,7 +17,7 @@ public class SiteEntity {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @OneToMany(mappedBy = "site")
+    @OneToMany(mappedBy = "site")  // https://sky.pro/wiki/java/ispolzovanie-mapped-by-v-jpa-i-hibernate-obyasnenie/
     // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c     //  add
     private List<PageEntity> pageEntities;
 

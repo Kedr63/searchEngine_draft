@@ -10,7 +10,8 @@ import searchengine.dto.indexing.DocumentParsed;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
-import searchengine.services.PageService;
+import searchengine.services.pageService.PageService;
+import searchengine.services.PoolService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class HtmlParser extends RecursiveAction {
     private SiteEntity siteEntity;
     private PoolService poolService;
 
-   // public static boolean indexSinglePage;
+    // public static boolean indexSinglePage;
 
     public HtmlParser() {
     }
@@ -59,7 +60,7 @@ public class HtmlParser extends RecursiveAction {
             if (!isPresentPathInPageRepository(localAddressUrl, siteEntity.getId(), poolService.getPageService())) {
                 pageEntity = new PageEntity();
                 pageEntity.setPath(localAddressUrl);
-                pageEntity.setContent("");
+                pageEntity.setContent(""); // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
                 pageEntity.setSiteEntity(siteEntity);
                 poolService.getPageService().savePageEntity(pageEntity);
 //
@@ -93,27 +94,21 @@ public class HtmlParser extends RecursiveAction {
         siteEntity.setStatusTime(LocalDateTime.now());
         poolService.getSiteService().saveSiteEntity(siteEntity);
 
-        if (pageEntity.getCode() == 200) {
-            try {
-                LemmaParser lemmaParser = new LemmaParser(poolService);
-                Map<String, Integer> mapLemma = lemmaParser.getLemmaFromContentPage(pageEntity.getContent());
-                lemmaParser.getLemmaEntitiesAndSaveBD(siteEntity, pageEntity, mapLemma);
-            } catch (IOException | NullPointerException e) {
-                Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx lemma - " + e.getMessage());
-                throw new RuntimeException(e);
-            }
-        }
+        //  searchLemmasInPage(pageEntity, siteEntity, poolService);
+        searchLemmasInPage(documentParsed.getDoc(), pageEntity, siteEntity, poolService);
 
-        if (UtilitiesIndexing.computeIndexingSinglePage){ // при индексации отдельной страницы здесь прервем код
+
+        if (UtilitiesIndexing.computeIndexingSinglePage) { // при индексации отдельной страницы здесь прервем код
             return;
         }
 
 
         List<String> searchLinks = documentParsed.getDoc()
                 .select("body")
-                .select("a[href~=(^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$)|^(/[^A-Z#@?\\.]*)$]")
+                .select("a[href~=^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$]")
                 .stream().map(element -> element.attr("href"))
                 .distinct().toList();
+
         //📌 a[href^=/][href~=(/\w+\z|\w/\z|.html)] - в теге /а/ будет искать href начинающийся на "/", далее href с регулярным
         // выражением ("/" ноль или несколько букв, подчеркивание или цифр (\\w*) и это конец текста (\\z) | или в конце текста / (\w/\z)
         // | или в конце .html
@@ -168,10 +163,10 @@ public class HtmlParser extends RecursiveAction {
 //            Logger.getLogger(HtmlParser.class.getName()).info("1 before throws : throw new HttpFailedConnectionException(ex.getMessage(), ((HttpStatusException) ex).getStatusCode())");
 //
 //        } else {
-      //  Logger.getLogger(HtmlParser.class.getName()).info("1 before throws : " + ex.getCause().getMessage());
+        //  Logger.getLogger(HtmlParser.class.getName()).info("1 before throws : " + ex.getCause().getMessage());
         saveLastErrorInSiteEntity(ex);
-      //  Logger.getLogger(HtmlParser.class.getName()).info("2 before throws : " + ex.getMessage());
-         throw new RuntimeException(ex);
+        //  Logger.getLogger(HtmlParser.class.getName()).info("2 before throws : " + ex.getMessage());
+        throw new RuntimeException(ex);
 
         //    }
     }
@@ -240,8 +235,8 @@ public class HtmlParser extends RecursiveAction {
 
     private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed) {
         pageEntity.setCode(documentParsed.getCode());
-      //  Elements contentPage = documentParsed.getDoc().getAllElements();
-      //  Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
+        //  Elements contentPage = documentParsed.getDoc().getAllElements();
+        //  Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
         Document contentPage = documentParsed.getDoc();
 
         String contentViaString = "" + contentPage;
@@ -279,6 +274,7 @@ public class HtmlParser extends RecursiveAction {
         return  (long) (beginningOfRange + (Math.random() * 4500));
     }
 
+
 //    private void updateSiteEntity(SiteEntity siteEntity, DocumentParsed documentParsed) {
 //        if (documentParsed.getCode() != 200) {
 //            String messageError = String.valueOf(HttpStatus.resolve(documentParsed.getCode()));
@@ -289,4 +285,29 @@ public class HtmlParser extends RecursiveAction {
 //    }
 
 
+    /*private void searchLemmasInPage(PageEntity pageEntity, SiteEntity siteEntity, PoolService poolService) {
+        if (pageEntity.getCode() == 200) {
+            try {
+                LemmaParser lemmaParser = new LemmaParser(poolService);
+                Map<String, Integer> mapLemma = lemmaParser.getLemmaFromContentPage(pageEntity.getContent());
+                lemmaParser.getLemmaEntitiesAndSaveBD(siteEntity, pageEntity, mapLemma);
+            } catch (IOException | NullPointerException e) {
+                Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx lemma - " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }
+    }*/
+
+    private void searchLemmasInPage(Document document, PageEntity pageEntity, SiteEntity siteEntity, PoolService poolService) {
+        if (pageEntity.getCode() == 200) {
+            try {
+                LemmaParser lemmaParser = new LemmaParser(poolService);
+                Map<String, Integer> mapLemma = lemmaParser.getLemmaFromDocumentPage(document);
+                lemmaParser.getLemmaEntitiesAndSaveBD(siteEntity, pageEntity, mapLemma);
+            } catch (IOException | NullPointerException e) {
+                Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx lemma - " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

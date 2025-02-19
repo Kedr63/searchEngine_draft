@@ -1,4 +1,4 @@
-package searchengine.services;
+package searchengine.services.lemmaService;
 
 import org.apache.lucene.morphology.LuceneMorphology;
 import org.springframework.stereotype.Service;
@@ -74,18 +74,32 @@ public class LemmaServiceImpl implements LemmaService {
     }
 
     @Override
-    public List<String> getMorphologyForms(String word) {
+    public List<String> getMorphologyFormsInfo(String word) {
         return luceneMorphology.getMorphInfo(word);
     }
 
     @Override
-    public String getNormalBaseFormWord(String word) {
-        return (luceneMorphology.getNormalForms(word)).get(0);
+    public String getNormalBaseFormWord(String word) {  // выберем более близкую норм.форму из словаря
+        List<String>wordNormalForms= luceneMorphology.getNormalForms(word);
+        String baseFormWord = "";
+        for (String wordNormalForm : wordNormalForms) {
+            if (wordNormalForm.compareTo(word) == 0) {
+                baseFormWord = wordNormalForm;
+                break;
+            }
+        }
+        if (baseFormWord.isEmpty()) {  // это актуально к \word: иди\ (идти|a Г дст,пвл,2л,ед)
+            baseFormWord = wordNormalForms.get(0);
+        }
+        return baseFormWord;
+
+        //return (luceneMorphology.getNormalForms(word)).get(0);
     }
 
     @Override
-    public boolean isValidWord(String word) {
-        return luceneMorphology.checkString(word);
+    public boolean hasWordInDictionary(String word) {
+        return luceneMorphology.checkString(word); // проверяем, является ли строка словом и
+        // принадлежит язык слова выбранному словарю
     }
 
     @Override

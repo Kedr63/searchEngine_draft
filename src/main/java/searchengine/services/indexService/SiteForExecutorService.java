@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
+import searchengine.services.PoolService;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
