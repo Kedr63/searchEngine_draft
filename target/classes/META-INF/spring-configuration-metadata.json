@@ -6,6 +6,11 @@
       "sourceType": "searchengine.config.SitesList"
     },
     {
+      "name": "snippet-searcher",
+      "type": "searchengine.config.SnippetSearcherConfiguration",
+      "sourceType": "searchengine.config.SnippetSearcherConfiguration"
+    },
+    {
       "name": "user-agents-settings",
       "type": "searchengine.config.UserAgentList",
       "sourceType": "searchengine.config.UserAgentList"
@@ -16,6 +21,16 @@
       "name": "indexing-settings.sites",
       "type": "java.util.List<searchengine.config.Site>",
       "sourceType": "searchengine.config.SitesList"
+    },
+    {
+      "name": "snippet-searcher.output-limiter",
+      "type": "java.lang.Integer",
+      "sourceType": "searchengine.config.SnippetSearcherConfiguration"
+    },
+    {
+      "name": "snippet-searcher.regex-searcher",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.SnippetSearcherConfiguration"
     },
     {
       "name": "user-agents-settings.user-agents",

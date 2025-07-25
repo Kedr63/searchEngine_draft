@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import searchengine.dto.ResultResponseError;
+import searchengine.dto.indexing.ResultResponseError;
 import searchengine.dto.indexing.IndexingResponse;
 
 import java.util.Objects;

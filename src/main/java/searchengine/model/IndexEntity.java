@@ -17,15 +17,15 @@ public class IndexEntity {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "page_id")
-    private PageEntity pageEntity;
+    @JoinColumn(name = "page_id", columnDefinition = "INT", nullable = false)
+    private PageEntity page;
 
     @ManyToOne
     // @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "lemma_id")
+    @JoinColumn(name = "lemma_id", columnDefinition = "INT", nullable = false)
     private LemmaEntity lemma;
- 
+
     @Column(columnDefinition = "FLOAT", nullable = false)
-    private int ranting;
+    private float ranting; // было int
 
 }

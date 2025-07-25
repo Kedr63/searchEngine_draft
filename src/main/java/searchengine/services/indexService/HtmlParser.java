@@ -6,12 +6,12 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import searchengine.config.UserAgent;
+import searchengine.dto.dtoToBD.PageDto;
+import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.DocumentParsed;
-import searchengine.model.PageEntity;
-import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
-import searchengine.services.pageService.PageService;
 import searchengine.services.PoolService;
+import searchengine.services.pageService.PageService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 public class HtmlParser extends RecursiveAction {
 
     private String url;
-    private SiteEntity siteEntity;
+    private SiteDto siteDto;
     private PoolService poolService;
 
     // public static boolean indexSinglePage;
@@ -36,9 +36,9 @@ public class HtmlParser extends RecursiveAction {
     public HtmlParser() {
     }
 
-    public HtmlParser(String url, SiteEntity siteEntity, PoolService poolService) {
+    public HtmlParser(String url, SiteDto siteDto, PoolService poolService) {
         this.url = url;
-        this.siteEntity = siteEntity;
+        this.siteDto = siteDto;
         this.poolService = poolService;
     }
 
@@ -51,18 +51,26 @@ public class HtmlParser extends RecursiveAction {
         }
 
         DocumentParsed documentParsed;
-        PageEntity pageEntity;
+        PageDto pageDto;
         List<HtmlParser> tasks = new ArrayList<>();
 
-        String localAddressUrl = extractLocalAddressUrl(url, siteEntity);
+        String localAddressUrl = extractLocalAddressUrl(url, siteDto);
 
         synchronized (UtilitiesIndexing.lockPageRepository) {
-            if (!isPresentPathInPageRepository(localAddressUrl, siteEntity.getId(), poolService.getPageService())) {
-                pageEntity = new PageEntity();
-                pageEntity.setPath(localAddressUrl);
-                pageEntity.setContent(""); // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
-                pageEntity.setSiteEntity(siteEntity);
-                poolService.getPageService().savePageEntity(pageEntity);
+            if (!isPresentPathInPageRepository(localAddressUrl, siteDto.getId(), poolService.getPageService())) {
+                pageDto = new PageDto(); // экспериментирую вместо \new PageDto()\
+                pageDto.setPath(localAddressUrl);
+                pageDto.setContent(""); // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
+                pageDto.setSiteId(siteDto.getId());
+                pageDto = poolService.getPageService().savePageDto(pageDto);
+
+                /* почему то с MapperModel не работает */
+//                pageDto = PageDto.builder()
+//                        .path(localAddressUrl)
+//                        .content("")   // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
+//                        .siteId(siteDto.getId())
+//                        .build(); // экспериментирую вместо \new PageDto()\
+                pageDto = poolService.getPageService().savePageDto(pageDto);
 //
 //                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
                 Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
@@ -79,23 +87,23 @@ public class HtmlParser extends RecursiveAction {
             Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx " + ex.getClass() + " ex ");
 
             synchronized (UtilitiesIndexing.lockPageRepository) {
-                Logger.getLogger(HtmlParser.class.getName()).info("deletePageEntity(pageEntity.getId() = " + pageEntity.getId() + "  " + siteEntity.getName());
-                poolService.getPageService().deletePageById(pageEntity.getId()); //
+                Logger.getLogger(HtmlParser.class.getName()).info("deletePageEntity(pageEntity.getId() = " + pageDto.getId() + "  " + siteDto.getName());
+                poolService.getPageService().deletePageById(pageDto.getId()); //
             }
-            getLastErrorOfException(ex); // из этого метода выбросится new RuntimeException(ex.getMessage(), ex.getCause());
+            getLastErrorOfException(ex); // из этого метода выбросится \new RuntimeException(ex.getMessage(), ex.getCause())\;
             // а если ловили исключение из-за Http, то выполним метод и остановим код с помощью return
             return;
         }
 
         // TODO определить как контент заполняет pageEntity
         // и далее заполним pageEntity остальными данными, если нет IOException
-        fillPageEntityAndSaveBD(pageEntity, documentParsed);
+        fillPageDtoAndSaveBD(pageDto, documentParsed);
 
-        siteEntity.setStatusTime(LocalDateTime.now());
-        poolService.getSiteService().saveSiteEntity(siteEntity);
+        siteDto.setStatusTime(LocalDateTime.now());
+        siteDto = poolService.getSiteService().saveSiteDto(siteDto);
 
         //  searchLemmasInPage(pageEntity, siteEntity, poolService);
-        searchLemmasInPage(documentParsed.getDoc(), pageEntity, siteEntity, poolService);
+        getLemmasFromPage(documentParsed.getDoc(), pageDto, siteDto, poolService);
 
 
         if (UtilitiesIndexing.computeIndexingSinglePage) { // при индексации отдельной страницы здесь прервем код
@@ -120,13 +128,13 @@ public class HtmlParser extends RecursiveAction {
         for (String link : searchLinks) {
             synchronized (UtilitiesIndexing.lockPageRepository) {
                 // если такая ссылка link есть в БД, то переходим к следующему элементу цикла
-                if (isPresentPathInPageRepository(extractLocalAddressUrl(link, siteEntity), siteEntity.getId(), poolService.getPageService())) {
+                if (isPresentPathInPageRepository(extractLocalAddressUrl(link, siteDto), siteDto.getId(), poolService.getPageService())) {
                     continue;
                 }
             }
 
-            String fullHref = siteEntity.getUrl() + extractLocalAddressUrl(link, siteEntity);
-            HtmlParser task = new HtmlParser(fullHref, siteEntity, poolService);
+            String fullHref = siteDto.getUrl() + extractLocalAddressUrl(link, siteDto);
+            HtmlParser task = new HtmlParser(fullHref, siteDto, poolService);
 
             task.fork();
             tasks.add(task);
@@ -146,10 +154,13 @@ public class HtmlParser extends RecursiveAction {
 //        }
     }
 
-    private String extractLocalAddressUrl(String url, SiteEntity siteEntity) {
+    private String extractLocalAddressUrl(String url, SiteDto siteDto) {
         String localAddressUrl = "";
-        String urlServer = siteEntity.getUrl();
+        String urlServer = siteDto.getUrl();
         localAddressUrl = url.replace(urlServer, "");
+        if (localAddressUrl.endsWith("/")) {
+            localAddressUrl = localAddressUrl.substring(0, localAddressUrl.length() - 1);
+        }
         if (localAddressUrl.isEmpty()) {
             localAddressUrl = "/";
         }
@@ -172,9 +183,9 @@ public class HtmlParser extends RecursiveAction {
     }
 
     private void saveLastErrorInSiteEntity(Exception ex) {
-        siteEntity.setLastError(ex.getClass() + " - " + ex.getMessage());
-        siteEntity.setStatus(StatusIndex.FAILED);
-        poolService.getSiteService().saveSiteEntity(siteEntity);
+        siteDto.setLastError(ex.getClass() + " - " + ex.getMessage() + " - сайт - " + siteDto.getUrl());
+        siteDto.setStatusIndex(StatusIndex.FAILED);
+        poolService.getSiteService().saveSiteDto(siteDto);
     }
 
 
@@ -216,35 +227,32 @@ public class HtmlParser extends RecursiveAction {
 
         if (code == 200) {
             doc = response.parse();
-            documentParsed.setDoc(doc);
-            documentParsed.setCode(code);
         } else {
             doc = new Document(url);
             // String errorMessage = response.statusMessage();
             // code = response.map(Connection.Response::statusCode).orElse(404);
             Logger.getLogger(HtmlParser.class.getName()).info("ошибка HttpErrors в: " + url + " code " + code);
-
-            documentParsed.setDoc(doc);
-            documentParsed.setCode(code);
             // documentParsed.setErrorMessage(response.statusMessage());
         }
+        documentParsed.setDoc(doc);
+        documentParsed.setCode(code);
         //  documentParsed = new DocumentParsed(doc, code);
         return documentParsed;
     }
 
 
-    private void fillPageEntityAndSaveBD(PageEntity pageEntity, DocumentParsed documentParsed) {
-        pageEntity.setCode(documentParsed.getCode());
+    private void fillPageDtoAndSaveBD(PageDto pageDto, DocumentParsed documentParsed) {
+        pageDto.setCode(documentParsed.getCode());
         //  Elements contentPage = documentParsed.getDoc().getAllElements();
         //  Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
         Document contentPage = documentParsed.getDoc();
 
         String contentViaString = "" + contentPage;
         String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " "); // очистим String от смайликов в тексте (https://sky.pro/wiki/java/udalenie-emodzi-i-znakov-iz-strok-na-java-reshenie/)
-        pageEntity.setContent(cleanContent);
+        pageDto.setContent(cleanContent);
         PageService pageService = poolService.getPageService();
         synchronized (UtilitiesIndexing.lockPageRepository) {
-            pageService.savePageEntity(pageEntity);
+           PageDto savedPageDto = pageService.savePageDto(pageDto);
         }
     }
 
@@ -298,12 +306,12 @@ public class HtmlParser extends RecursiveAction {
         }
     }*/
 
-    private void searchLemmasInPage(Document document, PageEntity pageEntity, SiteEntity siteEntity, PoolService poolService) {
-        if (pageEntity.getCode() == 200) {
+    private void getLemmasFromPage(Document document, PageDto pageDto, SiteDto siteDto, PoolService poolService) {
+        if (pageDto.getCode() == 200) {
             try {
                 LemmaParser lemmaParser = new LemmaParser(poolService);
-                Map<String, Integer> mapLemma = lemmaParser.getLemmaFromDocumentPage(document);
-                lemmaParser.getLemmaEntitiesAndSaveBD(siteEntity, pageEntity, mapLemma);
+                Map<String, Integer> mapLemma = lemmaParser.getLemmasFromDocumentPage(document);
+                lemmaParser.getLemmaDtoAndSaveBD(siteDto, pageDto, mapLemma);
             } catch (IOException | NullPointerException e) {
                 Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx lemma - " + e.getMessage());
                 throw new RuntimeException(e);

@@ -32,6 +32,6 @@ public interface PageRepository extends JpaRepository<PageEntity, Integer> {
     Optional<Integer> findIdByPageUrlAndIdSite(String pageLocalUrl, int idSiteEntity);
 
 
-    @Query(value = "select count(*) FROM page WHERE site_id=:idSiteEntity", nativeQuery = true)
-    int getCountPagesWhereSiteId(int idSiteEntity);
+    @Query(value = "select count(*) FROM page WHERE site_id=:idSiteDto", nativeQuery = true)
+    int getCountPagesWhereSiteId(int idSiteDto);
 }

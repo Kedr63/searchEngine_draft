@@ -13,6 +13,9 @@ import searchengine.services.indexService.IndexService;
 import searchengine.services.searchService.SearchService;
 import searchengine.services.statisticService.StatisticsService;
 
+// @RestController = @Controller + @ResponseBody. Аннотация @Controller умеет слушать, получать и отвечать на запросы.
+// Аннотация @ResponseBody  дает фреймворку понять, что объект, который вы вернули из метода надо прогнать через HttpMessageConverter,
+// чтобы получить готовое к отправке клиенту представление
 @RestController  // этот контроллер будет работать по стандарту REST и, в частности, возвращать ответы в формате JSON
 @RequestMapping("/api")  // устанавливает префикс в пути запроса: все запросы, начинающиеся с /api, будут направляться
 // на методы этого контроллера
@@ -55,8 +58,10 @@ public class ApiController {
 
     // метод POST - Способ передачи данных: В теле HTTP-запроса
     @PostMapping(value = "/indexPage",
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE}) // из формы браузера приходит запрос K-V: \ url	"https://kemperus.ru/special_camper" \
-    public ResponseEntity<IndexingResponse> indexPage(@RequestParam MultiValueMap<String,String> paramMap) { // и здесь в контроллере декодируем адрес страницы в строку
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    // из формы браузера приходит запрос K-V: \ url	"https://kemperus.ru/special_camper" \ (например)
+    public ResponseEntity<IndexingResponse> indexPage(@RequestParam MultiValueMap<String,String> paramMap) {
+        // и здесь в контроллере декодируем адрес страницы в строку
         String page = paramMap.get("url").get(0);
         IndexingResponse indexingResponse = indexService.indexSinglePage(page);
         return new ResponseEntity<>(indexingResponse, HttpStatus.OK);

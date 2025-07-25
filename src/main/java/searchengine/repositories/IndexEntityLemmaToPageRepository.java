@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import searchengine.model.IndexEntity;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface IndexEntityLemmaToPageRepository extends JpaRepository<IndexEntity, Integer> {
@@ -16,8 +17,7 @@ public interface IndexEntityLemmaToPageRepository extends JpaRepository<IndexEnt
 
     @Modifying // без этой аннотации не сработает запрос на изменение таблицы
     @Query(value = "delete FROM search_engine.index_search", nativeQuery = true)
-    void deleteAllIndexLemmaEntity();
-
+    void deleteAllIndexEntity();
 
     @Modifying
     @Query(value = "delete from search_engine.index_search where page_id =:pageId", nativeQuery = true)
@@ -27,5 +27,11 @@ public interface IndexEntityLemmaToPageRepository extends JpaRepository<IndexEnt
     List<Integer> findIdLemmaByIdPage(int idPage);
 
     @Query(value = "select * from search_engine.index_search where lemma_id=:lemmaId", nativeQuery = true)
-    List<IndexEntity> findIndexEntityBy(int lemmaId);
+    Set<IndexEntity> findIndexEntityBy(int lemmaId);
+
+    @Query(value = "select page_id from index_search where lemma_id=:lemmaId", nativeQuery = true)
+    Set<Integer> findPageIdByLemmaId(int lemmaId);
+
+    @Query(value = "SELECT ranting FROM search_engine.index_search where lemma_id=:lemmaId and page_id=:pageId", nativeQuery = true)
+    float findRankByLemmaIdAndPageId(int lemmaId, int pageId);
 }

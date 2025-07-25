@@ -1,5 +1,6 @@
 package searchengine.services.lemmaService;
 
+import searchengine.dto.dtoToBD.LemmaDto;
 import searchengine.model.LemmaEntity;
 
 import java.util.List;
@@ -11,15 +12,15 @@ public interface LemmaService {
 
     List<LemmaEntity> getAllLemmaEntities();
 
-    LemmaEntity getLemmaEntityById(int id);
+    LemmaDto getLemmaDtoById(int id);
 
-    Optional<Set<LemmaEntity>> getSetLemmaEntityByLemmaWordForm(String lemmaWord);
+    Set<LemmaDto> getSetLemmaDtoByLemmaWordForm(String lemmaWord);
 
-    void saveLemmaEntity(LemmaEntity lemmaEntity);
+    LemmaDto saveLemmaDto(LemmaDto lemmaDto);
 
     boolean isPresentLemmaEntity(String lemma, int siteId);
 
-    int getLemmaId(String lemma, int siteId);
+    Optional<Integer> getLemmaId(String lemma, int siteId);
 
     List<String> getMorphologyFormsInfo(String word);
 

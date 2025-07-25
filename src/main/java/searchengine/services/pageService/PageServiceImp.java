@@ -1,6 +1,9 @@
 package searchengine.services.pageService;
 
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import searchengine.dto.dtoToBD.PageDto;
 import searchengine.model.PageEntity;
 import searchengine.repositories.PageRepository;
 
@@ -10,14 +13,17 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
+@RequiredArgsConstructor
 public class PageServiceImp implements PageService {
 
     private final PageRepository pageRepository;
-  //  private final IndexEntityService indexEntityService;
+    //  private final IndexEntityService indexEntityService;
+    private final ModelMapper modelMapper;
+//    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public PageServiceImp(PageRepository pageRepository) {
-        this.pageRepository = pageRepository;
-    }
+//    public PageServiceImp(PageRepository pageRepository) {
+//        this.pageRepository = pageRepository;
+//    }
 
     @Override
     @Transactional
@@ -27,21 +33,34 @@ public class PageServiceImp implements PageService {
 
     @Override
     @Transactional
-    public void savePageEntity(PageEntity pageEntity) {
-
-        pageRepository.save(pageEntity);
-
+    public PageDto savePageDto(PageDto pageDto) {
+        PageEntity pageEntity = modelMapper.map(pageDto, PageEntity.class);
+        PageEntity savedPageEntity = pageRepository.save(pageEntity);
+        return modelMapper.map(savedPageEntity, PageDto.class);
     }
+
+//    @Override
+//    @Transactional
+//    public PageEntity getPageEntityById(int id) {
+//        PageEntity pageEntity = null;
+//        Optional<PageEntity> optional = pageRepository.findById(id);
+//        if (optional.isPresent()) {
+//            pageEntity = optional.get();
+//        }
+//        return pageEntity;
+//    }
 
     @Override
     @Transactional
-    public PageEntity getPageEntityById(int id) {
-        PageEntity pageEntity = null;
+    public PageDto getPageDtoById(int id) {
+        PageDto pageDto = new PageDto();
         Optional<PageEntity> optional = pageRepository.findById(id);
         if (optional.isPresent()) {
-            pageEntity = optional.get();
+            pageDto = modelMapper.map(optional.get(), PageDto.class);
+        } else{
+            pageDto.setId(0);
         }
-        return pageEntity;
+        return pageDto;
     }
 
     @Override
@@ -54,7 +73,7 @@ public class PageServiceImp implements PageService {
     @Override
     @Transactional
     public void deletePageById(int id) {
-     //   indexEntityService.deleteIndexEntityWherePageId(id);
+        //   indexEntityService.deleteIndexEntityWherePageId(id);
         pageRepository.deleteById(id);
     }
 
@@ -81,14 +100,14 @@ public class PageServiceImp implements PageService {
     @Override
     @Transactional
     public int getIdPageEntity(String pageLocalUrl, int idSiteEntity) {
-       Optional<Integer> idOptional = pageRepository.findIdByPageUrlAndIdSite(pageLocalUrl, idSiteEntity);
-       return idOptional.orElse(0);
+        Optional<Integer> idOptional = pageRepository.findIdByPageUrlAndIdSite(pageLocalUrl, idSiteEntity);
+        return idOptional.orElse(0);
     }
 
     @Override
     @Transactional
-    public int getCountPagesOfSite(int idSiteEntity) {
-        return pageRepository.getCountPagesWhereSiteId(idSiteEntity);
+    public int getCountPagesOfSite(int idSiteDto) {
+        return pageRepository.getCountPagesWhereSiteId(idSiteDto);
     }
 
 }

@@ -1,22 +1,26 @@
 package searchengine.services.siteService;
 
+import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.model.SiteEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SiteService {
 
-    List<SiteEntity> getAllSiteEntities();
+    List<SiteDto> getAllSiteDto();
 
-    void saveSiteEntity(SiteEntity siteEntity);
+    SiteDto saveSiteDto(SiteDto siteDto);
 
     SiteEntity getSiteEntity(int id);
+
+    Optional<SiteDto> getSiteDto(int id);
 
     void deleteSiteEntity(int id);
 
     void deleteAllSiteEntity();
 
-    SiteEntity getSiteEntityByUrl(String url);
+    Optional<SiteDto> getSiteDtoByUrl(String url);
 
     int getIdSiteEntityByUrl(String siteBaseUrl);
 }

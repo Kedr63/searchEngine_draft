@@ -1,5 +1,6 @@
 package searchengine.services.pageService;
 
+import searchengine.dto.dtoToBD.PageDto;
 import searchengine.model.PageEntity;
 
 import java.util.List;
@@ -8,9 +9,11 @@ public interface PageService {
 
     List<PageEntity> getAllPageEntities();
 
-    void savePageEntity(PageEntity pageEntity);
+    PageDto savePageDto(PageDto pageDto);
 
-    PageEntity getPageEntityById(int id);
+ //   PageEntity getPageEntityById(int id);
+
+    PageDto getPageDtoById(int id);
 
     boolean isPresentPageEntityWithThatPath(String path, int siteId);
 
@@ -22,5 +25,5 @@ public interface PageService {
 
     int getIdPageEntity(String pageLocalUrl, int idSiteEntity);
 
-    int getCountPagesOfSite(int idSiteEntity);
+    int getCountPagesOfSite(int idSiteDto);
 }

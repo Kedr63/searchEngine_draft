@@ -3,9 +3,12 @@ package searchengine.services.indexService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
+import searchengine.dto.dtoToBD.PageDto;
 import searchengine.model.PageEntity;
 import searchengine.model.SiteEntity;
 import searchengine.repositories.PageRepository;
+import searchengine.services.pageService.PageService;
 import searchengine.services.pageService.PageServiceImp;
 
 import java.util.ArrayList;
@@ -19,13 +22,13 @@ import static org.mockito.Mockito.*;
 public class PageServiceImplTest {
 
     private final PageRepository pageRepository = Mockito.mock(PageRepository.class); // будет иммитировать настоящий репо
-
-    private final PageServiceImp pageServiceImp = new PageServiceImp(pageRepository);
+    private final ModelMapper modelMapper= new ModelMapper();
+    private final PageService pageService = new PageServiceImp(pageRepository, modelMapper);
 
 
     @Test
     @DisplayName("Test getPageById")
-    public void testGetPageEntityById() {
+    public void testGetPageDtoById() {
         int pageId = 1;
         PageEntity pageEntity = new PageEntity();
         pageEntity.setId(pageId);
@@ -33,10 +36,12 @@ public class PageServiceImplTest {
         pageEntity.setPath("/some/path");
        // pageRepository.save(pageEntity);  так уже здесь не пишем (не save), т.к. \pageEntity\ уже окажется в \pageRepository\
         when(pageRepository.findById(pageId)).thenReturn(Optional.of(pageEntity)); // когда вызывается метод findById - тогда он должен вернуть \Optional.of(page)\
-        PageEntity pageEntityDto = pageServiceImp.getPageEntityById(pageId);
-        assertEquals(pageId, pageEntityDto.getId());
+        PageDto pageDto = pageService.getPageDtoById(pageId);
+        assertEquals(pageId, pageDto.getId());
         verify(pageRepository, times(1)).findById(pageId); // проверяем что метод был вызван 1 раз с аргументом \pageId\,
         // и убеждаемся что реально был вызван метод
+
+
     }
 
     @Test
@@ -49,7 +54,7 @@ public class PageServiceImplTest {
         pageEntity.setPath("/some/path");
         pageEntities.add(pageEntity);
         when(pageRepository.findAll()).thenReturn(pageEntities);
-        Collection<PageEntity> pageEntityList = pageServiceImp.getAllPageEntities();
+        Collection<PageEntity> pageEntityList = pageService.getAllPageEntities();
         assertEquals(pageEntities.size(), pageEntityList.size());
         verify(pageRepository, times(1)).findAll();
     }
@@ -66,7 +71,7 @@ public class PageServiceImplTest {
         SiteEntity siteEntity = new SiteEntity();
         siteEntity.setId(siteId);
         when(pageRepository.findIdByPageUrlAndIdSite(pageEntity.getPath(), siteId)).thenReturn(Optional.of(pageId));
-        int pageDto = pageServiceImp.getIdPageEntity(pageEntity.getPath(), siteEntity.getId());
+        int pageDto = pageService.getIdPageEntity(pageEntity.getPath(), siteEntity.getId());
         assertEquals(pageId, pageDto);
         verify(pageRepository, times(1)).findIdByPageUrlAndIdSite(pageEntity.getPath(), siteId);
     }
@@ -75,7 +80,7 @@ public class PageServiceImplTest {
     @DisplayName("Test deletePageById")
     public void testDeletePageById() {
         int pageId = 1;
-        pageServiceImp.deletePageById(pageId);
+        pageService.deletePageById(pageId);
         verify(pageRepository, times(1)).deleteById(pageId); // здесь просто убеждаемся что у
         // репозитория вызывается данный метод
     }

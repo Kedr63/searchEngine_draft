@@ -1,29 +1,33 @@
 package searchengine.services.searchService;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import searchengine.dto.searching.SearchQuery;
-import searchengine.dto.searching.SearchingResponse;
+import org.springframework.stereotype.Component;
+import searchengine.dto.dtoToBD.IndexDto;
+import searchengine.dto.dtoToBD.LemmaDto;
+import searchengine.dto.dtoToBD.SiteDto;
+import searchengine.dto.searching.*;
 import searchengine.exceptions.EmptyQuerySearchingException;
 import searchengine.exceptions.NoSuchLemmaForSearchingInContentException;
 import searchengine.exceptions.NoSuchSiteException;
-import searchengine.model.*;
+import searchengine.model.StatusIndex;
 import searchengine.repositories.IndexEntityLemmaToPageRepository;
+import searchengine.services.PoolService;
 import searchengine.services.indexEntityService.IndexEntityService;
+import searchengine.services.indexService.LemmaParser;
 import searchengine.services.lemmaService.LemmaService;
 import searchengine.services.pageService.PageService;
-import searchengine.services.indexService.LemmaParser;
-import searchengine.services.PoolService;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class SearchServiceImpl implements SearchService {
 
-    private final PoolService poolService;
     private final IndexEntityLemmaToPageRepository indexEntityLemmaToPageRepository;
+    private final PoolService poolService;
+
+  //  private final SnippetSearcherConfiguration snippetSearcherConfiguration;
 
     @Value("${errorSearchNotIndexedSite}")
     private String errorSearchNotIndexedSite;
@@ -34,11 +38,11 @@ public class SearchServiceImpl implements SearchService {
 
     @Value("${offset}")
     private int offsetResultSearching;
-    @Value(("${limit}"))
+    @Value("${limit}")
     private int limitResultSearching;
 
     @Value("${percentageAllowedNumberOfPages}")
-    private static double percentageAllowedNumberOfPages;
+    private double percentageAllowedNumberOfPages;
 
     public SearchServiceImpl(PoolService poolService, IndexEntityLemmaToPageRepository indexEntityLemmaToPageRepository) {
         this.poolService = poolService;
@@ -46,129 +50,171 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public SearchingResponse search(SearchQuery query) {
-        String textQuery = query.getQuery();
-        query.setOffset(offsetResultSearching);
-        query.setLimit(limitResultSearching);
-
-        Set<LemmaEntity> lemmaEntitySetForSearch;
+    public SearchingResponse search(SearchQuery searchQuery) {
+        String textQuery = searchQuery.getQuery();
+        searchQuery.setOffset(offsetResultSearching);
+        searchQuery.setLimit(limitResultSearching);
 
         if (textQuery.isEmpty()) {
             throw new EmptyQuerySearchingException(errorSearchQueryEmpty);
         }
+        // get list sites where we'll look for lemmas (if site not defined in form browser, then searching in sites with status "INDEXED")
+        List<SiteDto> siteDtoListForSearching = getSitesWhereSearchingForLemmas(searchQuery);
 
-        List<SiteEntity> siteEntityListForSearching = getSitesToSearchForLemmas(poolService, query);
-
+        // нужно получить lemmaDto чтоб применить данные по frequency (кол-во стр на которых слово встр-ся) и siteId, id
+        Set<LemmaDto> lemmaDtoSetFromSearchQuery;
         try {
-            lemmaEntitySetForSearch = getLemmaEntitiesFromQuery(textQuery);
-            if (lemmaEntitySetForSearch.isEmpty()) {
+            lemmaDtoSetFromSearchQuery = getLemmaDtoFromQuery(textQuery);
+            if (lemmaDtoSetFromSearchQuery.isEmpty()) {
                 throw new NoSuchLemmaForSearchingInContentException(errorSearchLemmaInContent);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        //TODO определить суммарное количество страниц сайта, и если лемма находится более чем на 70% страниц от общей суммы,
-        // то удалить лемму из поиска. Готово ниже, протестировать
+        //TODO определить суммарное количество страниц сайта, и если лемма находится, например, более чем на 70% (подобрать %) страниц
+        // от общей суммы,то удалить лемму из поиска. Готово ниже, протестировать
 
-        removeLemmasThatOftenFoundOnLargeNumberOfPages(lemmaEntitySetForSearch, siteEntityListForSearching, poolService);
-
-        Map<Integer, Set<LemmaEntity>> siteId2LemmaEntitySetSorted = new HashMap<>();
-        for (LemmaEntity lemmaEntity : lemmaEntitySetForSearch) {
-            //        siteId2LemmaEntitySetSorted.put(lemmaEntity.getSite(), );
+        Set<LemmaDto> lemmaDtoSetFilteredFromFrequentOccurrenceOnPages =
+                removeLemmasThatOftenFoundOnLargeNumberOfPages(lemmaDtoSetFromSearchQuery, siteDtoListForSearching);
+        if (lemmaDtoSetFilteredFromFrequentOccurrenceOnPages.isEmpty()) {
+            throw new NoSuchLemmaForSearchingInContentException(errorSearchLemmaInContent);
         }
-        //   for(Map.Entry<Integer, Set<LemmaEntity>> entry : siteId2LemmaEntitySetSorted.entrySet());
 
-        Set<LemmaEntity> lemmaEntitiesSetSorted = lemmaEntitySetForSearch.stream()
-                .sorted(Comparator.comparing(LemmaEntity::getFrequency))
+        Set<LemmaDto> lemmaDtoSetSortedByAscendingFrequency = lemmaDtoSetFilteredFromFrequentOccurrenceOnPages.stream()
+                .sorted(Comparator.comparing(LemmaDto::getFrequency))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        List<PageEntity> pageEntityListForSearching = new ArrayList<>();
-        IndexEntityService indexEntityService = poolService.getIndexEntityService();
+        // TODO найти страницы где леммы встречаются
+        Set<PageIdInteger> pageIdSetForSearchingWhereAllLemmasFind = getPageSetWhereLemmasFind(lemmaDtoSetSortedByAscendingFrequency);
 
+        // TODO Ищем релевантности
+        RelevanceCalculator relevanceCalculator = new RelevanceCalculator(poolService);
+        Map<PageIdInteger, RelativeRelevanceFloater> pageToRelativeRelevanceSortedByDescRelevanceMap =
+                relevanceCalculator.getCalculatedPageRelevance(pageIdSetForSearchingWhereAllLemmasFind, lemmaDtoSetSortedByAscendingFrequency);
+
+        // конец заглушки
+
+        // IndexEntityService indexEntityService = poolService.getIndexEntityService();
         // List<IndexEntity> indexEntityList = new ArrayList<>();
 
-        List<IndexEntity> indexEntityList = getIndexEntityListFromPageWhereLemmaEntities(lemmaEntitiesSetSorted, indexEntityService);
+        //   Set<IndexDto> setIndexDto = getIndexDtoListFromPageWhereLemmaDto(setLemmaDtoSorted, indexEntityService);
 
 //        for (LemmaEntity lemmaEntity : lemmaEntitiesSetSorted) {
 //            indexEntityList = indexEntityService.getIndexEntityListByLemmaId(lemmaEntity.getId());
 //
 //        }
 
-        return null;
+        return getSearchingResponse(lemmaDtoSetSortedByAscendingFrequency, pageToRelativeRelevanceSortedByDescRelevanceMap);
     }
 
-    private List<IndexEntity> getIndexEntityListFromPageWhereLemmaEntities(Set<LemmaEntity> lemmaEntitiesSetSorted, IndexEntityService indexEntityService) {
-        List<IndexEntity> indexEntityListResult = new ArrayList<>();
-        int setSize = lemmaEntitiesSetSorted.size();
-        for (int i = 0; i < setSize; i++) {
-            LemmaEntity lemmaEntity = lemmaEntitiesSetSorted.stream().toList().get(i);
-            if (i == 0) {
-                indexEntityListResult = indexEntityService.getIndexEntityListByLemmaId(lemmaEntity.getId());
+    private SearchingResponse getSearchingResponse(Set<LemmaDto> lemmaDtoSortedAscFrequencySet, Map<PageIdInteger, RelativeRelevanceFloater> pageIdToRelativeRelevanceSortedMap) {
+        SearchingResultParser searchingResultParser
+                = new SearchingResultParser(lemmaDtoSortedAscFrequencySet, pageIdToRelativeRelevanceSortedMap, poolService);
+        List<SearchingResult> searchResultList = searchingResultParser.getSearchResultList(limitResultSearching);
+
+        SearchingResponse searchingResponse = new SearchingResponse();
+        searchingResponse.setResult(true);
+        searchingResponse.setCount(searchResultList.size());
+        searchingResponse.setData(searchResultList);
+        return searchingResponse;
+    }
+
+
+    private Set<PageIdInteger> getPageSetWhereLemmasFind(Set<LemmaDto> setLemmaDtoSorted) {
+        Set<PageIdInteger> setPageIdIntegerForSearching = new HashSet<>();
+        IndexEntityService indexEntityService = poolService.getIndexEntityService();
+        // По первой, самой редкой лемме из списка, находить все страницы, на которых она встречается.
+        // Далее искать соответствия следующей леммы из этого списка страниц, а затем повторять операцию по каждой следующей лемме.
+        // Список страниц при этом на каждой итерации должен уменьшаться
+        for (int i = 0; i < setLemmaDtoSorted.size(); i++) {
+            LemmaDto lemmaDto = setLemmaDtoSorted.stream().toList().get(i);
+            if (i == 0) { // так получим PageSet (он основа) по самой редкой лемме
+                setPageIdIntegerForSearching = indexEntityService.getPageIdSetByLemmaId(lemmaDto.getId());
             }
             if (i != 0) {
-                List<IndexEntity> tempList = new ArrayList<>(indexEntityListResult);
-                indexEntityListResult.clear();
-                for (IndexEntity indexEntity : indexEntityService.getIndexEntityListByLemmaId(lemmaEntity.getId())) {
-                    for (IndexEntity tempIndexEntity : tempList) {
-                        int siteId = indexEntity.getLemma().getSite().getId();
-                        int pageId = indexEntity.getPageEntity().getId();
-
-                    }
-                }
-
-
+                Set<PageIdInteger> setPageIdTemp = indexEntityService.getPageIdSetByLemmaId(lemmaDto.getId());
+                setPageIdIntegerForSearching.retainAll(setPageIdTemp); // .retain оставляет в setPageIdForSearching все (Э),
+                // которые есть в setPageIdTemp
             }
         }
-        return indexEntityListResult;
+        return setPageIdIntegerForSearching; // список страниц на которых есть все леммы указанные в setLemmaDtoSorted
+    }
+
+    // пока не тот вариант (может быть удалить)
+    private Set<IndexDto> getIndexDtoListFromPageWhereLemmaDto(Set<LemmaDto> lemmaDtoSetSorted, IndexEntityService indexEntityService) {
+        Set<IndexDto> setIndexDtoResult = new HashSet<>();
+        int setSize = lemmaDtoSetSorted.size();
+        for (int i = 0; i < setSize; i++) {
+            LemmaDto lemmaDto = lemmaDtoSetSorted.stream().toList().get(i);
+            if (i == 0) {
+                setIndexDtoResult = indexEntityService.getSetIndexDtoByLemmaId(lemmaDto.getId());
+            }
+            if (i != 0) {
+                Set<IndexDto> setIndexDtoNext = indexEntityService.getSetIndexDtoByLemmaId(lemmaDto.getId());
+                Set<IndexDto> tempSet = new HashSet<>(setIndexDtoResult);
+                tempSet.retainAll(setIndexDtoNext);
+                setIndexDtoResult.clear();
+                setIndexDtoResult.addAll(tempSet);
+//                for (IndexDto indexDto : indexEntityService.getSetIndexDtoByLemmaId(lemmaDto.getId())) {
+//                    for (IndexDto tempIndexEntity : tempSet) {
+//                     //   int siteId = indexDto.getLemmaId().getSite().getId();
+//                       // int pageId = indexDto.getPageEntity().getId();
+//
+//                    }
+//                }
+            }
+        }
+        return setIndexDtoResult;
     }
 
 
-    private List<SiteEntity> getSitesToSearchForLemmas(PoolService poolService, SearchQuery query) {
-        List<SiteEntity> siteEntityListForSearching = new ArrayList<>();
+    private List<SiteDto> getSitesWhereSearchingForLemmas(SearchQuery searchQuery) {
+        List<SiteDto> ListSiteDtoForSearching = new ArrayList<>();
 
-        List<SiteEntity> siteEntityIndexedList = poolService.getSiteService().getAllSiteEntities()
+        List<SiteDto> ListSiteDtoThatHasIndexedStatus = poolService.getSiteService().getAllSiteDto()
                 .stream()
-                .filter(siteEntity -> siteEntity.getStatus().equals(StatusIndex.INDEXED)).toList();
-        if (siteEntityIndexedList.isEmpty()) {
+                .filter(siteDto -> siteDto.getStatusIndex().equals(StatusIndex.INDEXED)).toList();
+        if (ListSiteDtoThatHasIndexedStatus.isEmpty()) {
             throw new NoSuchSiteException(errorSearchNotIndexedSite);
         }
-        if (query.getSite() != null) {
-            for (SiteEntity siteEntity : siteEntityIndexedList) {
-                if (siteEntity.getUrl().compareTo(query.getSite()) == 0) {
-                    siteEntityListForSearching.add(siteEntity);
+        if (searchQuery.getSite() != null) {  // если в форме задан сайт для поиска
+            for (SiteDto siteDto : ListSiteDtoThatHasIndexedStatus) {
+                if (siteDto.getUrl().compareTo(searchQuery.getSite()) == 0) {
+                    ListSiteDtoForSearching.add(siteDto);
                     break;
                 }
             }
-        } else
-            siteEntityListForSearching = siteEntityIndexedList.stream().toList();
+        } else  // если не указан ни один сайт. то ищем по всем индексированным сайтам
+            ListSiteDtoForSearching = ListSiteDtoThatHasIndexedStatus.stream().toList();
 
-        return siteEntityListForSearching;
+        return ListSiteDtoForSearching;
     }
 
-    private Set<LemmaEntity> getLemmaEntitiesFromQuery(String textQuery) throws IOException {
-        Set<LemmaEntity> lemmaEntitySet = new HashSet<>();
-        Map<String, Integer> map = new HashMap<>();
+    private Set<LemmaDto> getLemmaDtoFromQuery(String textQuery) throws IOException {
+        Set<LemmaDto> setLemmaDto = new HashSet<>();
+        // Map<String, Integer> tempMap;
         LemmaParser lemmaParser = new LemmaParser(poolService);
-        lemmaParser.extractLemmasFromPageTextForMap(textQuery, map);
-        Set<String> setLemmaWord = map.keySet();
+        /* универсальный метод: применим его, поэтому пришлось создать map */
+        Map<String, Integer> tempMap = lemmaParser.extractFutureLemmasFromTextForMap(textQuery);
+        Set<String> setLemmaWordFromMap = tempMap.keySet();
         LemmaService lemmaService = poolService.getLemmaService();
-        for (String lemma : setLemmaWord) {
-            Optional<Set<LemmaEntity>> lemmaEntitySetForAdd = lemmaService.getSetLemmaEntityByLemmaWordForm(lemma);
-
-            lemmaEntitySetForAdd.ifPresent(lemmaEntitySet::addAll);
+        for (String lemma : setLemmaWordFromMap) {
+            Set<LemmaDto> setLemmaDtoForAdd = lemmaService.getSetLemmaDtoByLemmaWordForm(lemma);
+            setLemmaDto.addAll(setLemmaDtoForAdd);
         }
-        return lemmaEntitySet;
+        return setLemmaDto;
     }
 
-    private void removeLemmasThatOftenFoundOnLargeNumberOfPages(Set<LemmaEntity> lemmaEntitySet, List<SiteEntity> siteEntityListForSearching, PoolService poolService) {
+    private Set<LemmaDto> removeLemmasThatOftenFoundOnLargeNumberOfPages(Set<LemmaDto> setLemmaDtoFromQuery,
+                                                                         List<SiteDto> siteDtoListForSearching) {
         PageService pageService = poolService.getPageService();
-        for (SiteEntity siteEntity : siteEntityListForSearching) {
-            int countPagesOfSite = pageService.getCountPagesOfSite(siteEntity.getId());
-            lemmaEntitySet.removeIf(lemmaEntity -> lemmaEntity.getSite().getId() == siteEntity.getId()
-                    && lemmaEntity.getFrequency() > countPagesOfSite * percentageAllowedNumberOfPages);
-
+        for (SiteDto siteDto : siteDtoListForSearching) {
+            int countPagesOfSite = pageService.getCountPagesOfSite(siteDto.getId());
+            setLemmaDtoFromQuery.removeIf(lemmaDto -> lemmaDto.getSiteId() == siteDto.getId()
+                    && lemmaDto.getFrequency() > countPagesOfSite * percentageAllowedNumberOfPages);
         }
+        return setLemmaDtoFromQuery;
     }
 
 

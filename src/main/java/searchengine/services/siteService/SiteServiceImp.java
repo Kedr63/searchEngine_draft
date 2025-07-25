@@ -1,37 +1,46 @@
 package searchengine.services.siteService;
 
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.model.SiteEntity;
 import searchengine.repositories.SiteRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SiteServiceImp implements SiteService {
 
     private final SiteRepository siteRepository;
-  //  private final PageService pageService;
+    //  private final PageService pageService;
+    private final ModelMapper modelMapper;
 
 
-    public SiteServiceImp(SiteRepository siteRepository) {
-        this.siteRepository = siteRepository;
-      //  this.pageService = pageService;
+//    public SiteServiceImp(SiteRepository siteRepository) {
+//        this.siteRepository = siteRepository;
+//      //  this.pageService = pageService;
+//    }
+
+    @Override
+    @Transactional
+    public List<SiteDto> getAllSiteDto() {
+        return siteRepository.findAll().stream()
+                .map(siteEntity -> modelMapper.map(siteEntity, SiteDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<SiteEntity> getAllSiteEntities() {
-        return siteRepository.findAll();
-    }
-
-    @Override
-    @Transactional
-    public void saveSiteEntity(SiteEntity siteEntity) {
-        siteRepository.save(siteEntity);
+    public SiteDto saveSiteDto(SiteDto siteDto) {
+        SiteEntity siteEntity = modelMapper.map(siteDto, SiteEntity.class);
+        SiteEntity savedSiteEntity = siteRepository.save(siteEntity);
+        return modelMapper.map(savedSiteEntity, SiteDto.class);
     }
 
     @Override
@@ -47,6 +56,14 @@ public class SiteServiceImp implements SiteService {
 
     @Override
     @Transactional
+    public Optional<SiteDto> getSiteDto(int id) {
+        Optional<SiteEntity> optionalSiteEntity = siteRepository.findById(id);
+        SiteDto siteDto = modelMapper.map(optionalSiteEntity, SiteDto.class);
+        return Optional.of(siteDto);
+    }
+
+    @Override
+    @Transactional
     public void deleteSiteEntity(int id) {
         siteRepository.deleteById(id);
     }
@@ -55,7 +72,7 @@ public class SiteServiceImp implements SiteService {
     @Transactional
     public void deleteAllSiteEntity() {
         Logger.getLogger(SiteServiceImp.class.getName()).info(" в методе - deleteAll   siteRepository.deleteAll()");
-         siteRepository.deleteAllSiteEntity();
+        siteRepository.deleteAllSiteEntity();
 //        List<SiteEntity> siteEntities = siteRepository.findAll();
 //        for (SiteEntity siteEntity : siteEntities) {
 //            pageService.deletePageEntityWhereSiteId(siteEntity.getId());
@@ -65,12 +82,14 @@ public class SiteServiceImp implements SiteService {
 
     @Override
     @Transactional
-    public SiteEntity getSiteEntityByUrl(String domainPartUrl) throws NoSuchElementException {
-       Optional<SiteEntity> optionalSiteEntity = siteRepository.findAll().stream()
-               .filter(siteEntity -> siteEntity.getUrl().contains(domainPartUrl)).findFirst();
-       if (optionalSiteEntity.isPresent()) {
-           return optionalSiteEntity.get();
-       } else throw new NoSuchElementException();
+    public Optional<SiteDto> getSiteDtoByUrl(String domainPartUrl) {
+//        Optional<SiteEntity> optionalSiteEntity = siteRepository.findAll().stream()
+//                .filter(siteDto -> siteDto.getUrl().contains(domainPartUrl)).findFirst();
+//        return Optional.ofNullable(modelMapper.map(optionalSiteEntity, SiteDto.class));
+        return siteRepository.findAll()
+                .stream()
+                .filter(siteEntity -> siteEntity.getUrl().equals(domainPartUrl)).findFirst()
+                .map(siteEntity -> modelMapper.map(siteEntity, SiteDto.class));
     }
 
     @Override

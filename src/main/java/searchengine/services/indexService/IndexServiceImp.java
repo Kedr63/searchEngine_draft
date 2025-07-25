@@ -4,16 +4,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
-import searchengine.dto.ResultResponseError;
+import searchengine.dto.indexing.ResultResponseError;
+import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.exceptions.IllegalMethodException;
 import searchengine.exceptions.IncompleteIndexingException;
 import searchengine.exceptions.NoSuchSiteException;
 import searchengine.exceptions.UtilityException;
-import searchengine.model.SiteEntity;
 import searchengine.model.StatusIndex;
-import searchengine.services.pageService.PageService;
 import searchengine.services.PoolService;
+import searchengine.services.pageService.PageService;
+import searchengine.services.siteService.SiteService;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -82,10 +83,10 @@ public class IndexServiceImp implements IndexService {
         for (int i = 0; i < sizeSitesList; i++) {
             Site site = sitesList.getSites().get(i);
 
-            SiteEntity siteEntity = createSiteEntity(site);
-            poolService.getSiteService().saveSiteEntity(siteEntity);
+            SiteDto siteDto = createSiteDto(site);
+            siteDto = poolService.getSiteService().saveSiteDto(siteDto);
 
-            ExecutorServiceForParsingSite executorServiceForParsingSite = new ExecutorServiceForParsingSite(siteEntity, poolService);
+            ExecutorServiceForParsingSite executorServiceForParsingSite = new ExecutorServiceForParsingSite(siteDto, poolService);
             Future<IndexingResponse> futureResponseEntity = executorService.submit(executorServiceForParsingSite);
 
             futureList.add(futureResponseEntity);
@@ -115,7 +116,8 @@ public class IndexServiceImp implements IndexService {
     public IndexingResponse indexSinglePage(String page) {
         String decodedUrl = URLDecoder.decode(page, StandardCharsets.UTF_8);
         PageService pageService = poolService.getPageService();
-        String regex = "(https://[^,\\s/]+)([^,\\s]+)";
+        SiteService siteService = poolService.getSiteService();
+        String regex = "(https://[^/]+)([^,\\s]+)"; // было "(https://[^,\s/]+)([^,\s]+)"
        // String pageUrl = page.getUrl();
         String domainPartOfAddressUrl = decodedUrl.replaceAll(regex, "$1");
 
@@ -125,17 +127,22 @@ public class IndexServiceImp implements IndexService {
             throw new NoSuchSiteException(errorMatchingSiteUrlOfSiteList);
         }
 
-        SiteEntity siteEntity = poolService.getSiteService().getSiteEntityByUrl(domainPartOfAddressUrl);
+        SiteDto siteDto;
+        if (siteService.getSiteDtoByUrl(domainPartOfAddressUrl).isPresent()){
+            siteDto = siteService.getSiteDtoByUrl(domainPartOfAddressUrl).get();
+        } else throw new NoSuchSiteException(errorIncompleteIndexing);
+
+
         String pageLocalUrl = decodedUrl.replaceAll(regex, "$2");
 
-        if (pageService.isPresentPageEntityWithThatPath(pageLocalUrl, siteEntity.getId())) {
-            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteEntity.getId());
+        if (pageService.isPresentPageEntityWithThatPath(pageLocalUrl, siteDto.getId())) {
+            int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteDto.getId());
             cascadeDeletionPageEntities(idPageEntity);
             Logger.getLogger(IndexServiceImp.class.getName()).info("delete Page cascade - " + pageLocalUrl);
         }
         UtilitiesIndexing.isStartSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
         // чтоб пропарсить только одну страницу
-        HtmlParser htmlParser = new HtmlParser(decodedUrl, siteEntity, poolService);
+        HtmlParser htmlParser = new HtmlParser(decodedUrl, siteDto, poolService);
         htmlParser.compute();
         UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был, после \indexPage(String page)\
 
@@ -144,15 +151,15 @@ public class IndexServiceImp implements IndexService {
     }
 
 
-    private SiteEntity createSiteEntity(Site site) {
-        SiteEntity siteEntity = new SiteEntity();
-        siteEntity.setStatus(StatusIndex.INDEXING);
-        siteEntity.setStatusTime(LocalDateTime.now());
-        siteEntity.setUrl(site.getUrl());
-        siteEntity.setName(site.getName());
+    private SiteDto createSiteDto(Site site) {
+        SiteDto siteDto = new SiteDto();
+        siteDto.setStatusIndex(StatusIndex.INDEXING);
+        siteDto.setStatusTime(LocalDateTime.now());
+        siteDto.setUrl(site.getUrl());
+        siteDto.setName(site.getName());
        // siteEntity.setLastError("");
 
-        return siteEntity;
+        return siteDto;
     }
 
 

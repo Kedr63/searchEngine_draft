@@ -13,7 +13,9 @@ import java.util.Set;
 
 
 class LemmaParserTest {
-    PoolServiceImpl poolService = Mockito.mock(PoolServiceImpl.class);
+      PoolServiceImpl poolService = Mockito.mock(PoolServiceImpl.class);
+//    PoolServiceImpl poolService = new PoolServiceImpl(Mockito.mock(SiteServiceImp.class), Mockito.mock(PageServiceImp.class),
+//            Mockito.mock(LemmaServiceImpl.class), indexEntityService, Mockito.mock(UserAgentList.class));
     public LemmaParser lemmaParser;
 
 
@@ -25,11 +27,11 @@ class LemmaParserTest {
 
     @Test
     @DisplayName("Test extractLemmaFromTextToMap")
-    public void testExtractLemmasFromPageTextForMap() throws IOException {
+    public void testExtractLemmasFromTextOfContentFromPageForMap() throws IOException {
         String text = "купить кемпер для путешествий";
         Map<String, Integer> map = new HashMap<>();
         Set<String> stringSet = map.keySet();
-    //    lemmaParser.extractLemmaFromTextToMap(text, map);
+        //    lemmaParser.extractLemmaFromTextToMap(text, map);
 
 
     }

@@ -11,7 +11,7 @@ public class SearchQuery {
     private int limit;
     private String site;
 
-    // поля взял из данных формы \Search\ браузера. Посмотрел в инспекторе в разделе сеть
+    // поля взял из данных формы \Search\ браузера. Посмотрел в инспекторе в разделе \сеть\
 
     public SearchQuery() {
     }

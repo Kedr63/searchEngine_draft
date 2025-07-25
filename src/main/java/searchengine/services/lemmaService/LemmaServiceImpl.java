@@ -1,30 +1,36 @@
 package searchengine.services.lemmaService;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.lucene.morphology.LuceneMorphology;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import searchengine.dto.dtoToBD.LemmaDto;
 import searchengine.model.LemmaEntity;
 import searchengine.repositories.LemmaRepository;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LemmaServiceImpl implements LemmaService {
 
-    private final LuceneMorphology luceneMorphology;  //
-
+    private final LuceneMorphology luceneMorphology;
     private final LemmaRepository lemmaRepository;
+    private final ModelMapper modelMapper;
 
-  //  protected static final Object lockLemmaRepository = new Object();
+    //  protected static final Object lockLemmaRepository = new Object();
 
 
-    public LemmaServiceImpl(LuceneMorphology luceneMorphology, LemmaRepository lemmaRepository) {
-        this.luceneMorphology = luceneMorphology;
-        this.lemmaRepository = lemmaRepository;
-    }
+//    public LemmaServiceImpl(LuceneMorphology luceneMorphology, LemmaRepository lemmaRepository) {
+//        this.luceneMorphology = luceneMorphology;
+//        this.lemmaRepository = lemmaRepository;
+//    }
 
     @Override
     public List<LemmaEntity> getAllLemmaEntities() {
@@ -33,43 +39,49 @@ public class LemmaServiceImpl implements LemmaService {
 
     @Transactional
     @Override
-    public LemmaEntity getLemmaEntityById(int id) {
-      //  synchronized (UtilitiesIndexing.lockLemmaRepository) {
-          if (lemmaRepository.findById(id).isPresent()) {
-              return lemmaRepository.findById(id).get();
-            }
-          else throw new RuntimeException("Lemma not found");
-
+    public LemmaDto getLemmaDtoById(int id) {
+        //  synchronized (UtilitiesIndexing.lockLemmaRepository) {
+        if (lemmaRepository.findById(id).isPresent()) {
+            return modelMapper.map((lemmaRepository.findById(id).get()), LemmaDto.class);
+        } else throw new RuntimeException("Lemma not found");
     }
 
     @Override
-    public Optional<Set<LemmaEntity>> getSetLemmaEntityByLemmaWordForm(String lemmaWord) {
-        return lemmaRepository.findByLemmaWord(lemmaWord);
+    public Set<LemmaDto> getSetLemmaDtoByLemmaWordForm(String lemmaWord) {
+        Set<LemmaDto> lemmaDtoSet = new HashSet<>();
+        Optional<Set<LemmaEntity>> optionalLemmaEntity = lemmaRepository.findByLemmaWord(lemmaWord);
+        if (optionalLemmaEntity.isPresent()) {
+            lemmaDtoSet = optionalLemmaEntity
+                    .get()
+                    .stream()
+                    .map(lemmaEntity -> modelMapper.map(lemmaEntity, LemmaDto.class)).collect(Collectors.toSet());
+        } /* а если леммы в БД нет, то вернем пустой Set<LemmaDto> lemmaDtoSet*/
+        return lemmaDtoSet;
     }
 
     @Transactional
     @Override
-    public void saveLemmaEntity(LemmaEntity lemmaEntity) {
-        //synchronized (UtilitiesIndexing.lockLemmaRepository) {
-            lemmaRepository.save(lemmaEntity);
-
+    public LemmaDto saveLemmaDto(LemmaDto lemmaDto) {
+        LemmaEntity lemmaEntity = modelMapper.map(lemmaDto, LemmaEntity.class);
+        LemmaEntity savedLemmaEntity = lemmaRepository.save(lemmaEntity);
+        return modelMapper.map(savedLemmaEntity, LemmaDto.class);
     }
 
     @Transactional
     @Override
     public boolean isPresentLemmaEntity(String lemma, int siteId) {
-     //   synchronized (UtilitiesIndexing.lockLemmaRepository) {
-            Optional<String> optionalLemma = lemmaRepository.findByLemma(lemma, siteId);
-            return optionalLemma.isPresent();
+        //   synchronized (UtilitiesIndexing.lockLemmaRepository) {
+        Optional<String> optionalLemma = lemmaRepository.findByLemma(lemma, siteId);
+        return optionalLemma.isPresent();
 
     }
 
     @Transactional
     @Override
-    public int getLemmaId(String lemma, int siteId) {
-       // synchronized (UtilitiesIndexing.lockLemmaRepository) {
-            Optional<Integer> optionalId = lemmaRepository.findIdByLemma(lemma, siteId);
-            return optionalId.orElse(0);
+    public Optional<Integer> getLemmaId(String lemma, int siteId) {
+        // synchronized (UtilitiesIndexing.lockLemmaRepository) {
+        return lemmaRepository.findIdByLemma(lemma, siteId);
+        // return optionalId.orElse(0);
 
     }
 
@@ -80,7 +92,7 @@ public class LemmaServiceImpl implements LemmaService {
 
     @Override
     public String getNormalBaseFormWord(String word) {  // выберем более близкую норм.форму из словаря
-        List<String>wordNormalForms= luceneMorphology.getNormalForms(word);
+        List<String> wordNormalForms = luceneMorphology.getNormalForms(word.toLowerCase());
         String baseFormWord = "";
         for (String wordNormalForm : wordNormalForms) {
             if (wordNormalForm.compareTo(word) == 0) {
@@ -98,7 +110,7 @@ public class LemmaServiceImpl implements LemmaService {
 
     @Override
     public boolean hasWordInDictionary(String word) {
-        return luceneMorphology.checkString(word); // проверяем, является ли строка словом и
+        return luceneMorphology.checkString(word.toLowerCase()); // проверяем, является ли строка словом и
         // принадлежит язык слова выбранному словарю
     }
 

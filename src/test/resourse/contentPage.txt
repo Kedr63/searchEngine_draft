@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="ru">
+ <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="keywords" content="кемперы, купить кемпер, кемпер капля, до 750 кг">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Дом на колесах Турист Плюс до 750 кг | Кемпер-Урал. Купить кемпер-прицеп до 750 кг для легковых автомобилей в Екатеринбурге</title>
+  <meta name="description" content="Турист Плюс. Кемперы до 750 кг для легковых автомобилей от производителя Кемпер-Урал в Екатеринбурге. Выберите качество и комфорт с нашими домами на колесах. Собственное производство, надежность, и выгодные цены. Покупайте кемпер у нас!  Звоните: +7 (343) 302-17-60">
+  <meta property="og:title" content="Кемпер-Урал. Купить кемпер-прицеп до 750 кг для легковых автомобилей в Екатеринбурге">
+  <meta property="og:site_name" content="Кемпер-Урал. Купить кемпер-прицеп до 750 кг для легковых автомобилей в Екатеринбурге">
+  <meta property="og:url" content="camper-ural.ru">
+  <meta property="og:description" content="Турист Плюс. Кемперы до 750 кг для легковых автомобилей от производителя Кемпер-Урал в Екатеринбурге. Выберите качество и комфорт с нашими домами на колесах. Собственное производство, надежность, и выгодные цены. Покупайте кемпер у нас!  Звоните: +7 (343) 302-17-60">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://camper-ural.ru/assets/img/og-image.webp">
+  <meta name="csrf-token" content="eWQ5966y2t7lPYlrqY9aE40O15Jw3VIMzKiAAeSw">
+  <link rel="preload" href="https://camper-ural.ru/assets/img/kempery-detail.webp" as="image">
+  <link href="https://camper-ural.ru/assets/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/jquery.fancybox.min.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/swiper-bundle.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/style.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/new-style.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/float-button.css" rel="stylesheet">
+  <script src="https://camper-ural.ru/assets/js/jquery-3.4.0.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LefWIoqAAAAAF83GUuwnKpcXdN53SIVVzjl_Qki"></script> <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(51941264, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+  <noscript>
+   &lt;div&gt;&lt;img src="https://mc.yandex.ru/watch/51941264" style="position:absolute; left:-9999px;" alt=""&gt;
+  </noscript> <!-- /Yandex.Metrika counter -->
+  <meta name="yandex-verification" content="28844595f2c6bb9a">
+  <meta name="yandex-verification" content="7644b3fafa8c789a">
+  <meta name="yandex-verification" content="aeb7eb02d0f70b46"> <!-- Top.Mail.Ru counter -->
+  <script type="text/javascript">
+		var _tmr = window._tmr || (window._tmr = []);
+		_tmr.push({ id: "3414565", type: "pageView", start: (new Date()).getTime() });
+		(function (d, w, id) {
+			if (d.getElementById(id)) return;
+			var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
+			ts.src = "https://top-fwz1.mail.ru/js/code.js";
+			var f = function () { var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s); };
+			if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+		})(document, window, "tmr-code");
+	</script>
+  <noscript>&lt;div&gt;&lt;img src="https://top-fwz1.mail.ru/counter?id=3414565;js=na" style="position:absolute;left:-9999px;" alt="Top.Mail.Ru"&gt;
+  </noscript> <!-- /Top.Mail.Ru counter --> <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Z8E9DD8F8"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9Z8E9DD8F8');
+    </script> <!-- UNTARGET.AI code -->
+  <script>
+    (function(s,o){s[o]=s[o]||function(){(s[o].d=s[o].d||[]).push(arguments);}})(window,"UntargetJS");
+    UntargetJS('ts', 1*new Date());
+    UntargetJS('id', 'de8d7');
+</script>
+  <script async src="https://cdn.untarget.ai/untarget.min.o.js">
+</script> <!-- UNTARGET.AI code -->
+  <script>
+    function refreshReCaptchaV3(fieldId,action){
+        return new Promise(function (resolve, reject) {
+            grecaptcha.ready(function () {
+                grecaptcha.execute(window['client'+fieldId], {
+                    action: action
+                }).then(resolve);
+            });
+        });
+    }
+
+    function getReCaptchaV3Response(fieldId){
+        return grecaptcha.getResponse(window['client'+fieldId])
+    }
+</script> <!-- LightGallery -->
+  <link href="https://camper-ural.ru/assets/css/lightgallery.min.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/plugins/lg-zoom.min.css" rel="stylesheet">
+  <link href="https://camper-ural.ru/assets/css/plugins/lg-thumbnail.min.css" rel="stylesheet">
+ </head>
+ <body class="transparent">
+  <header class="transparent">
+   <div class="container">
+    <div class="header-block flex">
+     <div class="logo"><a href="https://camper-ural.ru"> <img src="https://camper-ural.ru/assets/img/logo.svg" aria-label="https://camper-ural.ru" alt="Logo"> </a>
+     </div>
+     <nav>
+      <div class="logo"><a href="https://camper-ural.ru"> <img src="https://camper-ural.ru/assets/img/logo.svg" aria-label="https://camper-ural.ru" alt=""> </a>
+      </div> <span class="close"></span>
+      <ul class="unstyled flex">
+       <li class="nav-link link1"><a href="https://camper-ural.ru/campers">Кемперы</a> <span class="nav-check"></span>
+        <ul class="navbar-nav">
+         <li class="nav-item"><a href="https://camper-ural.ru/campers/kochevnik">Кочевник</a></li>
+         <li class="nav-item"><a href="https://camper-ural.ru/campers/turist">Турист</a></li>
+         <li class="nav-item"><a href="https://camper-ural.ru/campers/grand-turist">Гранд Турист</a></li>
+         <li class="nav-item"><a href="https://camper-ural.ru/campers/turist-plus">Турист Плюс</a></li>
+         <li class="nav-item"><a href="https://camper-ural.ru/stock">Готовые кемперы</a></li>
+        </ul></li>
+       <li class="nav-link link4"><a href="#">Для покупателей</a> <span class="nav-check"></span>
+        <ul class="navbar-nav">
+         <li class="nav-link"><a href="https://camper-ural.ru/camping">Кемпинги</a></li>
+         <li class="nav-link"><a href="https://camper-ural.ru/company/articles">Блог о кемперах</a></li>
+         <li class="nav-link"><a href="https://camper-ural.ru/company/reviews">Отзывы</a></li>
+         <li class="nav-link"><a href="https://camper-ural.ru/contacts">Контакты</a></li>
+         <li class="nav-link show-mobile"><a style="color: #eb6d28; text-decoration: underline" target="_blank" href="https://yandex.ru/maps/org/kemper_ural/1168648094/reviews/?add-review=true&amp;ll=61.950085%2C56.368330&amp;z=16.78">Оставить отзыв</a></li>
+        </ul></li>
+       <li class="nav-link confi"><a href="https://camper-ural.ru/configurator">Конфигуратор</a></li>
+      </ul>
+      <div class="mobile-contact social"><a href="tel:+7 343 287 44 30" class="number">+7 343 287 44 30</a> <a target="_blank" href="https://wa.me/79222057700?text=Добрый день! Меня интересует покупка кемпера" class="whatsapp greens">Написать в WhatsApp</a> <a href="mailto:9222057700@MAIL.RU">9222057700@MAIL.RU</a>
+       <ul class="unstyled">
+        <li><a target="_blank" href="https://ok.ru/profile/590202731317" aria-label="Одноклассники"><img src="https://camper-ural.ru/assets/img/social1.svg" alt=""></a></li>
+        <li><a target="_blank" href="https://www.youtube.com/@CamperUral" aria-label="YouTube"><img src="https://camper-ural.ru/assets/img/social2.svg" alt=""></a></li>
+        <li><a target="_blank" href="https://vk.com/camperural2016" aria-label="ВКонтакте"><img src="https://camper-ural.ru/assets/img/social3.svg" alt=""></a></li>
+        <li><a target="_blank" href="https://t.me/Camper_ural"><img src="https://camper-ural.ru/assets/img/social4.svg" alt=""></a></li>
+       </ul>
+      </div>
+     </nav>
+     <div class="flex btn-block">
+      <div class="search flex"><span></span>
+       <form action="https://camper-ural.ru/search" method="GET" class="navigation__search"><input type="text" name="search" placeholder="Найти" class="form-control"> <button type="submit"></button>
+        <div class="searched-wrapper" style="display: none;">
+         <div class="searched-items"></div>
+        </div>
+       </form>
+      </div> <button type="button" class="btn btn-login flex" data-bs-toggle="modal" data-bs-target="#Login"></button> <a target="_blank" href="https://wa.me/79222057700?text=Добрый день! Меня интересует покупка кемпера" class="whatsapp"></a>
+     </div>
+     <div class="contact-callback">
+      <div class="contact"><a href="tel:+7 343 287 44 30">+7 343 287 44 30</a>
+      </div>
+      <div class="callback-block" onmouseenter="playGif(this)">
+       <div class="callback-text"><a class="link-style" href="javascript:void(0)" onclick="scrollToCallback()"> Перезвоним через 5 минут </a>
+       </div>
+      </div>
+     </div> <button class="mobile-nav"></button>
+    </div>
+   </div>
+  </header>
+  <div itemscope itemtype="https://schema.org/Product">
+   <div class="offer turist offr">
+    <div class="offer-img"><img src="/uploads/photos/01HXR0AZ0FFDV2EQ7BS25GCMWW.webp" alt="Турист Плюс">
+    </div>
+    <div class="container">
+     <div class="breadcrumb-blk brd">
+      <ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+       <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="https://camper-ural.ru"> <span itemprop="name">Главная</span>
+         <meta itemprop="position" content="0"> </a></li>
+       <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="https://camper-ural.ru/campers"> <span itemprop="name">Линейка кемперов</span>
+         <meta itemprop="position" content="1"> </a></li>
+       <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span itemprop="item"> <span itemprop="name">Турист Плюс</span>
+         <meta itemprop="position" content="2"> </span></li>
+      </ul>
+     </div>
+     <div class="offer-info">
+      <h1 itemprop="name">Дом на колесах "Турист Плюс"</h1>
+      <h2 class="product-price">от 490 000 руб</h2> <a href="https://camper-ural.ru/configurator?id=5" class="btn btn-primary btn-more">Выбрать опции</a>
+     </div>
+    </div>
+   </div>
+   <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+    <meta itemprop="price" content="490000">
+    <meta itemprop="priceCurrency" content="RUB">
+    <link itemprop="availability" href="http://schema.org/InStock">
+   </div>
+   <section class="characteristics mb12">
+    <div class="container">
+     <div class="tire">
+      <h2>Базовая комплектация</h2>
+     </div>
+     <div class="row">
+      <div class="col-md-6 characteristics-left">
+       <p class="previewtext">Удлиненная модель прицепа Турист. Возможна установка технического отсека для габаритного груза или туалета. Спальная зона вмещает до 3 человек, оснащена секциями для хранения вещей. Доступ к кухне снаружи прицепа через подъёмную&nbsp;заднюю&nbsp;крышку.</p> <img itemprop="image" src="/uploads/photos/01HXR0AYZSF4V5TDDMX360K1XM.webp" alt="" class="mw">
+       <div class="characteristics-descript">
+        <p><strong>Снаряженная масса прицепа</strong> от 650 кг</p>
+        <p><strong>Максимальная масса</strong> - 750 кг</p>
+        <p><strong>Внешние габариты включая дышло (Д × Ш × В)</strong> 4,5 × 2,05 × 2,1 м</p>
+        <p><strong>Внутренние размеры (Д × Ш × В)</strong> 3,2 × 1,46 × 1,45 м</p>
+        <p><strong>Вместимость</strong> - 2 взрослых и 1 ребенок.</p>
+        <p>&nbsp;</p>
+        <p class="color-comment">*Цвет алюминиевых панелей, которые используются в качестве наружной обшивки, может быть подобран индивидуально.</p>
+       </div>
+       <div class="callback-button"><a id="scroll-to-form" href="#callback-form" class="btn btn-sm btn-primary "> <span class="title-h3">Купить кемпер Турист Плюс от 490 000 руб</span> </a>
+       </div>
+      </div>
+      <div class="col-md-6 characteristics-right" itemprop="description">
+       <div class="characteristics-descript">
+        <p><span class="characteristics-title">ШАССИ И&nbsp;РАМА</span></p>
+        <ul>
+         <li>Рессорно-амортизаторная подвеска на&nbsp;колесах R15&nbsp;с разболтовкой 5&nbsp;×&nbsp;139,7. Опорное колесо с&nbsp;хомутом.</li>
+         <li>Комплект светотехники: передние светодиодные фонари, задние светодиодные многофункциональные фонари, вилка 7-pin.</li>
+         <li>Два противооткатных упора с&nbsp;кронштейнами</li>
+         <li>Все элементы рамы и&nbsp;подвески оцинкованы.</li>
+        </ul>
+        <p><span class="characteristics-title">ФУРГОН</span></p>
+        <ul>
+         <li>Стены: сэндвич-панели толщиной ~28&nbsp;мм, образованные путем вакуумного склеивания следующих материалов (снаружи внутрь): композитная панель, утеплитель, экструдированный пенополистирол 20&nbsp;мм, фанера 4&nbsp;мм, HPL-пластик.</li>
+         <li>Пол: сэндвич-панели толщиной ~32&nbsp;мм, сформированные на&nbsp;вакуумном столе&nbsp;из: ламинированной фанеры 6&nbsp;мм (внешний слой), экструдированного пенополистирола 20&nbsp;мм (утеплитель), фанеры 4&nbsp;мм и&nbsp;пластика HPL.</li>
+         <li>Днище фургона выполнено из&nbsp;ламинированой, влагостойкой фанеры</li>
+         <li>Внешняя отделка&nbsp;— композитный алюминий с&nbsp;окантовкой профилем из&nbsp;анодированного алюминия</li>
+         <li>Внутренняя отделка и&nbsp;стены&nbsp;— мебельный износостойкий пластик, на&nbsp;полу&nbsp;— пластик, потолок&nbsp;— карпет</li>
+         <li>Одна дверь с&nbsp;окном.</li>
+         <li>Кухня отгороженная перегородкой с&nbsp;доступом через заднюю крышку на&nbsp;газ-лифтах.</li>
+         <li>Технический отсек между салоном и&nbsp;кухней с&nbsp;дверью, отдельным светильником, а&nbsp;также Окном 400 × 400&nbsp;мм напротив двери (Шторка, Москитная сетка).</li>
+        </ul>
+        <p><span class="characteristics-title">СПАЛЬНАЯ ЗОНА</span></p>
+        <ul>
+         <li>Подвесной 2-дверый шкаф.&nbsp;2&nbsp;крючка для одежды.</li>
+         <li>Полка для вещей в&nbsp;передней части 1450 × 250&nbsp;мм</li>
+         <li>Карнизы с&nbsp;занавесками и&nbsp;съемные москитные сетки на&nbsp;обоих окнах.</li>
+        </ul>
+        <p><span class="characteristics-title">КУХНЯ</span></p>
+        <ul>
+         <li>Подвесной 2-дверный шкаф над столешницей. Под столешницей три модуля: по&nbsp;краям&nbsp;— дверки, в&nbsp;середине&nbsp;— два выкатных ящика и&nbsp;дверца к&nbsp;аккумулятору.</li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="gallery mb12 center">
+    <div class="container">
+     <h2>Фотогалерея</h2>
+     <div class="slider slider-line">
+      <div class="swiper galleryBig">
+       <div class="swiper-wrapper">
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPQ3AT3HQ19DDD06GEV.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPQ3AT3HQ19DDD06GEV.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYB.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYB.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYC.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYC.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYD.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYD.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA6.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA6.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA7.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA7.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA8.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA8.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA9.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA9.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH71.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH71.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH72.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH72.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH73.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH73.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TC.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TC.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TD.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TD.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TE.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TE.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TF.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TF.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8S.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8S.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8T.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8T.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8V.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8V.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C0.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C0.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C1.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C1.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C2.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C2.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHWY.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHWY.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHWZ.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHWZ.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHX0.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHX0.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606S9.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606S9.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SA.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SA.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SB.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SB.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SC.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SC.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8X.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8X.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8Y.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8Y.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8Z.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8Z.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYV.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYV.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYW.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYW.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYX.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYX.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYY.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYY.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XP.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XP.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XQ.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XQ.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XR.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XR.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XS.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XS.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85F.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85F.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85G.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85G.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85H.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85H.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QK.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QK.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QM.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QM.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QN.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QN.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG7.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG7.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG8.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG8.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG9.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG9.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ5R83GS083G69YNBGA.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBGA.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJ8.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJ8.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJ9.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJ9.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJA.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJA.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ730DKR35BV6ES37VY.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ730DKR35BV6ES37VY.webp"> </a>
+        </div>
+        <div class="swiper-slide"><a href="/uploads/photos/01J0BEMCQ730DKR35BV6ES37VZ.webp" data-fancybox="gallery" data-caption=""> <img src="/uploads/photos/01J0BEMCQ730DKR35BV6ES37VZ.webp"> </a>
+        </div>
+       </div>
+      </div>
+      <div thumbsslider="" class="swiper gallerySmall">
+       <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPQ3AT3HQ19DDD06GEV.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYB.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYC.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPR9K5VBR3J5XFJHZYD.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA6.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA7.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA8.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPSWSR3823PTDCHGKA9.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH71.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH72.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPTP20ECH35X8R1YH73.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TC.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TD.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TE.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPV8NQW3JCBT0WCG6TF.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8S.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8T.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPW9E2P2FF7J1VD3Q8V.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C0.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C1.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPX6KGGAMRH73BSB1C2.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHWY.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHWZ.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPYPN7F003K9KVWYHX0.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606S9.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SA.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SB.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCPZCK0XN4KEAAX606SC.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8X.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8Y.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ0CVZZYZDJKBYYTF8Z.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYV.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYW.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYX.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ13NGD811SPPKQMQYY.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XP.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XQ.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XR.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ24GR03YSHAJDBW3XS.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85F.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85G.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ3ET49A8MKFCWGG85H.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QK.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QM.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ427Z77K905E4AM0QN.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG7.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG8.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBG9.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ5R83GS083G69YNBGA.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJ8.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJ9.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ6VWVC6DG07GQVTEJA.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ730DKR35BV6ES37VY.webp">
+        </div>
+        <div class="swiper-slide"><img src="/uploads/photos/01J0BEMCQ730DKR35BV6ES37VZ.webp">
+        </div>
+       </div>
+      </div>
+      <div class="swiper-arrow">
+       <div class="swiper-button-next gallery-next"></div>
+       <div class="swiper-button-prev gallery-prev"></div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="gallery mb12 center">
+    <div class="container">
+     <h2>Планировки</h2>
+     <div class="slider slider-line">
+      <div class="swiper galleryPlan">
+       <div class="swiper-wrapper">
+        <div class="swiper-slide">
+         <div class="layout-blk"><img loading="lazy" src="/uploads/photos/01HXR0AZ51A4CC820QXP12701W.webp">
+         </div>
+        </div>
+        <div class="swiper-slide">
+         <div class="layout-blk"><img loading="lazy" src="/uploads/photos/01HXR0AZ5QZEWYE1XKKS17K326.webp">
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="swiper-arrow">
+       <div class="swiper-button-prev gallery-plan-prev"></div>
+       <div class="swiper-button-next gallery-plan-next"></div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="steps mb12 center">
+    <div class="steps-block">
+     <div class="container">
+      <h2>Этапы сделки</h2>
+      <div class="row">
+       <div class="col-lg-4 col-sm-6">
+        <div class="step-blk"><span class="title-h3">ОСТАВЬТЕ ЗАЯВКУ</span>
+         <p>Мы свяжемся и поможем с выбором прицепа и опций, а так же сориентируем по срокам производства Кемпера</p>
+        </div>
+       </div>
+       <div class="col-lg-4 col-sm-6">
+        <div class="step-blk"><span class="title-h3">ДОГОВОР И СЧЕТ</span>
+         <p>Заключаем договор и выставляем счет на 50% предоплаты</p>
+        </div>
+       </div>
+       <div class="col-lg-4 col-sm-6">
+        <div class="step-blk"><span class="title-h3">ПРОИЗВОДСТВО</span>
+         <p>Начинается изготовление Вашего Кемпера, согласно условиям договора</p>
+        </div>
+       </div>
+       <div class="col-lg-4 col-sm-6">
+        <div class="step-blk"><span class="title-h3">ДЕМОНСТРАЦИЯ</span>
+         <p>Проводим демонстрацию и приемку по видео-звонку, оплачиваете оставшиеся 50%</p>
+        </div>
+       </div>
+       <div class="col-lg-4 col-sm-6">
+        <div class="step-blk"><span class="title-h3">ДОСТАВКА/САМОВЫВОЗ</span>
+         <p>Отправляем вам кемпер со всеми документами транспортной компанией</p>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="container tree">
+      <div class="ideal flex">
+       <div class="ideal-info-block">
+        <div class="col-md-7 ml-auto">
+         <div class="ideal-info flex"><span class="title-h3">Идеальный кемпер под вас</span>
+          <div>
+           <p>Вы можете выбрать только необходимое дополнительное оборудование, без переплаты за ненужное</p> <a href="/configurator/" class="btn btn-primary btn-more">конфигуратор</a>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="ideal-foto col-md-5"><img src="https://camper-ural.ru/assets/img/ideal.webp" alt="">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="reviews">
+    <div class="container">
+     <div class="flex review-info">
+      <h2>Отзывы</h2>
+      <div class="buttons"><a href="https://camper-ural.ru/company/reviews" class="btn btn-warning revs">Все отзывы</a>
+      </div>
+      <div class="swiper-arrow">
+       <div class="swiper-button-prev swiper-prev"></div>
+       <div class="swiper-button-next swiper-next"></div>
+      </div>
+     </div>
+     <div class="swiper reviewsSwiper">
+      <div class="swiper-wrapper"><!-- Если есть видео, выводим блок с видео -->
+       <div class="swiper-slide"><a class="player" data-fancybox="review" data-type="iframe" href="https://www.youtube.com/embed/8jsdMlDQN1A" aria-label="Липовые истории"> <img src="https://camper-ural.ru/uploads/reviews/01J08KNV5NV3X875RYMTD1Y0YV.webp" alt=""> <span></span> </a>
+       </div> <!-- Если нет видео, выводим блок с обычным отзывом --> <!-- Если есть видео, выводим блок с видео -->
+       <div class="swiper-slide"><a class="player" data-fancybox="review" data-type="iframe" href="https://www.youtube.com/embed/ol2WgP2_0Dk" aria-label="Сергей"> <img src="https://camper-ural.ru/uploads/reviews/01J08KQ63R0509YR8J2VSY1C17.webp" alt=""> <span></span> </a>
+       </div> <!-- Если нет видео, выводим блок с обычным отзывом --> <!-- Если есть видео, выводим блок с видео -->
+       <div class="swiper-slide">
+        <div class="review-block">
+         <div class="review-title flex">
+          <p class="title-h3 greens">КОЧЕВНИК 2 (АБАКАН)</p> <span>Кочевник</span>
+         </div>
+         <p></p>
+         <p>Второй год катаю с таким. Пробеги по 15 -20 тыс км за сезон. Есть мелкие недочеты, но в целом очень хорошо делают. И ПТС нормальная, прицеп-фургон, что тоже немаловажно.</p>
+         <p></p>
+         <div class="date">
+          2 мая 2024
+         </div>
+        </div>
+       </div> <!-- Если есть видео, выводим блок с видео -->
+       <div class="swiper-slide">
+        <div class="review-block">
+         <div class="review-title flex">
+          <p class="title-h3 greens">КОЧЕВНИК 1 (С ТУАЛЕТОМ)</p> <span>Кочевник</span>
+         </div>
+         <p></p>
+         <p>Добрый день. Два года ездим по стране. Съездили на Байкал, Алтай! В этом году были в Туапсе. Потом объездили весь Крым и очень довольны прицепом. Много людей интересовались прицепом. Туалетом пользуемся, удобно. На крыше прицепа установили палатку.&nbsp;&nbsp;</p>
+         <p></p>
+         <div class="date">
+          2 мая 2024
+         </div>
+        </div>
+       </div> <!-- Если есть видео, выводим блок с видео -->
+       <div class="swiper-slide">
+        <div class="review-block">
+         <div class="review-title flex">
+          <p class="title-h3 greens">КОЧЕВНИК 1 (ВОРОНЕЖ)</p> <span>Кочевник</span>
+         </div>
+         <p></p>
+         <p>Давно хотели автодом, который сможет ездить не только по асфальту. Приобрели в начале лета автодом от Кемпер-Урал. Показал себя с лучшей стороны и на трассе, и по бездорожью. Проехал от Урала до Воронежа, побывал в Крыму и Адыгее. В нем есть все необходимое для ночёвки в лесу, высоко в горах или на берегу моря. Рекомендую!</p>
+         <p></p>
+         <div class="date">
+          2 мая 2024
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="questions">
+    <div class="container">
+     <div class="flex">
+      <h2>Часто задаваемые <span>вопросы</span></h2>
+      <div><span>Не нашли ответа?</span> <a target="_blank" href="https://wa.me/79222057700?text=Добрый день! Меня интересует покупка кемпера" class="whatsapp">Написать в WhatsApp</a>
+      </div>
+     </div>
+     <div class="question-block" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="accordion" id="accordion">
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">Есть готовые прицепы? Где их можно посмотреть?</span>
+        </div>
+        <div id="faq1" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Как правило, мы изготавливаем прицепы под заказ, учитывая ваши пожелания и вашу комплектацию.</p>
+          <p>В наличии есть модели "Гранд Турист" и "Кочевник", которые можно посмотреть и приобрести приехав к нам на производство.</p>
+          <p>Наше производство находится в Свердловской области город Каменск-Уральский. Приезжайте познакомиться, всё покажем, угостим вкусным молотым кофе.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">Какие документы нужны для использования прицепа-кемпера?</span>
+        </div>
+        <div id="faq2" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Сделка оформляется по Договору на производство. По готовности прицепа к отгрузке вы подписываете Акт приема-передачи и получаете Паспорт прицепа с руководством и гарантийным талоном, Товарную накладную и кассовый чек. Прицепом можно пользоваться, если у вас есть права категории “B”. У прицепа есть VIN-номер, он подлежит обязательной регистрации в ГИБДД и получению гос.номера, для этого мы готовим полный комплект документов: выписка из электронного ПТС, Договор купли-продажи, Одобрение типа транспортного средства.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq3">Сколько в кемпере спальных мест?</span>
+        </div>
+        <div id="faq3" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>В каждом прицепе одно основное спальное место с матрасом 2000*1440мм для двоих взрослых. Дополнительно все модели можно оборудовать одной или двумя дополнительными полками для детей ростом до 130 см.<br>Так, максимальная вместимость Туриста и Кочевника = 2 взрослых +1 ребенка; Турист-Плюс и Гранд Турист = 2 взрослых + 2 ребенка, либо 4 взрослых.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq4">Условия покупки прицепа (рассрочки, % предоплаты, доставка)?</span>
+        </div>
+        <div id="faq4" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Стоимость вашей покупки делится на два платежа. 50% вы вносите после согласования всех условий и подписания договора, затем забираете готовый прицеп, и вносите оставшиеся 50%. Вы можете забрать кемпер самостоятельно с нашего производства в г. Каменске-Уральском, также мы можем оформить доставку транспортной компанией в любую точку СНГ.<br>Мы не являемся кредитными брокерами и не сотрудничаем с банками напрямую, но можем подсказать все нюансы оформления потребительского кредита.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq5">Какие габариты у прицепа? Он войдет в гараж?</span>
+        </div>
+        <div id="faq5" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Высота наших прицепов соответствует нормам ПДД и составляет:</p>
+          <ul>
+           <li>для Кочевника,Туриста- высота 2м (с учетом солнечной панели и маркизы), ширина также 2м, длина 4м</li>
+           <li>для Турист-Плюс,Гранд Туриста- высота 2,18м (с учетом солнечной панели и маркизы), ширина 2м, длина 4,5м</li>
+          </ul>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq6">Температурный режим использования. До какой погоды комфортно ночевать в кемпере?</span>
+        </div>
+        <div id="faq6" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Наши прицепы предназначены для использования как в летний период до +15С (без установки отопителя), так и в осенне-весенний до -20С (с установленным отопителем).</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq7">Сколько стоит кемпер?</span>
+        </div>
+        <div id="faq7" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Цена кемпера зависит от выбранной модели и дополнительных опций. Стоимость прицепа в базовых комплектациях на нашем сайте от 380 000 до 500 000 рублей. <br>В конфигураторе вы можете посмотреть все доступные опции на каждую модель и их цену.</p>
+          <p>Так же оставив заявку у нас на сайте ,вы можете получить консультацию опытных менеджеров,которые расскажу все тонкости ,и помогут с выбором Автодома.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq8">Какие факторы влияют на стоимость?</span>
+        </div>
+        <div id="faq8" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Существует несколько факторов, влияющих на стоимость кемперов.</p>
+          <p>Такие как:</p>
+          <p>-Выбор модели Кемпера,</p>
+          <p>-Количество выбранных опций</p>
+          <p>-Индивидуальные пожелания*</p>
+          <p><br>Чем больше выбрано дополнительных опций, тем выше итоговая стоимость вашего кемпера.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq9">Где хранить кемпер? </span>
+        </div>
+        <div id="faq9" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Как и любой автомобиль, наш Кемпер можно хранить на улице.</p>
+          <p>Более надежный вариант - хранение под навесом, что защищает от града, дождя и снега.</p>
+          <p>Максимальная защита - хранение в крытом паркинге или гараже, так вы не только защитите от неблагоприятных погодных условий но и от кражи или порчи третьими лицами. <br><br>Существуют специализированные паркинги для кемперов, которые могут стать отличным решением, если у вас нет гаража. Также мы можем предложить вам опцию чехла-накидки, для защиты от осадков и загрязнений во время долгой стоянки на улице. Правильный выбор места хранения поможет сохранить ваш кемпер в отличном состоянии на протяжении многих лет.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq10">Как обслуживать кемпер?</span>
+        </div>
+        <div id="faq10" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Есть отдельная инструкция, о том как подготовить прицеп для <a href="https://camper-ural.ru/company/articles/kak-podgotovit-kemper-k-dolgosrocnomu-xraneniiu" target="_blank" rel="noopener">зимнего хранения</a>. Перед началом сезона, после длительной стоянки важно проверить протяжку всех болтовых соединений рамы и колес, провести визуальный осмотр стыков на отсутствие трещин или течей, пополнить расходники, залить в бак воду и зарядить аккумулятор. Наружная мойка кузова и приборка внутри - по мере необходимости.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq11">Какие особенности нужно учитывать при выборе кемпера?</span>
+        </div>
+        <div id="faq11" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Первый вопрос, который мы задаем при выборе прицепа - какой будет тягач? <br>Для моделей Кочевник и Турист у вашего автомобиля должна быть мощность от 120 л.с.<br>Турист Плюс и Гранд Турист уже тяжелее, их тянуть сможет авто с двигателем от 150 л.с.</p>
+          <p><br>Второй важный фактор - количество спальных мест. <br>В любой из наших моделей с комфортом могут разместиться два взрослых человека на матрасе 200х140см.<br>В моделях Кочевник, Турист и Турист Плюс можно установить дополнительно полку для ребенка ростом не более 130см (Детский матрас тоже есть в опциях). А в Гранд Туристе можно организовать верхний уровень для второй пары взрослых со спальным местом 180Х140см.</p>
+          <p>Остальное оснащение мы поможем подобрать под ваши сценарии эксплуатации.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq12">Можно ли перевозить людей в прицепе-кемпере во время движения?</span>
+        </div>
+        <div id="faq12" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Нет, перевозка людей в&nbsp;прицепе-кемпере запрещена Правилами дорожного движения (п. 22.8&nbsp;ПДД РФ). Прицеп не&nbsp;предназначен для перевозки пассажиров на&nbsp;ходу.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq13">Нужны ли специальные права для управления прицепом-кемпером?</span>
+        </div>
+        <div id="faq13" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>Нет, достаточно прав категории&nbsp;B.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+       <div class="question" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="card-header"><span itemprop="name" class="collapsed" data-bs-toggle="collapse" data-bs-target="#faq14">Где можно остановиться на ночёвку с прицепом-кемпером?</span>
+        </div>
+        <div id="faq14" class="collapse" data-bs-parent="#accordion" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+         <div class="answer">
+          <p itemprop="text"></p>
+          <p>В&nbsp;кемпингах, на&nbsp;автопарковках, а&nbsp;также в&nbsp;разрешённых местах стоянки&nbsp;— если это не&nbsp;частная территория и&nbsp;не&nbsp;нарушает ПДД.</p>
+          <p></p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="camp-place center">
+    <div class="camp-place-title">
+     <div class="container">
+      <h3>Дом с вами <span>в любом месте</span></h3>
+     </div>
+    </div>
+    <div class="container">
+     <div class="camp-place-block row">
+      <div class="col-md-4">
+       <div class="camp-place-blks">
+        <div class="camp-place-blk"><span class="title-h3">4 разных кузова</span>
+         <p>Разный форм-фактор под&nbsp;мощность вашего автомобиля</p>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-4">
+       <div class="camp-place-blks">
+        <div class="camp-place-blk"><span class="title-h3">Оцинкованная рама</span>
+         <p>Дополнительный слой защиты от&nbsp;ржавчины для уверенности, что&nbsp;ваш кемпер прослужит больше 10&nbsp;лет.</p>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-4">
+       <div class="camp-place-blks">
+        <div class="camp-place-blk"><span class="title-h3">Собственное производство</span>
+         <p>Полностью отвечаем за&nbsp;создание вашего дома-прицепа. Поэтому уверены в&nbsp;качестве и&nbsp;даем на&nbsp;него гарантию.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div>
+  <section class="useful">
+   <div class="container">
+    <div class="flex useful-info-block">
+     <h2>Полезное <span>о жилых прицепах</span></h2> <a href="/company/articles/" class="btn btn-warning uses">Блог о кемперах</a>
+     <div class="swiper-arrow">
+      <div class="swiper-button-prev useful-prev"></div>
+      <div class="swiper-button-next useful-next"></div>
+     </div>
+    </div>
+    <div class="swiper usefulSwiper">
+     <div class="swiper-wrapper">
+      <div class="swiper-slide">
+       <div class="useful-blk"><a href="/company/articles/zizn-v-kempere-pliusy-minusy-i-stoit-li-meniat-kvartiru-na-avtodom"> <img src="/uploads/articles/01JVEXC6Q4NYZVNP5KA67F4WH0.jpg" alt="Жизнь в&nbsp;кемпере: плюсы, минусы и&nbsp;стоит&nbsp;ли менять квартиру на&nbsp;автодом. Кемпер-Урал" title="Жизнь в&nbsp;кемпере: плюсы, минусы и&nbsp;стоит&nbsp;ли менять квартиру на&nbsp;автодом. Кемпер-Урал"> </a>
+        <div class="useful-info"><a href="/company/articles/zizn-v-kempere-pliusy-minusy-i-stoit-li-meniat-kvartiru-na-avtodom" class="title">Жизнь в&nbsp;кемпере: плюсы, минусы и&nbsp;стоит&nbsp;ли менять квартиру на&nbsp;автодом</a>
+         <p></p>
+         <p>Последние годы все больше людей задумываются о&nbsp;том, стоит&nbsp;ли менять привычную городскую квартиру на&nbsp;дом на&nbsp;колесах. Для одних кемпер&nbsp;— это способ путешествовать без ограничений, для

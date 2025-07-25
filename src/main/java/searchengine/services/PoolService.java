@@ -1,5 +1,6 @@
 package searchengine.services;
 
+import searchengine.config.SnippetSearcherConfiguration;
 import searchengine.config.UserAgentList;
 import searchengine.services.indexEntityService.IndexEntityService;
 import searchengine.services.lemmaService.LemmaService;
@@ -13,4 +14,6 @@ public interface PoolService {
     LemmaService getLemmaService();
     IndexEntityService getIndexEntityService();
     UserAgentList getUserAgentList();
+
+    SnippetSearcherConfiguration getSnippetSearcherConfiguration();
 }
