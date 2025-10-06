@@ -2,7 +2,7 @@ package searchengine.services.indexService;
 
 import lombok.Getter;
 import lombok.Setter;
-import searchengine.dto.indexing.ResultResponseError;
+import searchengine.dto.indexing.IndexingResponseError;
 import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.model.StatusIndex;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @Getter
 @Setter
 public class ExecutorServiceForParsingSite implements Callable<IndexingResponse> {
-    // private Site url;
+
     private SiteDto siteDto;
     private PoolService poolService;
 
@@ -31,7 +31,7 @@ public class ExecutorServiceForParsingSite implements Callable<IndexingResponse>
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         //   try {
         HtmlParser htmlParser  = new HtmlParser(siteDto.getUrl(), siteDto, poolService);
-        forkJoinPool.invoke(htmlParser); // пока метод не отработает со всеми fork код дальше не пойдет
+        forkJoinPool.invoke(htmlParser); // пока метод не отработает со всеми fork, код дальше не пойдет
 
         if (htmlParser.isDone() && siteDto.getStatusIndex().compareTo(StatusIndex.FAILED) != 0 && !UtilitiesIndexing.stopStartIndexingMethod) {
             siteDto.setStatusIndex(StatusIndex.INDEXED);
@@ -47,8 +47,7 @@ public class ExecutorServiceForParsingSite implements Callable<IndexingResponse>
             poolService.getSiteService().saveSiteDto(siteDto);
             Logger.getLogger(IndexServiceImp.class.getName()).info("siteEntity.setLastError(\"Индексация остановлена пользователем\");");
 
-           // indexingResponseForFuture = new IndexingResponse(false);
-            indexingResponseForFuture = new ResultResponseError(false, siteDto.getLastError());
+            indexingResponseForFuture = new IndexingResponseError(false, siteDto.getLastError());
         }
 
         forkJoinPool.shutdown();

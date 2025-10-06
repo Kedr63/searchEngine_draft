@@ -11,11 +11,6 @@ import java.util.Optional;
 @Repository
 public interface PageRepository extends JpaRepository<PageEntity, Integer> {
 
-    //public ResponseEntity<PageEntity> findAllBy(String urlAddress);
-
-    /*@Query(value = "SELECT path FROM search_engine.page where path LIKE :path", nativeQuery = true)
-    Optional<String> findByPath(String path);*/
-
     @Query(value = "SELECT path FROM search_engine.page where path LIKE :path AND site_id =:siteId", nativeQuery = true)
     Optional<String> findByPath(String path, int siteId);
 

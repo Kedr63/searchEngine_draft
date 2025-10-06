@@ -11,7 +11,4 @@ public interface IndexService {
 
     IndexingResponse indexSinglePage(String pageUrl);
 
-
-
-    //   public IndexResponseError throwsException() throws IOException;
 }

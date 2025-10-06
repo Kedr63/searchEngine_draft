@@ -196,7 +196,7 @@ public class SearchServiceImpl implements SearchService {
         // Map<String, Integer> tempMap;
         LemmaParser lemmaParser = new LemmaParser(poolService);
         /* универсальный метод: применим его, поэтому пришлось создать map */
-        Map<String, Integer> tempMap = lemmaParser.extractFutureLemmasFromTextForMap(textQuery);
+        Map<String, Integer> tempMap = lemmaParser.extractLemmaToAmountOnPageFromTextForMap(textQuery);
         Set<String> setLemmaWordFromMap = tempMap.keySet();
         LemmaService lemmaService = poolService.getLemmaService();
         for (String lemma : setLemmaWordFromMap) {

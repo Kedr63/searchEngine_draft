@@ -1,6 +1,11 @@
 {
   "groups": [
     {
+      "name": "error-message",
+      "type": "searchengine.config.ErrorMessageConfig",
+      "sourceType": "searchengine.config.ErrorMessageConfig"
+    },
+    {
       "name": "indexing-settings",
       "type": "searchengine.config.SitesList",
       "sourceType": "searchengine.config.SitesList"
@@ -17,6 +22,26 @@
     }
   ],
   "properties": [
+    {
+      "name": "error-message.error-incomplete-indexing",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.ErrorMessageConfig"
+    },
+    {
+      "name": "error-message.error-indexing-already-running",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.ErrorMessageConfig"
+    },
+    {
+      "name": "error-message.error-matching-site-url-of-site-list",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.ErrorMessageConfig"
+    },
+    {
+      "name": "error-message.indexing-not-progress-error",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.ErrorMessageConfig"
+    },
     {
       "name": "indexing-settings.sites",
       "type": "java.util.List<searchengine.config.Site>",

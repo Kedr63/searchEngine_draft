@@ -66,13 +66,15 @@ user-agents-settings:
     - name: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Vivaldi/6.1.3035.75
     - name: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML, как Gecko) Chrome / 80.0.3987.149 Safari / 537.36 OPR / 67.0.3575.115
 
-errorIndexingNotRunning: "Индексация не запущена"
-errorIndexingAlreadyRunning: "Индексация уже запущена"
-errorMatchingSiteUrlOfSiteList: "Данная страница находится за пределами сайтов, указанных в конфигурационном файле"
+error-message:
+  errorIndexingNotRunning: "Индексация не запущена"
+  errorIndexingAlreadyRunning: "Индексация уже запущена"
+  errorMatchingSiteUrlOfSiteList: "Данная страница находится за пределами сайтов, указанных в конфигурационном файле"
+  errorIncompleteIndexing: "Индексация не удалась"
+
 
 errorSearchNotIndexedSite: "Отсутствуют проиндексированные сайты"
 errorSearchQueryEmpty: "Задан пустой поисковый запрос"
-errorIncompleteIndexing: "Индексация не удалась"
 errorSearchLemmaInContent: "Данные слова отсутствуют в контенте страниц сайтов"
 
 offset: 0

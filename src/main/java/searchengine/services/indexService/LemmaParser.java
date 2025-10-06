@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 
 public class LemmaParser {
 
-    //    private final LemmaService lemmaService;
-//    private final IndexEntityService indexEntityService;
     private final PoolService poolService;
 
     public LemmaParser(PoolService poolService) {
@@ -42,11 +40,11 @@ public class LemmaParser {
         return map;
     }*/
 
-    public Map<String, Integer> getLemmasFromDocumentPage(Document document) throws IOException {
+    public Map<String, Integer> getLemmasToAmountOnPageFromDocumentPage(Document document) throws IOException {
         //  Map<String, Integer> mappingLemmaToAmountOnPage = new HashMap<>();
         //  String textOfContentFromPage = document.body().text().toLowerCase();
         String textOfContentFromPage = TextContentFromPageParser.extractSemanticTextFromPage(document);
-        return extractFutureLemmasFromTextForMap(textOfContentFromPage);
+        return extractLemmaToAmountOnPageFromTextForMap(textOfContentFromPage);
     }
 
 
@@ -63,8 +61,8 @@ public class LemmaParser {
              }
          }
      }*/
-    public Map<String, Integer> extractFutureLemmasFromTextForMap(String text) throws IOException {
-        List<String> wordsText = Arrays.stream(text.split("[^а-яё]")).toList();
+    public Map<String, Integer> extractLemmaToAmountOnPageFromTextForMap(String text) throws IOException {
+        List<String> wordsText = Arrays.stream(text.split("[^А-Яа-яё]")).toList();
         LemmaService lemmaService = poolService.getLemmaService();
         Map<String, Integer> map = new HashMap<>();
         for (String word : wordsText) {
@@ -118,7 +116,7 @@ public class LemmaParser {
         return result;
     }
 
-    public void getLemmaDtoAndSaveBD(SiteDto siteDto, PageDto pageDto, Map<String, Integer> lemmasMap) throws IOException {
+    public void getLemmaDtoAndIndexDto(SiteDto siteDto, PageDto pageDto, Map<String, Integer> lemmasMap) throws IOException {
         LemmaService lemmaService = poolService.getLemmaService();
 
         for (Map.Entry<String, Integer> entry : lemmasMap.entrySet()) {
@@ -126,7 +124,6 @@ public class LemmaParser {
             IndexDto indexDto;
             // int lemmaId;
             synchronized (UtilitiesIndexing.lockLemmaRepository) {
-                // int lemmaId = lemmaService.getLemmaId(entry.getKey(), siteEntity.getId());
                 Optional<Integer> optionalLemmaId = lemmaService.getLemmaId(entry.getKey(), siteDto.getId());
                 if (optionalLemmaId.isEmpty()) {
                     lemmaDto = createLemmaDto(entry.getKey(), siteDto);
@@ -138,31 +135,21 @@ public class LemmaParser {
                     lemmaDto = lemmaService.saveLemmaDto(lemmaDto);
                 }
             }
-            // TODO fix count lemma in page (now many) - DONE
             indexDto = createIndexDto(lemmaDto, pageDto, entry.getValue());
             poolService.getIndexEntityService().saveIndexDto(indexDto);
         }
     }
 
     private IndexDto createIndexDto(LemmaDto lemmaDto, PageDto pageDto, int ranting) {
-        synchronized (UtilitiesIndexing.lockIndexLemmaService) {
+     //   synchronized (UtilitiesIndexing.lockIndexLemmaService) {
             IndexDto indexDto = new IndexDto();
             indexDto.setLemmaId(lemmaDto.getId());
             indexDto.setPageId(pageDto.getId());
             indexDto.setRanting(ranting);
             return indexDto;
-        }
+     //   }
     }
 
-    //    public LemmaEntity createLemmaEntity(String word, SiteDto site) throws IOException {
-//        //  synchronized (UtilitiesIndexing.lockLemmaRepository) {
-//        LemmaEntity lemmaEntity = new LemmaEntity();
-//        lemmaEntity.setLemma(word);
-//        lemmaEntity.setSite(site.getId());
-//        lemmaEntity.setFrequency(1);
-//        return lemmaEntity;
-//        // }
-//    }
     public LemmaDto createLemmaDto(String word, SiteDto site) throws IOException {
         //  synchronized (UtilitiesIndexing.lockLemmaRepository) {
         LemmaDto lemmaDto = new LemmaDto();

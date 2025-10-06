@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+// этот слой сервис работает с данными базы по сущности SiteEntity
 public class SiteServiceImp implements SiteService {
 
     private final SiteRepository siteRepository;
-    //  private final PageService pageService;
     private final ModelMapper modelMapper;
 
 
@@ -73,11 +73,6 @@ public class SiteServiceImp implements SiteService {
     public void deleteAllSiteEntity() {
         Logger.getLogger(SiteServiceImp.class.getName()).info(" в методе - deleteAll   siteRepository.deleteAll()");
         siteRepository.deleteAllSiteEntity();
-//        List<SiteEntity> siteEntities = siteRepository.findAll();
-//        for (SiteEntity siteEntity : siteEntities) {
-//            pageService.deletePageEntityWhereSiteId(siteEntity.getId());
-//            siteRepository.delete(siteEntity);
-//        }
     }
 
     @Override

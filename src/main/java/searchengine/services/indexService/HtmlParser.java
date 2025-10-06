@@ -9,6 +9,7 @@ import searchengine.config.UserAgent;
 import searchengine.dto.dtoToBD.PageDto;
 import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.DocumentParsed;
+import searchengine.exceptions.FailedConnectionException;
 import searchengine.model.StatusIndex;
 import searchengine.services.PoolService;
 import searchengine.services.pageService.PageService;
@@ -30,8 +31,6 @@ public class HtmlParser extends RecursiveAction {
     private String url;
     private SiteDto siteDto;
     private PoolService poolService;
-
-    // public static boolean indexSinglePage;
 
     public HtmlParser() {
     }
@@ -70,7 +69,7 @@ public class HtmlParser extends RecursiveAction {
 //                        .content("")   // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
 //                        .siteId(siteDto.getId())
 //                        .build(); // экспериментирую вместо \new PageDto()\
-                pageDto = poolService.getPageService().savePageDto(pageDto);
+//                pageDto = poolService.getPageService().savePageDto(pageDto);
 //
 //                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
                 Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
@@ -95,23 +94,19 @@ public class HtmlParser extends RecursiveAction {
             return;
         }
 
-        // TODO определить как контент заполняет pageEntity
-        // и далее заполним pageEntity остальными данными, если нет IOException
+        // если нет IOException -> заполним pageEntity остальными данными
         fillPageDtoAndSaveBD(pageDto, documentParsed);
 
         siteDto.setStatusTime(LocalDateTime.now());
         siteDto = poolService.getSiteService().saveSiteDto(siteDto);
 
-        //  searchLemmasInPage(pageEntity, siteEntity, poolService);
         getLemmasFromPage(documentParsed.getDoc(), pageDto, siteDto, poolService);
-
 
         if (UtilitiesIndexing.computeIndexingSinglePage) { // при индексации отдельной страницы здесь прервем код
             return;
         }
 
-
-        List<String> searchLinks = documentParsed.getDoc()
+        List<String> listOfLinksFoundOnThisPage = documentParsed.getDoc()
                 .select("body")
                 .select("a[href~=^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$]")
                 .stream().map(element -> element.attr("href"))
@@ -121,11 +116,11 @@ public class HtmlParser extends RecursiveAction {
         // выражением ("/" ноль или несколько букв, подчеркивание или цифр (\\w*) и это конец текста (\\z) | или в конце текста / (\w/\z)
         // | или в конце .html
 
-//           Elements searchLinks = doc.select("a[href^=/][href~=(/\\w*\\z|\\w/\\z|.html)]")
+//           Elements listOfLinksFoundOnThisPage = doc.select("a[href^=/][href~=(/\\w*\\z|\\w/\\z|.html)]")
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-        for (String link : searchLinks) {
+        for (String link : listOfLinksFoundOnThisPage) {
             synchronized (UtilitiesIndexing.lockPageRepository) {
                 // если такая ссылка link есть в БД, то переходим к следующему элементу цикла
                 if (isPresentPathInPageRepository(extractLocalAddressUrl(link, siteDto), siteDto.getId(), poolService.getPageService())) {
@@ -251,9 +246,9 @@ public class HtmlParser extends RecursiveAction {
         String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " "); // очистим String от смайликов в тексте (https://sky.pro/wiki/java/udalenie-emodzi-i-znakov-iz-strok-na-java-reshenie/)
         pageDto.setContent(cleanContent);
         PageService pageService = poolService.getPageService();
-        synchronized (UtilitiesIndexing.lockPageRepository) {
-           PageDto savedPageDto = pageService.savePageDto(pageDto);
-        }
+     //   synchronized (UtilitiesIndexing.lockPageRepository) {
+           PageDto savedPageDto = pageService.savePageDto(pageDto); // обновим сущ-ую запись в БД
+      //  }
     }
 
     private String generateUserAgent() {
@@ -310,11 +305,18 @@ public class HtmlParser extends RecursiveAction {
         if (pageDto.getCode() == 200) {
             try {
                 LemmaParser lemmaParser = new LemmaParser(poolService);
-                Map<String, Integer> mapLemma = lemmaParser.getLemmasFromDocumentPage(document);
-                lemmaParser.getLemmaDtoAndSaveBD(siteDto, pageDto, mapLemma);
+                Map<String, Integer> lemmasCountsMap = lemmaParser.getLemmasToAmountOnPageFromDocumentPage(document);
+                lemmaParser.getLemmaDtoAndIndexDto(siteDto, pageDto, lemmasCountsMap);
             } catch (IOException | NullPointerException e) {
                 Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx lemma - " + e.getMessage());
-                throw new RuntimeException(e);
+                saveLastErrorInSiteEntity(e);
+               // throw new RuntimeException(e.getMessage(), e.getCause());
+                if (e instanceof IOException){
+                    Logger.getLogger(HtmlParser.class.getName()).info("перед FailedConnectionException");
+                    throw new FailedConnectionException(((IOException) e).getMessage());
+                } else {
+                    throw new IllegalArgumentException(((NullPointerException) e).getMessage(), ((NullPointerException) e).getCause());
+                }
             }
         }
     }

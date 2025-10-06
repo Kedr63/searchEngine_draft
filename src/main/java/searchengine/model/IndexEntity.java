@@ -27,5 +27,4 @@ public class IndexEntity {
 
     @Column(columnDefinition = "FLOAT", nullable = false)
     private float ranting; // было int
-
 }

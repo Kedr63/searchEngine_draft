@@ -29,7 +29,8 @@ public class TextContentFromPageParser {
            if (sizeTextSet != counter) {
                textFromSetWithTagSeparatorBuilder.append(text).append(" | ");
            } else {
-               textFromSetWithTagSeparatorBuilder.append(text);
+               textFromSetWithTagSeparatorBuilder.append(text); // когда counter станет равен sizeTextSet (на
+              // последнем элементе sizeTextSet)(после перебора циклом), то добавим только text без | в конце
            }
            counter++;
        }
@@ -38,18 +39,18 @@ public class TextContentFromPageParser {
 
     private static Elements filterElementsWithSemanticTextContentOfPage(Document document) {
         Elements elements = document.select("body > *"); //выберем все Element внутри body
-        List<String> tagsToDeleteList = List.of("header", "footer");
+        List<String> listTagsToDelete = List.of("header", "footer");
         int deleterElements = elements.size(); // для удаления элементов после footer
         for (int i = 0; i < elements.size(); i++) {
-            if (elements.get(i).tagName().equals(tagsToDeleteList.get(0))) {
+            if (elements.get(i).tagName().equals(listTagsToDelete.get(0))) {
                 elements.get(i).remove();
                 continue;
             }
-            if (elements.get(i).tagName().equals(tagsToDeleteList.get(1))) {
+            if (elements.get(i).tagName().equals(listTagsToDelete.get(1))) {
                 elements.get(i).remove();
                 deleterElements = i;
             }
-            if (i > deleterElements) {
+            if (i > deleterElements) { // элементы после footer
                 elements.get(i).remove();
             }
         }

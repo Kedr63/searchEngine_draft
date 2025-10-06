@@ -14,6 +14,7 @@ import searchengine.services.siteService.SiteService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,22 +29,23 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         TotalStatistics total = new TotalStatistics();
         total.setSites(sites.getSites().size());
-        //  total.setIndexing(true);
 
         List<DetailedStatisticsItem> statisticsItems = new ArrayList<>();
         List<Site> sitesList = sites.getSites();
+
         for (Site site : sitesList) {
             DetailedStatisticsItem item = new DetailedStatisticsItem();
             item.setName(site.getName());
             item.setUrl(site.getUrl());
 
             SiteService siteService = poolService.getSiteService();
-            //   int idSiteEntity = siteService.getIdSiteEntityByUrl(site.getUrl());
-            if (siteService.getSiteDtoByUrl(site.getUrl()).isPresent()) {
-                SiteDto siteDto = siteService.getSiteDtoByUrl(site.getUrl()).get();
+            /** ниже будем доставать из БД данные по сайту для статистики */
+            Optional<SiteDto> siteDtoOptional = siteService.getSiteDtoByUrl(site.getUrl());
+            if (siteDtoOptional.isPresent()) {
+                SiteDto siteDto = siteDtoOptional.get();
                 int idSiteDto = siteDto.getId();
                 int pages = poolService.getPageService().getCountPagesOfSite(idSiteDto);
-              //  int pages = siteDto.getPageDtoList().size();
+                //  int pages = siteDto.getPageDtoList().size();
                 int lemmas = poolService.getLemmaService().getCountLemmasOfSite(idSiteDto);
                 item.setPages(pages);
                 item.setLemmas(lemmas);
@@ -54,8 +56,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 //   SiteDto siteDto = siteService.getSiteDto();
                 total.setPages(total.getPages() + pages);
                 total.setLemmas(total.getLemmas() + lemmas);
-            }
-            else { // site еще не индексирован
+            } else { // site еще не индексирован
                 item.setPages(0);
                 item.setLemmas(0);
             }
@@ -70,10 +71,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
 
         StatisticsResponse statisticsResponse = new StatisticsResponse();
-        StatisticsData data = new StatisticsData();
-        data.setTotal(total);
-        data.setDetailed(statisticsItems);
-        statisticsResponse.setStatistics(data);
+        StatisticsData statisticsData = new StatisticsData();
+        statisticsData.setTotal(total);
+        statisticsData.setDetailed(statisticsItems);
+        statisticsResponse.setStatistics(statisticsData);
         statisticsResponse.setResult(total.isIndexing());
 
         return statisticsResponse;

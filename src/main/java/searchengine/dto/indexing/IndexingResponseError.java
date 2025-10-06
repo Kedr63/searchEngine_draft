@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResultResponseError extends IndexingResponse {
+public class IndexingResponseError extends IndexingResponse {
     private String error;
 
-    public ResultResponseError(boolean result, String error) {
+    public IndexingResponseError(boolean result, String error) {
         super(result);
         this.error = error;
     }

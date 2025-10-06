@@ -1,20 +1,18 @@
 package searchengine.services.indexService;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import searchengine.config.ErrorMessageConfig;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
-import searchengine.dto.indexing.ResultResponseError;
 import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.exceptions.IllegalMethodException;
-import searchengine.exceptions.IncompleteIndexingException;
 import searchengine.exceptions.NoSuchSiteException;
-import searchengine.exceptions.UtilityException;
 import searchengine.model.StatusIndex;
 import searchengine.services.PoolService;
 import searchengine.services.pageService.PageService;
 import searchengine.services.siteService.SiteService;
+import searchengine.services.utility.TimerExecution;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -37,7 +34,9 @@ public class IndexServiceImp implements IndexService {
 
     private final SitesList sitesList;
 
-    @Value("${errorIndexingNotRunning}")
+    private final ErrorMessageConfig errorMessageConfig;
+
+   /* @Value("${errorIndexingNotRunning}")
     private String indexingNotProgressError;
 
     @Value("${errorIndexingAlreadyRunning}")
@@ -47,7 +46,7 @@ public class IndexServiceImp implements IndexService {
     private String errorMatchingSiteUrlOfSiteList;
 
     @Value("${errorIncompleteIndexing}")
-    private String errorIncompleteIndexing;
+    private String errorIncompleteIndexing;*/
 
     protected static long countOfHtmlParser = 1;
 
@@ -55,24 +54,24 @@ public class IndexServiceImp implements IndexService {
 
     protected static String tmp = "Return";
 
-    long start;
+ //   long start;
 
 
-    public IndexServiceImp(PoolService poolService, SitesList sitesList) {
+    public IndexServiceImp(PoolService poolService, SitesList sitesList, ErrorMessageConfig errorMessageConfig) {
         this.poolService = poolService;
         this.sitesList = sitesList;
+        this.errorMessageConfig = errorMessageConfig;
     }
 
     @Override
     public IndexingResponse startIndexing() {
         if (UtilitiesIndexing.indexingInProgress) {
-            throw new IllegalMethodException(errorIndexingAlreadyRunning);
+            throw new IllegalMethodException(errorMessageConfig.getErrorIndexingAlreadyRunning());
         }
 
-        //   UtilitiesIndexing.StopStartIndexing = true; // при запущенной индексации это значение - true
         UtilitiesIndexing.indexingInProgress = true; // при запущенной индексации это значение - true
 
-        start = System.currentTimeMillis();
+        TimerExecution.startTime = System.currentTimeMillis();
 
         cascadeDeletionAllEntities();
 
@@ -93,9 +92,8 @@ public class IndexServiceImp implements IndexService {
         }
 
         executorService.shutdown();
-        List<IndexingResponse> IndexingResponseList = getIndexingResponseListFromFutureList(futureList);
-        return getResultIndexingResponse(IndexingResponseList);
-
+        List<IndexingResponse> IndexingResponseList = UtilitiesIndexing.getIndexingResponseListFromFutureList(futureList);
+        return UtilitiesIndexing.getTotalResultIndexingResponse(IndexingResponseList);
     }
 
 
@@ -103,11 +101,11 @@ public class IndexServiceImp implements IndexService {
     public IndexingResponse stopIndexing() {
 
         if (!UtilitiesIndexing.indexingInProgress) {
-            throw new IllegalMethodException(indexingNotProgressError);
+            throw new IllegalMethodException(errorMessageConfig.getIndexingNotProgressError());
         }
 
         UtilitiesIndexing.stopStartIndexingMethod = true; // в классе HtmlParser поменяется флаг и рекурсия начнет останавливаться
-        // и join-ы будут ждать результатов и возвращать рузультаты наверх в класс ExecutorServiceForParsingSite
+        // и join-ы будут ждать результатов и возвращать результаты наверх в класс ExecutorServiceForParsingSite
 
         return UtilitiesIndexing.waitForCompleteStartIndexingAndTerminateStopIndexing();
     }
@@ -124,13 +122,13 @@ public class IndexServiceImp implements IndexService {
         if (sitesList.getSites()
                 .stream()
                 .noneMatch(s -> s.getUrl().equals(domainPartOfAddressUrl))) {
-            throw new NoSuchSiteException(errorMatchingSiteUrlOfSiteList);
+            throw new NoSuchSiteException(errorMessageConfig.getErrorMatchingSiteUrlOfSiteList());
         }
 
         SiteDto siteDto;
         if (siteService.getSiteDtoByUrl(domainPartOfAddressUrl).isPresent()){
             siteDto = siteService.getSiteDtoByUrl(domainPartOfAddressUrl).get();
-        } else throw new NoSuchSiteException(errorIncompleteIndexing);
+        } else throw new NoSuchSiteException(errorMessageConfig.getErrorIncompleteIndexing());
 
 
         String pageLocalUrl = decodedUrl.replaceAll(regex, "$2");
@@ -173,73 +171,6 @@ public class IndexServiceImp implements IndexService {
     }
 
 
-    private List<IndexingResponse> getIndexingResponseListFromFutureList(List<Future<IndexingResponse>> futureList) {
-        List<IndexingResponse> indexingResponseList = new ArrayList<>();
-        IndexingResponse indexingResponse;
-        for (Future<IndexingResponse> indexResponseFuture : futureList) {
-            try {
-                indexingResponse = indexResponseFuture.get(); // если в HtmlParser выбросим RuntimeException(ex) в методе \saveLastErrorInSiteEntity\,
-                // ExecutorService wrapper (обернет) RuntimeException in Future и метод \get\ выдаст исключение
-                // и здесь поймаем как (ExecutionException e) и обработаем ниже
-                indexingResponseList.add(indexingResponse);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                Logger.getLogger(IndexServiceImp.class.getName()).info("  after catch block   -- ExecutionException e - " + e.getCause());
-                indexingResponse = new ResultResponseError(false, UtilityException.getShortMessageOfException(e));
-                indexingResponseList.add(indexingResponse);
-            }
-        }
-        return indexingResponseList;
-    }
-
-
-    private IndexingResponse getResultIndexingResponse(List<IndexingResponse> indexingResponseList) {
-        int sizeList = indexingResponseList.size();
-        boolean hasIndexingResponseHavingValueFalse = false;
-        String error = "";
-
-        if (!indexingResponseList.isEmpty()) {
-           // int numberIndexHavingValueFalse = 0;
-
-            // цикл ниже: если будет получать boolean=false - то значение изменится на положительное
-            for (int i = 0; i < sizeList; i++) {
-                if (!(indexingResponseList.get(i)).isResult()) {
-                    hasIndexingResponseHavingValueFalse = true;
-                    ResultResponseError responseError = (ResultResponseError) indexingResponseList.get(i);
-                    error = responseError.getError();
-                  //  numberIndexHavingValueFalse = i;
-                }
-            }
-
-            double totalTime;
-            if (hasIndexingResponseHavingValueFalse) {
-                UtilitiesIndexing.isDoneStartIndexing();
-
-                totalTime = computeTimeExecution();
-                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime haveError = " + totalTime);
-
-                throw new IncompleteIndexingException(errorIncompleteIndexing + ": " + error);
-               // return indexingResponseList.get(numberIndexHavingValueFalse);
-            } else {
-
-                UtilitiesIndexing.isDoneStartIndexing();
-
-                totalTime = computeTimeExecution();
-                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
-
-                return indexingResponseList.get(sizeList - 1);
-            }
-
-
-        } else {
-            double totalTime = computeTimeExecution();
-            Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
-            return new ResultResponseError(false, "что то пошло не так");
-        }
-    }
-
-
     private void cascadeDeletionAllEntities() {  // каскадно удаляем сущности начиная с дочерних до родительских
         poolService.getIndexEntityService().deleteAllIndexEntity();
         poolService.getLemmaService().deleteAllLemmaEntities();
@@ -253,16 +184,8 @@ public class IndexServiceImp implements IndexService {
         poolService.getLemmaService().updateLemmaFrequency(idLemmaList);
         // poolService.getLemmaService().deleteLemmaEntityById(idLemmaList);
         poolService.getPageService().deletePageById(idPageEntity);
-
-
     }
 
-
-    private double computeTimeExecution() {
-        long end = System.currentTimeMillis();
-        // long start = 0;
-        return (double) (end - start) / 60_000;
-    }
 
 }
 
