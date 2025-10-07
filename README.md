@@ -3,4 +3,4 @@
 ## введите слово
 ### нажмите старт
 # Поисковик
-<img src="/home/kedr/Изображения/Снимки экрана/gif/" width="300"/>
+<img src="src/main/resources/Gifius.ru.gif" width="300"/>
