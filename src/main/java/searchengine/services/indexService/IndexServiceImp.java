@@ -14,8 +14,6 @@ import searchengine.services.pageService.PageService;
 import searchengine.services.siteService.SiteService;
 import searchengine.services.utility.TimerExecution;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,7 +110,8 @@ public class IndexServiceImp implements IndexService {
 
     @Override
     public IndexingResponse indexSinglePage(String page) {
-        String decodedUrl = URLDecoder.decode(page, StandardCharsets.UTF_8);
+       // String decodedUrl = URLDecoder.decode(page, StandardCharsets.UTF_8);
+        String decodedUrl = page;
         PageService pageService = poolService.getPageService();
         SiteService siteService = poolService.getSiteService();
         String regex = "(https://[^/]+)([^,\\s]+)"; // было "(https://[^,\s/]+)([^,\s]+)"

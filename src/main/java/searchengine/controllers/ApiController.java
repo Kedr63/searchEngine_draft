@@ -1,10 +1,9 @@
 package searchengine.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import searchengine.dto.dtoToBD.PageDtoSingle;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.dto.searching.SearchQuery;
 import searchengine.dto.searching.SearchingResponse;
@@ -34,12 +33,16 @@ public class ApiController {
         this.searchService = searchService;
     }
 
+    /**@return аналог кода ниже в теле метода
+     * <p>
+     *   StatisticsResponse statisticsResponse = statisticsService.getStatistics();
+     * </p>
+     * <p>
+     *   return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
+     * </p>*/
     @GetMapping("/statistics")
     public ResponseEntity<StatisticsResponse> statistics() {
         return ResponseEntity.ok(statisticsService.getStatistics());
-        /* аналог  */
-        ///        StatisticsResponse statisticsResponse = statisticsService.getStatistics();
-        //        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
     }
 
     @GetMapping("/startIndexing")
@@ -55,17 +58,47 @@ public class ApiController {
     }
 
 
-    // метод POST - Способ передачи данных: В теле HTTP-запроса
-    @PostMapping(value = "/indexPage",
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    // из формы браузера приходит запрос K-V: \ url	"https://kemperus.ru/special_camper" \ (например)
-    public ResponseEntity<IndexingResponse> indexPage(@RequestParam MultiValueMap<String,String> paramMap) {
-        // и здесь в контроллере декодируем адрес страницы в строку
-        String page = paramMap.get("url").get(0);
+    /**
+     * @param paramMap из формы браузера приходит запрос от пользователя в виде K-V: "url" - "https://kemperus.ru/special_camper"
+     * и здесь в контроллере декодируем адрес страницы сайта в строку
+     * <p>
+     * 📌 метод POST - Способ передачи данных: В теле HTTP-запроса
+     * </p>
+     * <p>
+     * 📌 Метод indexPage() будет вызван, когда поступает POST-запрос на путь /api/indexPage,
+     * а тело запроса (@RequestParam) будет передано в качестве аргумента paramMap.
+     * Причем тело запроса должно быть закодировано как форма (application/x-www-form-urlencoded): key=value&anotherKey=anotherValue
+     * </p>
+     * <p>
+     * 📌 пример тела запроса /x-www-form-urlencoded/
+     * "url" - "https://kemperus.ru/special_camper"
+     * </p>
+     * */
+
+//    @PostMapping(value = "/indexPage",
+//            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+//    public ResponseEntity<IndexingResponse> indexPage(@RequestParam MultiValueMap<String,String> paramMap) {
+//        String page = paramMap.get("url").get(0);
+//        IndexingResponse indexingResponse = indexService.indexSinglePage(page);
+//        return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
+//    }
+
+    @PostMapping(value = "/indexPage")
+    public ResponseEntity<IndexingResponse> indexPage(@ModelAttribute PageDtoSingle pageDtoSingle) {
+        String page = pageDtoSingle.getUrl();
         IndexingResponse indexingResponse = indexService.indexSinglePage(page);
         return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
     }
 
+    /**
+     * @param query Spring возьмёт каждое свойство из URL-параметров и присвоит соответствующие значения
+     *              полям объекта SearchQuery
+     *              <p>
+     * @aboutAnnotation @ModelAttribute даёт возможность создать экземпляр указанного класса и заполнить
+     *                его поля значениями из запроса. Это удобно для ситуаций, когда вам нужно передать
+     *                несколько полей одновременно, упакованных в единый объект (обычно DTO)
+     *              </p>
+     *  */
     @GetMapping( "/search") // метод GET - Способ передачи данных: через URL
     // про @ModelAttribute - https://sky.pro/wiki/java/peredacha-slozhnogo-obyekta-kak-get-parametra-v-spring-mvc/
     public ResponseEntity<SearchingResponse> search(@ModelAttribute SearchQuery query) {
