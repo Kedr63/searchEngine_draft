@@ -1,5 +1,6 @@
 package searchengine.services;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import searchengine.config.SnippetSearcherConfiguration;
@@ -10,6 +11,7 @@ import searchengine.services.pageService.PageService;
 import searchengine.services.siteService.SiteService;
 
 @Setter
+@Getter
 @Service
 public class PoolServiceImpl implements PoolService {
 
@@ -30,33 +32,33 @@ public class PoolServiceImpl implements PoolService {
         this.snippetSearcherConfiguration = snippetSearcherConfiguration;
     }
 
-    @Override
-    public SiteService getSiteService() {
-        return siteService;
-    }
-
-    @Override
-    public PageService getPageService() {
-        return pageService;
-    }
-
-    @Override
-    public LemmaService getLemmaService() {
-        return lemmaService;
-    }
-
-    @Override
-    public IndexEntityService getIndexEntityService() {
-        return indexEntityService;
-    }
-
-    @Override
-    public UserAgentList getUserAgentList() {
-        return userAgentList;
-    }
-
-    @Override
-    public SnippetSearcherConfiguration getSnippetSearcherConfiguration() {
-        return snippetSearcherConfiguration;
-    }
+//    @Override
+//    public SiteService getSiteService() {
+//        return siteService;
+//    }
+//
+//    @Override
+//    public PageService getPageService() {
+//        return pageService;
+//    }
+//
+//    @Override
+//    public LemmaService getLemmaService() {
+//        return lemmaService;
+//    }
+//
+//    @Override
+//    public IndexEntityService getIndexEntityService() {
+//        return indexEntityService;
+//    }
+//
+//    @Override
+//    public UserAgentList getUserAgentList() {
+//        return userAgentList;
+//    }
+//
+//    @Override
+//    public SnippetSearcherConfiguration getSnippetSearcherConfiguration() {
+//        return snippetSearcherConfiguration;
+//    }
 }

@@ -15,6 +15,10 @@ public class Application {
 //        System.out.println("regex " + snippetSearcherConfiguration.getRegexSearcher());
 //
 //        PoolService poolService = context.getBean(PoolService.class);
+//        System.out.println(poolService.getUserAgentList().getUserAgents());
+//        SitesList sitesList = context.getBean(SitesList.class);
+//        System.out.println();
+//        System.out.println(sitesList.getSites().get(0).getName());
 //        SnippetSearcher snippetSearcher = new SnippetSearcherRegexImpl(poolService);
 //        System.out.println(23);
 

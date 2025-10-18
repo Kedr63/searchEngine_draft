@@ -110,13 +110,10 @@ public class IndexServiceImp implements IndexService {
 
     @Override
     public IndexingResponse indexSinglePage(String page) {
-       // String decodedUrl = URLDecoder.decode(page, StandardCharsets.UTF_8);
-        String decodedUrl = page;
         PageService pageService = poolService.getPageService();
         SiteService siteService = poolService.getSiteService();
         String regex = "(https://[^/]+)([^,\\s]+)"; // было "(https://[^,\s/]+)([^,\s]+)"
-       // String pageUrl = page.getUrl();
-        String domainPartOfAddressUrl = decodedUrl.replaceAll(regex, "$1");
+        String domainPartOfAddressUrl = page.replaceAll(regex, "$1");
 
         if (sitesList.getSites()
                 .stream()
@@ -130,7 +127,7 @@ public class IndexServiceImp implements IndexService {
         } else throw new NoSuchSiteException(errorMessageConfig.getErrorIncompleteIndexing());
 
 
-        String pageLocalUrl = decodedUrl.replaceAll(regex, "$2");
+        String pageLocalUrl = page.replaceAll(regex, "$2");
 
         if (pageService.isPresentPageEntityWithThatPath(pageLocalUrl, siteDto.getId())) {
             int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteDto.getId());
@@ -139,7 +136,7 @@ public class IndexServiceImp implements IndexService {
         }
         UtilitiesIndexing.isStartSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
         // чтоб пропарсить только одну страницу
-        HtmlParser htmlParser = new HtmlParser(decodedUrl, siteDto, poolService);
+        HtmlParser htmlParser = new HtmlParser(page, siteDto, poolService);
         htmlParser.compute();
         UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был, после \indexPage(String page)\
 

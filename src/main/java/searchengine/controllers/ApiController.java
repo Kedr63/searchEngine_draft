@@ -33,13 +33,15 @@ public class ApiController {
         this.searchService = searchService;
     }
 
-    /**@return аналог кода ниже в теле метода
+    /**
+     * @return аналог кода ниже в теле метода
      * <p>
-     *   StatisticsResponse statisticsResponse = statisticsService.getStatistics();
+     * StatisticsResponse statisticsResponse = statisticsService.getStatistics();
      * </p>
      * <p>
-     *   return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
-     * </p>*/
+     * return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
+     * </p>
+     */
     @GetMapping("/statistics")
     public ResponseEntity<StatisticsResponse> statistics() {
         return ResponseEntity.ok(statisticsService.getStatistics());
@@ -83,6 +85,21 @@ public class ApiController {
 //        return new ResponseEntity<>(indexingResponse, HttpStatus.OK);
 //    }
 
+    /**
+     * @param pageDtoSingle pageDtoSingle представляет собой объект DTO (Data Transfer Object), который используется
+     *                      для переноса данных из формы.
+     *                      Из формы браузера приходит запрос от пользователя в виде K-V:
+     *                      <p>"url" - "https://kemperus.ru/special_camper"</p>
+     *                      <p>
+     * @aboutAnnotation @PostMapping аннотация означает, что метод контроллера будет обслуживать POST-запросы,
+     * направленные на указанный URL "/indexPage"
+     * <p>📌 метод POST - Способ передачи данных: в теле HTTP-запроса</p>
+     * </p>
+     * <p>
+     * @aboutAnnotation @ModelAttribute создает экземпляр указанного класса (PageDtoSingle) и заполнят
+     * его поля значениями из запроса.
+     * </p>
+     */
     @PostMapping(value = "/indexPage")
     public ResponseEntity<IndexingResponse> indexPage(@ModelAttribute PageDtoSingle pageDtoSingle) {
         String page = pageDtoSingle.getUrl();
@@ -95,11 +112,11 @@ public class ApiController {
      *              полям объекта SearchQuery
      *              <p>
      * @aboutAnnotation @ModelAttribute даёт возможность создать экземпляр указанного класса и заполнить
-     *                его поля значениями из запроса. Это удобно для ситуаций, когда вам нужно передать
-     *                несколько полей одновременно, упакованных в единый объект (обычно DTO)
-     *              </p>
-     *  */
-    @GetMapping( "/search") // метод GET - Способ передачи данных: через URL
+     * его поля значениями из запроса. Это удобно для ситуаций, когда вам нужно передать
+     * несколько полей одновременно, упакованных в единый объект (обычно DTO)
+     * </p>
+     */
+    @GetMapping("/search") // метод GET - Способ передачи данных: через URL
     // про @ModelAttribute - https://sky.pro/wiki/java/peredacha-slozhnogo-obyekta-kak-get-parametra-v-spring-mvc/
     public ResponseEntity<SearchingResponse> search(@ModelAttribute SearchQuery query) {
         SearchingResponse searchingResponse = searchService.search(query);
