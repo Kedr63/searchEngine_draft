@@ -5,7 +5,6 @@ import searchengine.model.LemmaEntity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface LemmaService {
 
@@ -14,7 +13,7 @@ public interface LemmaService {
 
     LemmaDto getLemmaDtoById(int id);
 
-    Set<LemmaDto> getSetLemmaDtoByLemmaWordForm(String lemmaWord);
+    LemmaDto getLemmaDtoByLemmaWordFormAndSiteId(String lemmaWord, int siteId);
 
     LemmaDto saveLemmaDto(LemmaDto lemmaDto);
 

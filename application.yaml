@@ -22,6 +22,8 @@ indexing-settings:
   sites:
 #    - url: https://www.svetlovka.ru
 #      name: svetlovka.ru
+    - url: https://camper-ural.ru
+      name: camper-ural
 #      - url: https://canopuscamp.ru
 #        name: canopuscamp
 #      - url: https://autoyahta.ru
@@ -48,8 +50,6 @@ indexing-settings:
 #      name: Nosite
 #    - url: https://fitstars.ru
 #      name: fitstars.ru
-      - url: https://camper-ural.ru
-        name: camper-ural
 #    - url: https://kemperus.ru
 #      name: kemperus
 
@@ -71,11 +71,13 @@ error-message:
   errorIndexingAlreadyRunning: "Индексация уже запущена"
   errorMatchingSiteUrlOfSiteList: "Данная страница находится за пределами сайтов, указанных в конфигурационном файле"
   errorIncompleteIndexing: "Индексация не удалась"
+  errorIndexingStopUser: "Индексация остановлена пользователем"
 
 
 errorSearchNotIndexedSite: "Отсутствуют проиндексированные сайты"
 errorSearchQueryEmpty: "Задан пустой поисковый запрос"
 errorSearchLemmaInContent: "Данные слова отсутствуют в контенте страниц сайтов"
+errorNoPagesWithSuchSearchQuery: "Нет страниц с таким поисковым запросом"
 
 offset: 0
 limit: 7
@@ -83,9 +85,11 @@ limit: 7
 percentageAllowedNumberOfPages: 0.9
 
 snippet-searcher:
-  outputLimiter: 5
-  regexSearcher: "((((([А-Я][0-9а-я\\s]*)\\s*)?)|(([А-Яа-я\\s]*)\\s*)?)((<b>[А-Яа-я]+</b>)(\\s*([\\p{Pd}0-9а-яА-Я\\s\":]*)))+)"
-
+  outputLimiter: 3
+  regexSearcher: "((((([А-Яа-яё\\s]*)\\s*)?)<b>[А-Яа-яё]+</b>[\\.|,]?(\\s*([\\p{Pd}0-9а-яё\\s\":]*)))+)"
+# первый вариант ниже
+#  regexSearcher: "((((([А-Я][0-9а-яё\\s]*)\\s*)?)|(([А-Яа-яё\\s]*)\\s*)?)((<b>[А-Яа-яё]+</b>)(\\s*([\\p{Pd}0-9а-яёА-Я\\s\":]*)))+)"
+# Найдет в выражении все разные виды дефисов "\\p{Pd}"
 
 
 

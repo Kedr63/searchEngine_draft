@@ -16,7 +16,7 @@ import searchengine.services.PoolService;
 import searchengine.services.PoolServiceImpl;
 import searchengine.services.factoryObject.LuceneMorphologyFactory;
 import searchengine.services.indexEntityService.IndexEntityServiceImpl;
-import searchengine.services.indexService.LemmaParser;
+import searchengine.services.indexService.lemmaParser.LemmaParser;
 import searchengine.services.lemmaService.LemmaService;
 import searchengine.services.lemmaService.LemmaServiceImpl;
 import searchengine.services.pageService.PageServiceImp;

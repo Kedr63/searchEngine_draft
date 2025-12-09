@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import searchengine.dto.dtoToBD.LemmaDto;
 import searchengine.services.PoolService;
-import searchengine.services.indexService.LemmaParser;
+import searchengine.services.indexService.lemmaParser.LemmaParser;
 
 import java.io.File;
 import java.io.IOException;

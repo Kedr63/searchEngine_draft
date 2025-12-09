@@ -3,8 +3,7 @@ package searchengine.services.searchService;
 import org.jsoup.nodes.Document;
 import searchengine.dto.dtoToBD.LemmaDto;
 import searchengine.services.PoolService;
-import searchengine.services.indexService.LemmaParser;
-import searchengine.services.utility.TextContentFromPageParser;
+import searchengine.services.utility.TextContentFromPageHandler;
 
 import java.io.IOException;
 import java.util.Set;
@@ -17,17 +16,6 @@ import java.util.regex.Pattern;
 public class SnippetSearcherRegexImpl implements SnippetSearcher {
 
     public PoolService poolService;
-  //  private SnippetSearcherConfiguration snippetSearcherConfiguration;
-
-//    @Value("${outputLimiter}")
-//    private int outputLimiter;
-//    @Value("${regexSearcher}")
-//    private String regexSearcher;
-
-    // private static final int OUTPUT_LIMITER = 5;
-    // private static final String REGEX_SEARCH_SEMANTIC_TEXT_WITH_SELECTED_WORDS
-    //           = "((((([А-Я][0-9а-я\\s]*)\\s*)?)|(([А-Яа-я\\s]*)\\s*)?)((<b>[А-Яа-я]+</b>)(\\s*([\\p{Pd}0-9а-яА-Я\\s\":]*)))+)";
-
 
     public SnippetSearcherRegexImpl(PoolService poolService) {
         this.poolService = poolService;
@@ -36,16 +24,15 @@ public class SnippetSearcherRegexImpl implements SnippetSearcher {
     @Override
     public String searchSnippets(Document document, Set<LemmaDto> lemmaDtoSetFromQuery) throws IOException {
 
-        String textContentSetFromPageSet = TextContentFromPageParser.extractSemanticTextFromPage(document);
+        String textContentSetFromPageSet = TextContentFromPageHandler.extractSemanticTextFromPage(document);
 
-        LemmaParser lemmaParser = new LemmaParser(poolService);
-        String textWithSelectedWords = lemmaParser.selectDesiredWordsInTheText(textContentSetFromPageSet, lemmaDtoSetFromQuery);
+       // LemmaParser lemmaParser = new LemmaParser(poolService);
+        String textWithSelectedWords = TextContentFromPageHandler.selectDesiredWordsInTheText(textContentSetFromPageSet, lemmaDtoSetFromQuery, poolService);
 
         // Найдет в выражении все разные виды дефисов "\\p{Pd}"
         //   String regex = "((((([А-Я][а-я\\s]*)\\s*)?)|(([А-Я\\s]*)\\s*)?)((<b>[А-Яа-я]+</b>)(\\s*([\\p{Pd}а-я\\s:]*)))+)";
         //  String regex = "((((([А-Я][0-9а-я\\s]*)\\s*)?)|(([А-Яа-я\\s]*)\\s*)?)((<b>[А-Яа-я]+</b>)(\\s*([\\p{Pd}0-9а-яА-Я\\s\":]*)))+)";
 
-        //   Pattern pattern = Pattern.compile(REGEX_SEARCH_SEMANTIC_TEXT_WITH_SELECTED_WORDS);
         Pattern pattern = Pattern.compile(poolService.getSnippetSearcherConfiguration().getRegexSearcher());
         Matcher matcher = pattern.matcher(textWithSelectedWords);
         StringBuilder builder = new StringBuilder();

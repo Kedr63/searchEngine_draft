@@ -5,7 +5,7 @@ import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import searchengine.services.lemmaService.LemmaServiceImpl;
-import searchengine.services.indexService.LemmaParser;
+import searchengine.services.indexService.lemmaParser.LemmaParser;
 import searchengine.services.PoolServiceImpl;
 
 import java.io.IOException;

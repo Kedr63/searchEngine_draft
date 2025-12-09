@@ -9,12 +9,9 @@ import searchengine.model.LemmaEntity;
 import searchengine.repositories.LemmaRepository;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,16 +44,14 @@ public class LemmaServiceImpl implements LemmaService {
     }
 
     @Override
-    public Set<LemmaDto> getSetLemmaDtoByLemmaWordForm(String lemmaWord) {
-        Set<LemmaDto> lemmaDtoSet = new HashSet<>();
-        Optional<Set<LemmaEntity>> optionalLemmaEntity = lemmaRepository.findByLemmaWord(lemmaWord);
+    public LemmaDto getLemmaDtoByLemmaWordFormAndSiteId(String lemmaWord, int siteId) {
+        LemmaDto lemmaDto = new LemmaDto();
+        Optional<LemmaEntity> optionalLemmaEntity = lemmaRepository.findByLemmaWordAndSiteId(lemmaWord, siteId);
         if (optionalLemmaEntity.isPresent()) {
-            lemmaDtoSet = optionalLemmaEntity
-                    .get()
-                    .stream()
-                    .map(lemmaEntity -> modelMapper.map(lemmaEntity, LemmaDto.class)).collect(Collectors.toSet());
-        } /* а если леммы в БД нет, то вернем пустой Set<LemmaDto> lemmaDtoSet*/
-        return lemmaDtoSet;
+            LemmaEntity lemmaEntity = optionalLemmaEntity.get();
+            lemmaDto = modelMapper.map(lemmaEntity, LemmaDto.class);
+        } /* а если леммы в БД нет, то вернем пустой LemmaDto lemmaDto*/
+        return lemmaDto;
     }
 
     @Transactional

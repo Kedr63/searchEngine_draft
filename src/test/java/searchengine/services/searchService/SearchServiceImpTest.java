@@ -62,7 +62,7 @@ class SearchServiceImpTest {
     @BeforeEach // чтоб перед каждым тестом создавалась переменная
     public void setUp() {
 
-        relevanceCalculator = new RelevanceCalculator(poolService);
+        //  relevanceCalculator = new RelevanceCalculator(poolService);
 
         SiteEntity siteEntity = new SiteEntity();
         siteEntity.setId(1);
@@ -131,7 +131,7 @@ class SearchServiceImpTest {
         Optional<IndexEntity> indexEntityGiven = poolService.getIndexEntityService().getIndexEntityById(indexIdOne);
 
         // и если сервис нормально отрабатывает, то доказываем равенство ожидаемого indexId с полученным indexEntityGiven
-        assertEquals(indexIdOne, Optional.of(indexEntityGiven.get().getId()));
+        assertEquals(indexIdOne, (Optional.of(indexEntityGiven.get().getId())).get());
         verify(indexEntityLemmaToPageRepository, times(1)).findById(indexIdOne); // проверяем что метод был
         // вызван 1 раз с аргументом, и убеждаемся что реально был вызван метод
     }
@@ -153,6 +153,8 @@ class SearchServiceImpTest {
         lemmaDtoSetSortedByAscendingFrequency.add(lemmaDto);
         lemmaDtoSetSortedByAscendingFrequency.add(lemmaDto2);
 
+        relevanceCalculator = new RelevanceCalculator(lemmaDtoSetSortedByAscendingFrequency, pageIdForSearchingSet, poolService);
+
         RelativeRelevanceFloater relativeRelevanceFloaterOfPageWithId_1_Expected = new RelativeRelevanceFloater(0.8125F);
         RelativeRelevanceFloater relativeRelevanceFloaterOfPageWithId_2_Expected = new RelativeRelevanceFloater(1);
 
@@ -171,7 +173,7 @@ class SearchServiceImpTest {
 
 
         Map<PageIdInteger, RelativeRelevanceFloater> pageToRelativeRelevanceMapSortedByDescendingRelevance
-                = relevanceCalculator.getCalculatedPageRelevance(pageIdForSearchingSet, lemmaDtoSetSortedByAscendingFrequency);
+                = relevanceCalculator.getCalculatedPageRelevance();
 
         // проверим получение значений релевантности и порядок сортировки полученой Map
         int sizeMapWhenProperlySortedExpected = 2;

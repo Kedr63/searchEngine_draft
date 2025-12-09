@@ -15,4 +15,5 @@ public class ErrorMessageConfig {
     private String errorIndexingAlreadyRunning;
     private String errorMatchingSiteUrlOfSiteList;
     private String errorIncompleteIndexing;
+    private String errorIndexingStopUser;
 }

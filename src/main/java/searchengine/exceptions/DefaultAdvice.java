@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import searchengine.dto.indexing.IndexingResponseError;
 import searchengine.dto.indexing.IndexingResponse;
+import searchengine.dto.searching.SearchingResponse;
+import searchengine.dto.searching.SearchingResult;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -18,13 +22,6 @@ public class DefaultAdvice {
         IndexingResponseError response = new IndexingResponseError(false, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
-//    @ExceptionHandler(IOException.class)
-//    public ResponseEntity<IndexResponseError> handleException (IOException ex){
-//        IndexResponseError responseError = new IndexResponseError(false, ex.getMessage());
-//        Logger.getLogger(DefaultAdvice.class.getName()).info("в методе handleException (IOException ex)");
-//        return new ResponseEntity<>(responseError, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 
     @ExceptionHandler(HttpFailedConnectionException.class)
     public ResponseEntity<IndexingResponseError> handleException (HttpFailedConnectionException ex, int codeError){
@@ -54,10 +51,10 @@ public class DefaultAdvice {
         return new ResponseEntity<>(indexingResponse, HttpStatus.SEE_OTHER);
     }
 
+
     @ExceptionHandler(IllegalMethodException.class)
     public ResponseEntity<IndexingResponseError> handleException (IllegalMethodException ex){
         IndexingResponseError responseError = new IndexingResponseError(false, ex.getMessage());
-        Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException (IllegalMethodException)");
         return new ResponseEntity<>(responseError, HttpStatus.FORBIDDEN);
 
     }
@@ -84,6 +81,16 @@ public class DefaultAdvice {
     public ResponseEntity<IndexingResponseError> handleException (NoSuchLemmaForSearchingInContentException ex){
         IndexingResponseError responseError = new IndexingResponseError(false, ex.getMessage());
         return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoPagesForSearchingException.class)
+    public ResponseEntity<SearchingResponse> handleException (NoPagesForSearchingException ex){
+        SearchingResponse searchingResponse = new SearchingResponse();
+        searchingResponse.setCount(0);
+        searchingResponse.setResult(true);
+        List<SearchingResult> searchingResultList = new ArrayList<>();
+        searchingResponse.setData(searchingResultList);
+        return new ResponseEntity<>(searchingResponse, HttpStatus.NOT_FOUND);
     }
 
 //    @ExceptionHandler(FailedGetLemmasException.class)

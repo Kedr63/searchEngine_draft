@@ -14,30 +14,21 @@ import java.util.*;
 @RequiredArgsConstructor
 public class RelevanceCalculator {
 
-//    Set<LemmaDto> setLemmaDto;
-//    Set<PageIdInteger> setPageId;
+    private final Set<LemmaDto> lemmaDtoSet;
+    private final Set<PageIdInteger> pageIdSet;
     private final PoolService poolService;
 
-//    public RelevanceCalculator() {
-//    }
-
-//    public RelevanceCalculator(PoolService poolService) {
-//        this.poolService = poolService;
-//    }
-
-    protected Map<PageIdInteger, RelativeRelevanceFloater> getCalculatedPageRelevance(Set<PageIdInteger> pageIdForSearchingSet,
-                                                                                      Set<LemmaDto> lemmaDtoSetSortedByAscendingFrequency) {
-        Map<PageIdInteger, AbsRelevanceFloater> pageIdToAbsRelevanceMap =
-                getMappingPageIdToAbsRelevance(pageIdForSearchingSet, lemmaDtoSetSortedByAscendingFrequency);
+    protected Map<PageIdInteger, RelativeRelevanceFloater> getCalculatedPageRelevance() {
+        Map<PageIdInteger, AbsRelevanceFloater> pageIdToAbsRelevanceMap = getPageIdToAbsRelevanceMap(pageIdSet, lemmaDtoSet);
         return getMappingPageIdToRelativeRelevanceSortedDesc(pageIdToAbsRelevanceMap);
     }
 
-    private Map<PageIdInteger, AbsRelevanceFloater> getMappingPageIdToAbsRelevance(Set<PageIdInteger> pageIdForSearchingSet,
-                                                                                   Set<LemmaDto> lemmaDtoSetSortedByAscendingFrequency) {
+    private Map<PageIdInteger, AbsRelevanceFloater> getPageIdToAbsRelevanceMap(Set<PageIdInteger> pageIdSet,
+                                                                               Set<LemmaDto> lemmaDtoSet) {
         Map<PageIdInteger, AbsRelevanceFloater> pageIdToAbsRelevanceMap = new HashMap<>();
-        for (PageIdInteger pageIdInteger : pageIdForSearchingSet) {
+        for (PageIdInteger pageIdInteger : pageIdSet) {
             float absRelevance = 0;
-            for (LemmaDto lemmaDto : lemmaDtoSetSortedByAscendingFrequency) {
+            for (LemmaDto lemmaDto : lemmaDtoSet) {
                 float rankOfLemmaDto = poolService.getIndexEntityService().getRankByLemmaIdAndPageId(lemmaDto.getId(), pageIdInteger.getPageId());
                 absRelevance = absRelevance + rankOfLemmaDto;
             }

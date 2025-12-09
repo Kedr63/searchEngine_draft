@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import searchengine.config.ErrorMessageConfig;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
+import searchengine.dto.dtoToBD.PageDtoSingle;
 import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.exceptions.IllegalMethodException;
@@ -21,39 +22,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 @Service //при этой аннотации получим бины (объекты) прописанные в полях (но только если их добавим в конструктор)
-//@Getter
-//@Setter
 public class IndexServiceImp implements IndexService {
 
     private final PoolService poolService;
-
     private final SitesList sitesList;
-
     private final ErrorMessageConfig errorMessageConfig;
-
-   /* @Value("${errorIndexingNotRunning}")
-    private String indexingNotProgressError;
-
-    @Value("${errorIndexingAlreadyRunning}")
-    private String errorIndexingAlreadyRunning;
-
-    @Value("${errorMatchingSiteUrlOfSiteList}")
-    private String errorMatchingSiteUrlOfSiteList;
-
-    @Value("${errorIncompleteIndexing}")
-    private String errorIncompleteIndexing;*/
-
-    protected static long countOfHtmlParser = 1;
-
-    protected static int coreAmount = Runtime.getRuntime().availableProcessors();
-
-    protected static String tmp = "Return";
-
- //   long start;
-
 
     public IndexServiceImp(PoolService poolService, SitesList sitesList, ErrorMessageConfig errorMessageConfig) {
         this.poolService = poolService;
@@ -66,31 +41,28 @@ public class IndexServiceImp implements IndexService {
         if (UtilitiesIndexing.indexingInProgress) {
             throw new IllegalMethodException(errorMessageConfig.getErrorIndexingAlreadyRunning());
         }
-
-        UtilitiesIndexing.indexingInProgress = true; // при запущенной индексации это значение - true
-
+        //TODO убрать потом
         TimerExecution.startTime = System.currentTimeMillis();
 
+        UtilitiesIndexing.indexingInProgress = true; // при запущенной индексации это значение - true
         cascadeDeletionAllEntities();
-
         int sizeSitesList = sitesList.getSites().size();
         ExecutorService executorService = Executors.newFixedThreadPool(sizeSitesList);
         List<Future<IndexingResponse>> futureList = new ArrayList<>();
 
         for (int i = 0; i < sizeSitesList; i++) {
             Site site = sitesList.getSites().get(i);
-
             SiteDto siteDto = createSiteDto(site);
             siteDto = poolService.getSiteService().saveSiteDto(siteDto);
 
-            ExecutorServiceForParsingSite executorServiceForParsingSite = new ExecutorServiceForParsingSite(siteDto, poolService);
-            Future<IndexingResponse> futureResponseEntity = executorService.submit(executorServiceForParsingSite);
+            TaskForkJoinPoolForParsingSite taskForkJoinPoolForParsingSite = new TaskForkJoinPoolForParsingSite(siteDto, poolService, errorMessageConfig);
+            Future<IndexingResponse> futureResponseEntity = executorService.submit(taskForkJoinPoolForParsingSite);
 
             futureList.add(futureResponseEntity);
         }
 
-        executorService.shutdown();
         List<IndexingResponse> IndexingResponseList = UtilitiesIndexing.getIndexingResponseListFromFutureList(futureList);
+        executorService.shutdown();
         return UtilitiesIndexing.getTotalResultIndexingResponse(IndexingResponseList);
     }
 
@@ -103,13 +75,14 @@ public class IndexServiceImp implements IndexService {
         }
 
         UtilitiesIndexing.stopStartIndexingMethod = true; // в классе HtmlParser поменяется флаг и рекурсия начнет останавливаться
-        // и join-ы будут ждать результатов и возвращать результаты наверх в класс ExecutorServiceForParsingSite
+        // и join-ы будут ждать результатов и возвращать результаты наверх в класс TaskForkJoinPoolForParsingSite
 
         return UtilitiesIndexing.waitForCompleteStartIndexingAndTerminateStopIndexing();
     }
 
     @Override
-    public IndexingResponse indexSinglePage(String page) {
+    public IndexingResponse indexSinglePage(PageDtoSingle pageDtoSingle) {
+        String page = pageDtoSingle.getUrl();
         PageService pageService = poolService.getPageService();
         SiteService siteService = poolService.getSiteService();
         String regex = "(https://[^/]+)([^,\\s]+)"; // было "(https://[^,\s/]+)([^,\s]+)"
@@ -122,28 +95,25 @@ public class IndexServiceImp implements IndexService {
         }
 
         SiteDto siteDto;
-        if (siteService.getSiteDtoByUrl(domainPartOfAddressUrl).isPresent()){
+        if (siteService.getSiteDtoByUrl(domainPartOfAddressUrl).isPresent()) {
             siteDto = siteService.getSiteDtoByUrl(domainPartOfAddressUrl).get();
         } else throw new NoSuchSiteException(errorMessageConfig.getErrorIncompleteIndexing());
-
 
         String pageLocalUrl = page.replaceAll(regex, "$2");
 
         if (pageService.isPresentPageEntityWithThatPath(pageLocalUrl, siteDto.getId())) {
             int idPageEntity = pageService.getIdPageEntity(pageLocalUrl, siteDto.getId());
             cascadeDeletionPageEntities(idPageEntity);
-            Logger.getLogger(IndexServiceImp.class.getName()).info("delete Page cascade - " + pageLocalUrl);
         }
         UtilitiesIndexing.isStartSinglePageIndexing(); // метод поменяет флаг на TRUE для экземпляра HtmlParser
         // чтоб пропарсить только одну страницу
-        HtmlParser htmlParser = new HtmlParser(page, siteDto, poolService);
-        htmlParser.compute();
+        HtmlRecursiveParser htmlRecursiveParser = new HtmlRecursiveParser(page, siteDto, poolService);
+        htmlRecursiveParser.compute();
         UtilitiesIndexing.isDoneIndexingSinglePage(); // повернем флаг на место как был, после \indexPage(String page)\
 
 
         return new IndexingResponse(true);
     }
-
 
     private SiteDto createSiteDto(Site site) {
         SiteDto siteDto = new SiteDto();
@@ -151,11 +121,8 @@ public class IndexServiceImp implements IndexService {
         siteDto.setStatusTime(LocalDateTime.now());
         siteDto.setUrl(site.getUrl());
         siteDto.setName(site.getName());
-       // siteEntity.setLastError("");
-
         return siteDto;
     }
-
 
     private String getShortMessageOfException(Exception e) {
         StringBuilder builder = new StringBuilder();
@@ -165,7 +132,6 @@ public class IndexServiceImp implements IndexService {
         builder.append(stringList.get(stringList.size() - 1));
         return builder.toString();
     }
-
 
     private void cascadeDeletionAllEntities() {  // каскадно удаляем сущности начиная с дочерних до родительских
         poolService.getIndexEntityService().deleteAllIndexEntity();

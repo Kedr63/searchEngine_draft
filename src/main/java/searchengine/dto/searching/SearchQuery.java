@@ -3,6 +3,8 @@ package searchengine.dto.searching;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * поля взял из данных формы \Search\ браузера. Посмотрел в инспекторе в разделе \сеть\*/
 @Setter
 @Getter
 public class SearchQuery {
@@ -10,8 +12,6 @@ public class SearchQuery {
     private int offset;
     private int limit;
     private String site;
-
-    // поля взял из данных формы \Search\ браузера. Посмотрел в инспекторе в разделе \сеть\
 
     public SearchQuery() {
     }

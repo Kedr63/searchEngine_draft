@@ -8,10 +8,12 @@ import org.jsoup.nodes.Document;
 import searchengine.config.UserAgent;
 import searchengine.dto.dtoToBD.PageDto;
 import searchengine.dto.dtoToBD.SiteDto;
-import searchengine.dto.indexing.DocumentParsed;
+import searchengine.dto.indexing.PageParsed;
 import searchengine.exceptions.FailedConnectionException;
 import searchengine.model.StatusIndex;
 import searchengine.services.PoolService;
+import searchengine.services.indexService.lemmaParser.LemmaParseable;
+import searchengine.services.indexService.lemmaParser.LemmaParser;
 import searchengine.services.pageService.PageService;
 
 import java.io.IOException;
@@ -23,19 +25,23 @@ import java.util.Map;
 import java.util.concurrent.RecursiveAction;
 import java.util.logging.Logger;
 
-
+/**
+ * Пропарсит страницу URL и соберет на этой странице список {@code List<HtmlRecursiveParser> tasks}
+ * новых task (url с аттрибутом {@code href} на странице, которых нет еще в БД). Собраные tasks будут запущены,
+ * каждая task ассинхронно методом {@code fork}, и когда закончатся на странице tasks начнет возвращать результаты.
+ * Рекурсивно будем погружаться в ссылки на странице до тех пор пока на странице не останется ссылок, которых нет в БД.
+ */
 @Getter
 @Setter
-public class HtmlParser extends RecursiveAction {
-
+public class HtmlRecursiveParser extends RecursiveAction {
     private String url;
     private SiteDto siteDto;
     private PoolService poolService;
 
-    public HtmlParser() {
+    public HtmlRecursiveParser() {
     }
 
-    public HtmlParser(String url, SiteDto siteDto, PoolService poolService) {
+    public HtmlRecursiveParser(String url, SiteDto siteDto, PoolService poolService) {
         this.url = url;
         this.siteDto = siteDto;
         this.poolService = poolService;
@@ -43,70 +49,51 @@ public class HtmlParser extends RecursiveAction {
 
     @Override
     protected void compute() {
-
         if (UtilitiesIndexing.stopStartIndexingMethod) {  // if in ApiController "/stopIndexing"
-            Logger.getLogger(HtmlParser.class.getName()).info("делаем стоп потоки if (StatusThreadsRun.threadsStopping   +  return");
             return; // останавливаем код
         }
 
-        DocumentParsed documentParsed;
+        PageParsed pageParsed;
         PageDto pageDto;
-        List<HtmlParser> tasks = new ArrayList<>();
+        List<HtmlRecursiveParser> tasks = new ArrayList<>();
 
         String localAddressUrl = extractLocalAddressUrl(url, siteDto);
 
         synchronized (UtilitiesIndexing.lockPageRepository) {
             if (!isPresentPathInPageRepository(localAddressUrl, siteDto.getId(), poolService.getPageService())) {
-                pageDto = new PageDto(); // экспериментирую вместо \new PageDto()\
+                pageDto = new PageDto();
                 pageDto.setPath(localAddressUrl);
                 pageDto.setContent(""); // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
                 pageDto.setSiteId(siteDto.getId());
                 pageDto = poolService.getPageService().savePageDto(pageDto);
-
-                /* почему то с MapperModel не работает */
-//                pageDto = PageDto.builder()
-//                        .path(localAddressUrl)
-//                        .content("")   // пока вставим заглушку, чтоб долго не удерживать \lockPageRepository\
-//                        .siteId(siteDto.getId())
-//                        .build(); // экспериментирую вместо \new PageDto()\
-//                pageDto = poolService.getPageService().savePageDto(pageDto);
-//
-//                    PageEntity pageEntity = createPageEntity(linkLocate, documentParsed, siteEntity);
-                Logger.getLogger(HtmlParser.class.getName()).info("save path in repository:  - " + url);
-
             } else {
-                return;  // иначе если path есть в базе, то останавливаем здесь код
+                return;  // если path есть в базе, то останавливаем здесь код
             }
         }
 
         try {
-            documentParsed = getParsedDocument(url); // если этот метод выбросит IOException, то в catch блоке удалим pageEntity,
-            // который начали добавлять в БД
+            pageParsed = getParsedPage(url);
         } catch (IOException ex) {
-            Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx " + ex.getClass() + " ex ");
-
             synchronized (UtilitiesIndexing.lockPageRepository) {
-                Logger.getLogger(HtmlParser.class.getName()).info("deletePageEntity(pageEntity.getId() = " + pageDto.getId() + "  " + siteDto.getName());
                 poolService.getPageService().deletePageById(pageDto.getId()); //
             }
-            getLastErrorOfException(ex); // из этого метода выбросится \new RuntimeException(ex.getMessage(), ex.getCause())\;
-            // а если ловили исключение из-за Http, то выполним метод и остановим код с помощью return
-            return;
+            getLastErrorOfException(ex);
+            return; //  и остановим выполнение кода с помощью return
         }
 
         // если нет IOException -> заполним pageEntity остальными данными
-        fillPageDtoAndSaveBD(pageDto, documentParsed);
+        fillPageDtoAndSaveBD(pageDto, pageParsed);
 
         siteDto.setStatusTime(LocalDateTime.now());
         siteDto = poolService.getSiteService().saveSiteDto(siteDto);
 
-        getLemmasFromPage(documentParsed.getDoc(), pageDto, siteDto, poolService);
+        extractLemmasFromPage(pageParsed.getDoc(), pageDto, siteDto, poolService);
 
-        if (UtilitiesIndexing.computeIndexingSinglePage) { // при индексации отдельной страницы здесь прервем код
+        if (UtilitiesIndexing.indexingSinglePage) { // при индексации отдельной страницы здесь прервем код
             return;
         }
 
-        List<String> listOfLinksFoundOnThisPage = documentParsed.getDoc()
+        List<String> linksFoundOnThisPage = pageParsed.getDoc()
                 .select("body")
                 .select("a[href~=^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$]")
                 .stream().map(element -> element.attr("href"))
@@ -120,33 +107,25 @@ public class HtmlParser extends RecursiveAction {
 //                    .not("[href*=#]").stream().distinct().collect(Collectors.toCollection(Elements::new));
 
 
-        for (String link : listOfLinksFoundOnThisPage) {
+        for (String link : linksFoundOnThisPage) {
             synchronized (UtilitiesIndexing.lockPageRepository) {
                 // если такая ссылка link есть в БД, то переходим к следующему элементу цикла
                 if (isPresentPathInPageRepository(extractLocalAddressUrl(link, siteDto), siteDto.getId(), poolService.getPageService())) {
                     continue;
                 }
             }
-
             String fullHref = siteDto.getUrl() + extractLocalAddressUrl(link, siteDto);
-            HtmlParser task = new HtmlParser(fullHref, siteDto, poolService);
+            HtmlRecursiveParser task = new HtmlRecursiveParser(fullHref, siteDto, poolService);
 
             task.fork();
             tasks.add(task);
         }
 
-
         if (!tasks.isEmpty()) {
-            for (HtmlParser task : tasks) {
+            for (HtmlRecursiveParser task : tasks) {
                 task.join();
-                Logger.getLogger(HtmlParser.class.getName()).info("task.join()");
             }
-//            tasks.clear();
-//            Logger.getLogger(HtmlParser.class.getName()).info("tasks.clear()");
         }
-//        else {
-//            Logger.getLogger(HtmlParser.class.getName()).info("tasks.isEmpty()  - список задач пуст 📌");
-//        }
     }
 
     private String extractLocalAddressUrl(String url, SiteDto siteDto) {
@@ -162,19 +141,15 @@ public class HtmlParser extends RecursiveAction {
         return localAddressUrl;
     }
 
+    /**
+     * сохранит ошибку в таблицу БД site и бросит исключение
+     * @throws RuntimeException получим методом {@code .get} из {@code Future<IndexingResponse>}
+     * в методе {@code getIndexingResponseListFromFutureList} класса {@code UtilitiesIndexing} примененного
+     * в классе {@code IndexServiceImp}
+     */
     private void getLastErrorOfException(Exception ex) {
-
-//        if (ex.getClass()== HttpStatusException.class){
-//            saveLastErrorInSiteEntity(ex);
-//            Logger.getLogger(HtmlParser.class.getName()).info("1 before throws : throw new HttpFailedConnectionException(ex.getMessage(), ((HttpStatusException) ex).getStatusCode())");
-//
-//        } else {
-        //  Logger.getLogger(HtmlParser.class.getName()).info("1 before throws : " + ex.getCause().getMessage());
         saveLastErrorInSiteEntity(ex);
-        //  Logger.getLogger(HtmlParser.class.getName()).info("2 before throws : " + ex.getMessage());
         throw new RuntimeException(ex);
-
-        //    }
     }
 
     private void saveLastErrorInSiteEntity(Exception ex) {
@@ -191,9 +166,15 @@ public class HtmlParser extends RecursiveAction {
 
     }
 
-
-    private DocumentParsed getParsedDocument(String url) throws IOException {
-        DocumentParsed documentParsed = new DocumentParsed();
+    /**
+     * Получим из URL пропарсенный HTML Document со status code,
+     * если этот метод выбросит IOException, то в catch блоке удалим pageEntity,
+     * который начали добавлять в БД
+     *
+     * @param url локальный путь в виде <i><b>/campers/turist-plus</b></i>
+     */
+    private PageParsed getParsedPage(String url) throws IOException {
+        PageParsed pageParsed = new PageParsed();
         Document doc;
         Connection.Response response;
         int code;
@@ -226,29 +207,30 @@ public class HtmlParser extends RecursiveAction {
             doc = new Document(url);
             // String errorMessage = response.statusMessage();
             // code = response.map(Connection.Response::statusCode).orElse(404);
-            Logger.getLogger(HtmlParser.class.getName()).info("ошибка HttpErrors в: " + url + " code " + code);
+            Logger.getLogger(HtmlRecursiveParser.class.getName()).info("ошибка HttpErrors в: " + url + " code " + code);
             // documentParsed.setErrorMessage(response.statusMessage());
         }
-        documentParsed.setDoc(doc);
-        documentParsed.setCode(code);
+        pageParsed.setDoc(doc);
+        pageParsed.setCode(code);
         //  documentParsed = new DocumentParsed(doc, code);
-        return documentParsed;
+        return pageParsed;
     }
 
 
-    private void fillPageDtoAndSaveBD(PageDto pageDto, DocumentParsed documentParsed) {
-        pageDto.setCode(documentParsed.getCode());
-        //  Elements contentPage = documentParsed.getDoc().getAllElements();
+    private void fillPageDtoAndSaveBD(PageDto pageDto, PageParsed pageParsed) {
+        pageDto.setCode(pageParsed.getCode());
         //  Elements contentPage = documentParsed.getDoc().select("body"); // get all content of the page from tag <body>
-        Document contentPage = documentParsed.getDoc();
+        Document contentPage = pageParsed.getDoc();
+//        Elements elements = contentPage.select("body");
+//        String t = "" + elements;
 
         String contentViaString = "" + contentPage;
         String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " "); // очистим String от смайликов в тексте (https://sky.pro/wiki/java/udalenie-emodzi-i-znakov-iz-strok-na-java-reshenie/)
         pageDto.setContent(cleanContent);
         PageService pageService = poolService.getPageService();
-     //   synchronized (UtilitiesIndexing.lockPageRepository) {
-           PageDto savedPageDto = pageService.savePageDto(pageDto); // обновим сущ-ую запись в БД
-      //  }
+        //   synchronized (UtilitiesIndexing.lockPageRepository) {
+        PageDto savedPageDto = pageService.savePageDto(pageDto); // обновим сущ-ую запись в БД
+        //  }
     }
 
     private String generateUserAgent() {
@@ -274,7 +256,7 @@ public class HtmlParser extends RecursiveAction {
 
     private long generateRandomRangeDelay() {
         long beginningOfRange = 500;
-        return  (long) (beginningOfRange + (Math.random() * 4500));
+        return (long) (beginningOfRange + (Math.random() * 4500));
     }
 
 
@@ -301,18 +283,18 @@ public class HtmlParser extends RecursiveAction {
         }
     }*/
 
-    private void getLemmasFromPage(Document document, PageDto pageDto, SiteDto siteDto, PoolService poolService) {
+    /**
+     * Извлекает леммы со страницы в виде K-V, где K - лемма, V - количество леммы на странице */
+    private void extractLemmasFromPage(Document document, PageDto pageDto, SiteDto siteDto, PoolService poolService) {
         if (pageDto.getCode() == 200) {
             try {
-                LemmaParser lemmaParser = new LemmaParser(poolService);
-                Map<String, Integer> lemmasCountsMap = lemmaParser.getLemmasToAmountOnPageFromDocumentPage(document);
+                LemmaParseable lemmaParser = new LemmaParser(poolService);
+                Map<String, Integer> lemmasCountsMap = lemmaParser.getLemmaWordToAmountOnPageMapFromContent(document);
                 lemmaParser.getLemmaDtoAndIndexDto(siteDto, pageDto, lemmasCountsMap);
             } catch (IOException | NullPointerException e) {
-                Logger.getLogger(HtmlParser.class.getName()).info("catch IOEx lemma - " + e.getMessage());
                 saveLastErrorInSiteEntity(e);
-               // throw new RuntimeException(e.getMessage(), e.getCause());
-                if (e instanceof IOException){
-                    Logger.getLogger(HtmlParser.class.getName()).info("перед FailedConnectionException");
+                // throw new RuntimeException(e.getMessage(), e.getCause());
+                if (e instanceof IOException) {
                     throw new FailedConnectionException(((IOException) e).getMessage());
                 } else {
                     throw new IllegalArgumentException(((NullPointerException) e).getMessage(), ((NullPointerException) e).getCause());

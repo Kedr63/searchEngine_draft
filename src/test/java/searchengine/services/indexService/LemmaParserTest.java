@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import searchengine.services.PoolServiceImpl;
+import searchengine.services.indexService.lemmaParser.LemmaParser;
 
 import java.io.IOException;
 import java.util.HashMap;

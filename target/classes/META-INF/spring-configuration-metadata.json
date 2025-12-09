@@ -33,6 +33,11 @@
       "sourceType": "searchengine.config.ErrorMessageConfig"
     },
     {
+      "name": "error-message.error-indexing-stop-user",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.ErrorMessageConfig"
+    },
+    {
       "name": "error-message.error-matching-site-url-of-site-list",
       "type": "java.lang.String",
       "sourceType": "searchengine.config.ErrorMessageConfig"

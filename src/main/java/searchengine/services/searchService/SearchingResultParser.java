@@ -44,7 +44,7 @@ public class SearchingResultParser {
         return searchResultList;
     }
 
-    private SearchingResult getSearchingResult(PageDto pageDto, RelativeRelevanceFloater relativeRelevanceFloater) {
+    private SearchingResult getSearchingResult(PageDto pageDto, RelativeRelevanceFloater relativeRelevanceFloater) throws IOException {
         SearchingResult searchingResult = new SearchingResult();
         searchingResult.setUri(pageDto.getPath());
         Document document = Jsoup.parse(pageDto.getContent());
@@ -59,8 +59,8 @@ public class SearchingResultParser {
 
        // SnippetSearcher snippetSearcher = new SnippetSearcherImp(); // применю реализацию SnippetSearcherImp(), и еще можно создать другие реализации
         SnippetSearcher snippetSearcher = new SnippetSearcherRegexImpl(poolService); // применю реализацию SnippetSearcherImp(), и еще можно создать другие реализации
-
-        String snippetResult = getSnippets(document, lemmaDtoSet, snippetSearcher);
+        String snippetResult = snippetSearcher.searchSnippets(document, lemmaDtoSet);
+      //  String snippetResult = getSnippets(document, lemmaDtoSet, snippetSearcher);
         searchingResult.setSnippet(snippetResult);
         return searchingResult;
     }

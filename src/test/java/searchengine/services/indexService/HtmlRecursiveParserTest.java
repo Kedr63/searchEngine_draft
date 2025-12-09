@@ -13,8 +13,8 @@ import searchengine.services.PoolService;
 import java.util.List;
 
 @Component
-class HtmlParserTest {
-    private HtmlParser htmlParser;
+class HtmlRecursiveParserTest {
+    private HtmlRecursiveParser htmlRecursiveParser;
     private final SiteDto siteDto = new SiteDto();
     private PoolService poolService;
     private final SiteRepository siteRepository = Mockito.mock(SiteRepository.class);
@@ -22,7 +22,7 @@ class HtmlParserTest {
     @BeforeEach
     public void setUp() {
         String url = "https://kemperus.ru/katalog_avtodomov";
-        htmlParser = new HtmlParser(url, siteDto, poolService);
+        htmlRecursiveParser = new HtmlRecursiveParser(url, siteDto, poolService);
     }
 
     @Test
