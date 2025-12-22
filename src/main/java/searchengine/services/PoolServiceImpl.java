@@ -1,7 +1,6 @@
 package searchengine.services;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import searchengine.config.SnippetSearcherConfiguration;
 import searchengine.config.UserAgentList;
@@ -10,7 +9,7 @@ import searchengine.services.lemmaService.LemmaService;
 import searchengine.services.pageService.PageService;
 import searchengine.services.siteService.SiteService;
 
-@Setter
+
 @Getter
 @Service
 public class PoolServiceImpl implements PoolService {

@@ -34,7 +34,7 @@ public class DefaultAdvice {
     public ResponseEntity<IndexingResponseError> handleException (FailedConnectionException ex){
         IndexingResponseError responseError = new IndexingResponseError(false, UtilityException.getShortMessageOfException(ex));
         Logger.getLogger(DefaultAdvice.class.getName()).info("в методе  handleException (FailedConnectionException ex)");
-        return new ResponseEntity<>(responseError, HttpStatus.SEE_OTHER);
+        return new ResponseEntity<>(responseError, HttpStatus.GATEWAY_TIMEOUT);
     }
 
     @ExceptionHandler(HttpStatusException.class)

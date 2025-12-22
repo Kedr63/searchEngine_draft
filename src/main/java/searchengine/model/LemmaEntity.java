@@ -25,18 +25,4 @@ public class LemmaEntity {
 
     @Column(columnDefinition = "INT", nullable = false)
     private int frequency;
-
-//    @OneToMany(mappedBy = "lemma")
-//    private List<IndexEntity> indexEntities;
-
-//    @OneToMany(mappedBy = "lemma")
-//    private Collection<IndexEntity> indexEntity;
-
-//    public Collection<IndexEntity> getIndexEntity() {
-//        return indexEntity;
-//    }
-
-//    public void setIndexEntity(Collection<IndexEntity> indexEntity) {
-//        this.indexEntity = indexEntity;
-//    }
 }

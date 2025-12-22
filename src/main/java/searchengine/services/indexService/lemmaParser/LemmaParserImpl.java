@@ -13,25 +13,25 @@ import searchengine.services.utility.TextContentFromPageHandler;
 import java.io.IOException;
 import java.util.*;
 
-public class LemmaParser implements LemmaParseable {
+public class LemmaParserImpl implements LemmaParseable {
 
     private final PoolService poolService;
 
-    public LemmaParser(PoolService poolService) {
+    public LemmaParserImpl(PoolService poolService) {
         this.poolService = poolService;
     }
 
     /**
-     * Из Document пропарсенной страницы метод
+     * Из Document пропарсенной страницы, метод извлечет леммы с отображением их количества на странице. Рабатать будет
+     * только с семантически смысловым текстом страницы
      */
-    public Map<String, Integer> getLemmaWordToAmountOnPageMapFromContent(Document document) throws IOException {
+    public Map<String, Integer> getLemmaToAmountOnPageMapFromContentOfDocument(Document document) throws IOException {
         String textOfContentFromPage = TextContentFromPageHandler.extractSemanticTextFromPage(document);
         return extractLemmaToAmountFromTextForMap(textOfContentFromPage);
     }
 
 
     public Map<String, Integer> extractLemmaToAmountFromTextForMap(String text) throws IOException {
-        //   return getLemmaToAmountMap(text);
         List<String> wordsText = Arrays.stream(text.split("[^А-Яа-яё]")).toList();
         LemmaService lemmaService = poolService.getLemmaService();
         Map<String, Integer> map = new HashMap<>();
@@ -64,7 +64,7 @@ public class LemmaParser implements LemmaParseable {
 //        return map;
 //    }
 
-    public void getLemmaDtoAndIndexDto(SiteDto siteDto, PageDto pageDto, Map<String, Integer> lemmasMap) throws IOException {
+    public void getLemmaDtoIndexDto(SiteDto siteDto, PageDto pageDto, Map<String, Integer> lemmasMap) throws IOException {
         LemmaService lemmaService = poolService.getLemmaService();
 
         for (Map.Entry<String, Integer> entry : lemmasMap.entrySet()) {

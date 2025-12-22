@@ -1,26 +1,15 @@
 package searchengine.services.searchService;
 
-import org.apache.lucene.morphology.LuceneMorphology;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
-import searchengine.config.SnippetSearcherConfiguration;
-import searchengine.config.UserAgentList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import searchengine.dto.dtoToBD.LemmaDto;
-import searchengine.repositories.LemmaRepository;
 import searchengine.services.PoolService;
-import searchengine.services.PoolServiceImpl;
-import searchengine.services.factoryObject.LuceneMorphologyFactory;
-import searchengine.services.indexEntityService.IndexEntityServiceImpl;
-import searchengine.services.indexService.lemmaParser.LemmaParser;
-import searchengine.services.lemmaService.LemmaService;
-import searchengine.services.lemmaService.LemmaServiceImpl;
-import searchengine.services.pageService.PageServiceImp;
-import searchengine.services.siteService.SiteServiceImp;
+import searchengine.services.indexService.lemmaParser.LemmaParserImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,14 +18,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // тест реализации интерфейса SnippetSearcher
+@SpringBootTest
 public class SnippetSearcherRegexImplTest {
 
-    SnippetSearcher snippetSearcher;
-    PoolService poolService;
-    LuceneMorphology luceneMorphology;
-    LemmaService lemmaService;
-    ModelMapper modelMapper;
-    SnippetSearcherConfiguration snippetSearcherConfiguration;
+   private SnippetSearcher snippetSearcher;
+   @Autowired // после этой аннотации подключились бины!!!!!!
+   private PoolService poolService;
 
     LemmaDto lemmaDto;
     LemmaDto lemmaDtoTwo;
@@ -44,19 +31,11 @@ public class SnippetSearcherRegexImplTest {
     Set<LemmaDto> lemmaDtoSet;
 
     File input;
+    File input2;
     Document document;
 
     @BeforeEach // чтоб перед каждым тестом создавалась переменная
-    public void setUp() throws IOException {
-        //  poolService = PoolServiceMockitoFactory.getPoolService();
-        modelMapper = new ModelMapper();
-        luceneMorphology = LuceneMorphologyFactory.getLuceneMorphologyFactory();
-        lemmaService = new LemmaServiceImpl(luceneMorphology, Mockito.mock(LemmaRepository.class), modelMapper);
-        poolService = new PoolServiceImpl(Mockito.mock(SiteServiceImp.class), Mockito.mock(PageServiceImp.class),
-                lemmaService, Mockito.mock(IndexEntityServiceImpl.class), Mockito.mock(UserAgentList.class),
-                Mockito.mock(SnippetSearcherConfiguration.class));
-        snippetSearcher = new SnippetSearcherRegexImpl(poolService);
-
+    public void setUp () throws IOException {
 
         lemmaDto = new LemmaDto();
         lemmaDto.setLemma("дом");
@@ -69,30 +48,23 @@ public class SnippetSearcherRegexImplTest {
 
         lemmaDtoSet = Set.of(lemmaDto, lemmaDtoTwo, lemmaDtoThree);
 
-        input = new File("src/test/resourse/file_test.html");
-        document = Jsoup.parse(input, "UTF-8", "https://camper-ural.ru");
+        input = new File("src/test/resources/file_test.html");
+        input2 = new File("src/test/resources/page_test.html");
+        document = Jsoup.parse(input2, "UTF-8", "https://camper-ural.ru");
     }
 
 
     @Test
     @DisplayName("check implementation SnippetSearcherSelectorImp")
-    void shouldImplementMethodOfInterfaceSnippetSearcher() throws IOException {
+    void shouldImplementMethodOfInterfaceSnippetSearcher () throws IOException {
 
-//        given(poolService.getLemmaService().getNormalBaseFormWord("лежал")).willReturn("лежать");
-//        String word = "лежал";  // для проверки poolservice in Debug
-//        String expectWord = "лежать";
-//        String baseFormWordExpect = poolService.getLemmaService().getNormalBaseFormWord(word);
-//        System.out.println(baseFormWordExpect);
-//        Assertions.assertEquals(baseFormWordExpect, expectWord);
-
+        snippetSearcher = new SnippetSearcherRegexImpl(poolService);
         String findSnippet = snippetSearcher.searchSnippets(document, lemmaDtoSet);
         System.out.println(findSnippet);
-
-
     }
 
     @Test
-    void shouldFindLemmaInText() throws IOException {
+    void shouldFindLemmaInText () throws IOException {
         Set<String> resultWordListForSnippetSet = Set.of("автомобиль", "море");
         String resultTextOfContent = "Описание почему нужно покупать автомобиль для путешествий по стране и на море. Какой автомобиль покупать для семьи\n" +
                 "\tчтоб было комфортно. Как выгодней купить автомобиль. Какие бывают марки автомобилей. Плюсы путешествий на машине.";
@@ -125,7 +97,7 @@ public class SnippetSearcherRegexImplTest {
     }
 
     @Test
-    void shouldSelectLemmaInText() throws IOException {
+    void shouldSelectLemmaInText () throws IOException {
         Set<String> resultWordListForSnippetSet = Set.of("автомобиль", "море");
         String resultTextOfContent = "Описание почему нужно покупать автомобиль для путешествий по стране и на море. Какой автомобиль покупать для семьи\n" +
                 "\tчтоб было комфортно. Как выгодней купить автомобиль. Какие бывают марки автомобилей. Плюсы путешествий на машине.";
@@ -133,7 +105,7 @@ public class SnippetSearcherRegexImplTest {
         String word = "море";
         String word1 = "автомобиль";
 
-        LemmaParser lemmaParser = new LemmaParser(poolService);
+        LemmaParserImpl lemmaParserImpl = new LemmaParserImpl(poolService);
 
 
     }

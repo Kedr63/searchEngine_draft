@@ -21,7 +21,6 @@ public class IndexEntity {
     private PageEntity page;
 
     @ManyToOne
-    // @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "lemma_id", columnDefinition = "INT", nullable = false)
     private LemmaEntity lemma;
 

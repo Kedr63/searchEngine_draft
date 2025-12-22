@@ -10,20 +10,13 @@ import searchengine.repositories.PageRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
 public class PageServiceImp implements PageService {
 
     private final PageRepository pageRepository;
-    //  private final IndexEntityService indexEntityService;
     private final ModelMapper modelMapper;
-//    private final ObjectMapper objectMapper = new ObjectMapper();
-
-//    public PageServiceImp(PageRepository pageRepository) {
-//        this.pageRepository = pageRepository;
-//    }
 
     @Override
     @Transactional
@@ -38,17 +31,6 @@ public class PageServiceImp implements PageService {
         PageEntity savedPageEntity = pageRepository.save(pageEntity);
         return modelMapper.map(savedPageEntity, PageDto.class);
     }
-
-//    @Override
-//    @Transactional
-//    public PageEntity getPageEntityById(int id) {
-//        PageEntity pageEntity = null;
-//        Optional<PageEntity> optional = pageRepository.findById(id);
-//        if (optional.isPresent()) {
-//            pageEntity = optional.get();
-//        }
-//        return pageEntity;
-//    }
 
     @Override
     @Transactional
@@ -66,36 +48,24 @@ public class PageServiceImp implements PageService {
     @Override
     @Transactional
     public boolean isPresentPageEntityWithThatPath(String path, int siteId) {
-        Optional<String> optional = pageRepository.findByPath(path, siteId);
-        return optional.isPresent();
+        Optional<String> optionalFoundPath = pageRepository.findByPath(path, siteId);
+        return optionalFoundPath.isPresent();
     }
 
     @Override
     @Transactional
     public void deletePageById(int id) {
-        //   indexEntityService.deleteIndexEntityWherePageId(id);
         pageRepository.deleteById(id);
     }
 
+    /** Этот метод вместо каскадного удаления {@code PageEntity} в классе {@code SiteEntity} (при каскаде запрос
+     * на удаление шел на каждую страницу и получали <b><i>JAVA HEAP SPACE</i></b>)
+     */
     @Override
     @Transactional
     public void deleteAllPageEntity() {
-        Logger.getLogger(PageServiceImp.class.getName()).info("Deleting all pages    pageRepository.deleteAllPageEntity();");
-
         pageRepository.deleteAllPageEntity();
     }
-
-//    @Override
-//   // @Transactional
-//    public void deletePageEntityWhereSiteId(int siteId) {
-//        List<PageEntity> pageEntityList = pageRepository.findAll()
-//                .stream()
-//                .filter(p -> p.getSite().getId() == siteId).toList();
-//        for (PageEntity pageEntity : pageEntityList) {
-//            indexEntityService.deleteIndexEntityWherePageId(pageEntity.getId());
-//        }
-//        pageRepository.deletePageEntityWhereSiteId(siteId);
-//    }
 
     @Override
     @Transactional
@@ -109,5 +79,4 @@ public class PageServiceImp implements PageService {
     public int getCountPagesOfSite(int idSiteDto) {
         return pageRepository.getCountPagesWhereSiteId(idSiteDto);
     }
-
 }

@@ -19,31 +19,31 @@ import java.util.logging.Logger;
 @Setter
 public class UtilitiesIndexing {
 
-    public volatile static boolean stopStartIndexingMethod;
+    public volatile static boolean stopIndexing;
     public volatile static boolean indexingInProgress;
     public static boolean indexingSinglePage;
 
     public static final Object lockPageRepository = new Object();
     public static final Object lockLemmaRepository = new Object();
-    public static  final Object lockIndexLemmaService = new Object();
+    public static final Object lockIndexLemmaService = new Object();
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void isDoneStartIndexing(){
+    public static void finishStartIndexing() {
         indexingInProgress = false;
-        stopStartIndexingMethod = false;
+        stopIndexing = false;
     }
 
-    public static void isDoneIndexingSinglePage(){
+    public static void finishIndexingSinglePage() {
         indexingSinglePage = false;
     }
 
-    public static void isStartSinglePageIndexing(){
+    public static void startSinglePageIndexing() {
         indexingSinglePage = true;
     }
 
 
-    public static IndexingResponse waitForCompleteStartIndexingAndTerminateStopIndexing(){
-        while (indexingInProgress){ // ждем завершение метода startIndex()
+    public static IndexingResponse waitForCompleteStartIndexingAndTerminateStopIndexing() {
+        while (indexingInProgress) { // ждем завершение метода startIndex()
             Logger.getLogger(IndexServiceImp.class.getName()).info("in loop while _onSpinWait");
             Thread.onSpinWait();
         }
@@ -52,10 +52,11 @@ public class UtilitiesIndexing {
 
 
     /**
-     * @note  если в {@code HtmlRecursiveParser} выбросится {@code RuntimeException(ex)}
-     *        в методе {@code saveLastErrorInSiteEntity}, {@code ExecutorService} обернет {@code RuntimeException} в объект {@code Future}
-     *        и метод {@code get} выдаст исключение
-     *        и здесь поймаем как {@code ExecutionException e} и обработаем ниже */
+     * @note если в {@code HtmlRecursiveParser} выбросится {@code RuntimeException(ex)}
+     * в методе {@code saveLastErrorInSiteEntity}, {@code ExecutorService} обернет {@code RuntimeException} в объект {@code Future}
+     * и метод {@code get} выдаст исключение
+     * и здесь поймаем как {@code ExecutionException} и обработаем ниже
+     */
     public static List<IndexingResponse> getIndexingResponseListFromFutureList(List<Future<IndexingResponse>> futureList) {
         List<IndexingResponse> indexingResponseList = new ArrayList<>();
         IndexingResponse indexingResponse;
@@ -75,38 +76,21 @@ public class UtilitiesIndexing {
 
     public static IndexingResponse getTotalResultIndexingResponse(List<IndexingResponse> indexingResponseList) {
         int sizeList = indexingResponseList.size();
-        boolean hasIndexingResponseWithValueFalse = false;
-        String error = "";
+        double totalTime;
 
-        if (!indexingResponseList.isEmpty()) {
-
-            for (IndexingResponse indexingResponse : indexingResponseList) {
-                if (!indexingResponse.isResult()) {
-                    hasIndexingResponseWithValueFalse = true;
-                    IndexingResponseError responseError = (IndexingResponseError) indexingResponse;
-                    error = responseError.getError();
-                }
-            }
-
-            double totalTime;
-            UtilitiesIndexing.isDoneStartIndexing();
-            totalTime = TimerExecution.computeTimeExecution();
-            if (hasIndexingResponseWithValueFalse) {
+        for (IndexingResponse indexingResponse : indexingResponseList) {
+            if (!indexingResponse.isResult()) {
+                IndexingResponseError responseError = (IndexingResponseError) indexingResponse;
+                String error = responseError.getError();
                 throw new IncompleteIndexingException(error);
-            } else {
-                Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
-                return indexingResponseList.get(sizeList - 1);
+
             }
+        }
+        totalTime = TimerExecution.computeTimeExecution();
+        Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
 
-        }
-        else {
-            double totalTime = TimerExecution.computeTimeExecution();
-            Logger.getLogger(IndexServiceImp.class.getName()).info("totalTime = " + totalTime);
-            return new IndexingResponseError(false, "что то пошло не так");
-        }
+        return indexingResponseList.get(sizeList - 1);
     }
-
-
 }
 
 

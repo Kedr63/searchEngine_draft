@@ -19,12 +19,6 @@ public class SnippetSearcherImp implements SnippetSearcher {
             Elements elements = document.getElementsByTag(tag);
             elementsList.add(elements);
         }
-//        List<String> resultList = new ArrayList<>();
-//        for (Elements elements : elementsList) {
-//            resultList.add(elements.text());
-//        }
-//
-//        resultList.toString();
 
         String result;
         StringBuilder stringBuilder = new StringBuilder();

@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: searchengine.ApplicationTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.459 s <<< FAILURE! - in searchengine.ApplicationTest
-searchengine.ApplicationTest  Time elapsed: 0.457 s  <<< ERROR!
-java.lang.IllegalStateException: Could not find a valid Docker environment. Please see logs and check configuration
-	at searchengine.ApplicationTest.beforeAll(ApplicationTest.java:53)
-

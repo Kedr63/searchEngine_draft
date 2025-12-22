@@ -9,5 +9,4 @@ import java.util.Set;
 public interface SnippetSearcher {
 
     String searchSnippets(Document document, Set<LemmaDto> lemmaDtoSet) throws IOException;
-
 }

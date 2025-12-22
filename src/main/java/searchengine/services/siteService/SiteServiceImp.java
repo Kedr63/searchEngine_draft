@@ -10,7 +10,6 @@ import searchengine.repositories.SiteRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,12 +19,6 @@ public class SiteServiceImp implements SiteService {
 
     private final SiteRepository siteRepository;
     private final ModelMapper modelMapper;
-
-
-//    public SiteServiceImp(SiteRepository siteRepository) {
-//        this.siteRepository = siteRepository;
-//      //  this.pageService = pageService;
-//    }
 
     @Override
     @Transactional
@@ -64,33 +57,16 @@ public class SiteServiceImp implements SiteService {
 
     @Override
     @Transactional
-    public void deleteSiteEntity(int id) {
-        siteRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional
     public void deleteAllSiteEntity() {
-        Logger.getLogger(SiteServiceImp.class.getName()).info(" в методе - deleteAll   siteRepository.deleteAll()");
         siteRepository.deleteAllSiteEntity();
     }
 
     @Override
     @Transactional
     public Optional<SiteDto> getSiteDtoByUrl(String domainPartUrl) {
-//        Optional<SiteEntity> optionalSiteEntity = siteRepository.findAll().stream()
-//                .filter(siteDto -> siteDto.getUrl().contains(domainPartUrl)).findFirst();
-//        return Optional.ofNullable(modelMapper.map(optionalSiteEntity, SiteDto.class));
         return siteRepository.findAll()
                 .stream()
                 .filter(siteEntity -> siteEntity.getUrl().equals(domainPartUrl)).findFirst()
                 .map(siteEntity -> modelMapper.map(siteEntity, SiteDto.class));
-    }
-
-    @Override
-    @Transactional
-    public int getIdSiteEntityByUrl(String siteBaseUrl) {
-        Optional<Integer> optionalId = siteRepository.findIdSiteEntityByUrl(siteBaseUrl);
-        return optionalId.orElse(0);
     }
 }

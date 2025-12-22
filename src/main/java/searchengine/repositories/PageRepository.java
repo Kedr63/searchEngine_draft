@@ -14,7 +14,7 @@ public interface PageRepository extends JpaRepository<PageEntity, Integer> {
     @Query(value = "SELECT path FROM search_engine.page where path LIKE :path AND site_id =:siteId", nativeQuery = true)
     Optional<String> findByPath(String path, int siteId);
 
-    @Modifying // без этой аннотации не сработает запрос на изменение таблицы
+    @Modifying
     @Query(value = "delete FROM page", nativeQuery = true)
     void deleteAllPageEntity();   // этот метод вместо каскадного удаления page в классе site (при каскаде запрос на удаление шел на каждую
     // страницу и получали \JAVA HEAP SPACE\

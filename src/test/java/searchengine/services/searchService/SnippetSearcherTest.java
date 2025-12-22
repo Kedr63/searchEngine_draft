@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import searchengine.dto.dtoToBD.LemmaDto;
 import searchengine.services.PoolService;
-import searchengine.services.indexService.lemmaParser.LemmaParser;
+import searchengine.services.indexService.lemmaParser.LemmaParserImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class SnippetSearcherTest {
         String word = "море";
         String word1 = "автомобиль";
 
-        LemmaParser lemmaParser = new LemmaParser(poolService);
+        LemmaParserImpl lemmaParserImpl = new LemmaParserImpl(poolService);
 
 
     }

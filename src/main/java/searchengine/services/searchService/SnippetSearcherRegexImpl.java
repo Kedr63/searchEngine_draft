@@ -21,17 +21,16 @@ public class SnippetSearcherRegexImpl implements SnippetSearcher {
         this.poolService = poolService;
     }
 
+    /** Сниппеты из текста будут искаться с помощью регулярного выражения заданного в конфигурационном файле {@code application.yaml}
+     * <p>Дополнительная информация: <a href="https://regex101.com/r/jQ2kzt/3"> Как работает это регулярное выражение
+     * на сервисе {@code regex101.com}</a></p>
+     *
+     * */
     @Override
     public String searchSnippets(Document document, Set<LemmaDto> lemmaDtoSetFromQuery) throws IOException {
 
         String textContentSetFromPageSet = TextContentFromPageHandler.extractSemanticTextFromPage(document);
-
-       // LemmaParser lemmaParser = new LemmaParser(poolService);
         String textWithSelectedWords = TextContentFromPageHandler.selectDesiredWordsInTheText(textContentSetFromPageSet, lemmaDtoSetFromQuery, poolService);
-
-        // Найдет в выражении все разные виды дефисов "\\p{Pd}"
-        //   String regex = "((((([А-Я][а-я\\s]*)\\s*)?)|(([А-Я\\s]*)\\s*)?)((<b>[А-Яа-я]+</b>)(\\s*([\\p{Pd}а-я\\s:]*)))+)";
-        //  String regex = "((((([А-Я][0-9а-я\\s]*)\\s*)?)|(([А-Яа-я\\s]*)\\s*)?)((<b>[А-Яа-я]+</b>)(\\s*([\\p{Pd}0-9а-яА-Я\\s\":]*)))+)";
 
         Pattern pattern = Pattern.compile(poolService.getSnippetSearcherConfiguration().getRegexSearcher());
         Matcher matcher = pattern.matcher(textWithSelectedWords);
@@ -45,35 +44,4 @@ public class SnippetSearcherRegexImpl implements SnippetSearcher {
         }
         return builder.toString();
     }
-
-
-//    private String getSnippetsFromMainContent(Document document, Set<LemmaDto> lemmaDtoSet) throws IOException {
-//        /*String resultTextOfContent = TextContentOfPageParser.extractTextFromPage(document);
-//
-//        //  String[] textArray = resultTextOfContent.split("[^а-яё]");
-//        //  List<String> stringList = Arrays.stream(textArray).toList();
-//        Set<String> resultWordListForSnippetSet = new HashSet<>();
-//
-//        LemmaParser lemmaParser = new LemmaParser(poolService);
-//        Map<String, Integer> lemmaToCountMap = lemmaParser.extractFutureLemmasFromTextForMap(resultTextOfContent);
-//
-//        resultWordListForSnippetSet = lemmaToCountMap.keySet();
-//
-//        for (String str : resultWordListForSnippetSet) {
-//            resultTextOfContent = resultTextOfContent.replaceAll(str, "<b>" + str + "</b>");
-//        }
-//
-//        String regex = "(((^[\\W\\s]+)|[А-Яа-я\\s]*)\\s*(<b>[А-Яа-я]+</b>)(\\s*)([А-Яа-я]*\\s*[\\S]*\\.?))";
-//        Pattern pattern = Pattern.compile(regex);
-//        Matcher matcher = pattern.matcher(resultTextOfContent);
-//        StringBuilder builder = new StringBuilder();
-//        while (matcher.find()) {
-//            builder.append(matcher.group().trim()).append("...").append("\n");
-//        }*/
-//
-//        //TODO find bug and fix
-//     //   String result = resultWordListForSnippetSet.stream().map(str -> resultTextOfContent.replace(str, "<b>" + str + "</b>")).toString();
-//
-//        return builder.toString();
-//    }
 }

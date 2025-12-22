@@ -16,30 +16,18 @@ public class SiteEntity {
     @Column(name = "id", nullable = false)
     private int id;
 
-  /* смысла нет сайту знать о своих страницах, а вот страницам нужно знать какому сайту они принадлежат */
+  /** сайту нет смысла знать о своих страницах,
+   * а вот страницам нужно знать какому сайту они принадлежат (однонаправленное отношение)*/
  //   @OneToMany(mappedBy = "site")  // https://sky.pro/wiki/java/ispolzovanie-mapped-by-v-jpa-i-hibernate-obyasnenie/
-    // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c     //  add
   //  private List<PageEntity> pageEntities;
 
-
-//    @OneToMany(targetEntity = PageEntity.class, fetch = FetchType.LAZY,
-//            cascade = CascadeType.ALL, orphanRemoval = true) // add /fetch = FetchType.LAZY,/ https://stackoverflow.com/questions/57149468/could-not-write-jsoninfinite-recursionstackoverflowerrornested-exception-is-c
-//    @JoinColumn(name = "site_id", referencedColumnName = "id")
-//    private List<PageEntity> pageEntities;
-
-    // added after add Table "lemma"
-//    @OneToMany(mappedBy = "site", fetch = FetchType.LAZY)
-//    private List<LemmaEntity> lemmaEntities;
-
     @Enumerated(EnumType.STRING)
-    // @Column(columnDefinition = "ENUM")
     private StatusIndex status;
 
     @Column(columnDefinition = "DATETIME", nullable = false)
     private LocalDateTime statusTime;
 
-    //   @Column(columnDefinition = "TEXT")
-    @Column(columnDefinition = "TEXT(100)") // попробую TEXT чтоб не получить /java heap space/ -2
+    @Column(columnDefinition = "TEXT(100)")
     private String lastError;
 
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)

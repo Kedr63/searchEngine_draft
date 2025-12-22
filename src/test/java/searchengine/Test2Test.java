@@ -5,7 +5,7 @@ import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import searchengine.services.lemmaService.LemmaServiceImpl;
-import searchengine.services.indexService.lemmaParser.LemmaParser;
+import searchengine.services.indexService.lemmaParser.LemmaParserImpl;
 import searchengine.services.PoolServiceImpl;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class Test2Test {
 
     LemmaServiceImpl lemmasService = Mockito.mock(LemmaServiceImpl.class);
     PoolServiceImpl poolService = Mockito.mock(PoolServiceImpl.class);
-    public LemmaParser lemmaParser;
+    public LemmaParserImpl lemmaParserImpl;
     LuceneMorphology luceneMorphology = new RussianLuceneMorphology();
 
     public Test2Test() throws IOException {
@@ -24,6 +24,6 @@ public class Test2Test {
     @BeforeEach // чтоб перед каждым тестом создавалась переменная
     public void setUp() {
 
-        lemmaParser = new LemmaParser(poolService);
+        lemmaParserImpl = new LemmaParserImpl(poolService);
     }
 }

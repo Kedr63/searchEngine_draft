@@ -1,0 +1,11 @@
+searchengine/services/indexService/PageServiceImplTest.class
+searchengine/services/searchService/SnippetSearcherRegexImplTest.class
+searchengine/services/searchService/SnippetSearcherTest.class
+searchengine/services/indexService/HtmlRecursiveParserTest.class
+searchengine/services/indexService/IndexServiceImpTest.class
+searchengine/Test2Test.class
+searchengine/services/factoryObject/LuceneMorphologyFactory.class
+searchengine/services/indexService/LemmaParserImplTest.class
+searchengine/services/searchService/SearchServiceImpTest.class
+searchengine/services/indexService/UtilitiesIndexingTest.class
+searchengine/services/factoryObject/PoolServiceMockitoFactory.class

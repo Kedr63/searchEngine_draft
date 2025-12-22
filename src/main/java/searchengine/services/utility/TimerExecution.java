@@ -5,7 +5,6 @@ public class TimerExecution {
 
     public static double computeTimeExecution() {
         long end = System.currentTimeMillis();
-        // long start = 0;
         return (double) (end - startTime) / 60_000;
     }
 }

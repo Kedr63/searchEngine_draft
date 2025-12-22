@@ -13,7 +13,7 @@ import searchengine.services.searchService.SearchService;
 import searchengine.services.statisticService.StatisticsService;
 
 /**
- * @RestController ApiController класс с аннотациями
+ * @RestController ApiController класс с аннотациями:
  * @aboutAnnotation: @RestController = @Controller + @ResponseBody. Аннотация @Controller умеет слушать, получать и отвечать на запросы.
  * раньше в Spring MVC нужно было добавлять аннотацию @ResponseBody к каждому методу, чтобы возвратить объект напрямую клиенту,
  * теперь эта необходимость отпала благодаря аннотации @RestController
@@ -30,9 +30,7 @@ import searchengine.services.statisticService.StatisticsService;
 public class ApiController {
 
     private final StatisticsService statisticsService;
-
     private final IndexService indexService;
-
     private final SearchService searchService;
 
 
@@ -63,7 +61,7 @@ public class ApiController {
      * @param pageDtoSingle pageDtoSingle представляет собой объект DTO (Data Transfer Object), который используется
      *                      для переноса данных из формы.
      *                      Из формы браузера приходит запрос от пользователя в виде K-V:
-     *                      <p>"url" - "https://kemperus.ru/special_camper"</p>
+     *                      {@code "url" - "https://kemperus.ru/special_camper"}
      * @aboutAnnotation: @PostMapping аннотация означает, что метод контроллера будет обслуживать POST-запросы,
      * направленные на указанный URL "/indexPage"
      * <p>📌 метод POST - Способ передачи данных: в теле HTTP-запроса (не отображаются в строке браузера)</p>

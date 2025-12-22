@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: searchengine.services.indexService.UtilitiesIndexingTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.086 s <<< FAILURE! - in searchengine.services.indexService.UtilitiesIndexingTest
+getTotalResultIndexingResponse  Time elapsed: 0.086 s  <<< ERROR!
+searchengine.exceptions.IncompleteIndexingException: Индексация не удалась: error indexing
+	at searchengine.services.indexService.UtilitiesIndexingTest.getTotalResultIndexingResponse(UtilitiesIndexingTest.java:23)
+

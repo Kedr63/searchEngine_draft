@@ -40,17 +40,17 @@ public class TaskForkJoinPoolForParsingSite implements Callable<IndexingResponse
     public IndexingResponse call() {
         IndexingResponse indexingResponseForFuture = null;
         ForkJoinPool forkJoinPool = new ForkJoinPool();
-        //   try {
+
         HtmlRecursiveParser htmlRecursiveParser = new HtmlRecursiveParser(siteDto.getUrl(), siteDto, poolService);
         forkJoinPool.invoke(htmlRecursiveParser); // пока метод не отработает со всеми fork, код дальше не пойдет
 
-        if (htmlRecursiveParser.isDone() && siteDto.getStatusIndex().compareTo(StatusIndex.FAILED) != 0 && !UtilitiesIndexing.stopStartIndexingMethod) {
+        if (htmlRecursiveParser.isDone() && siteDto.getStatusIndex().compareTo(StatusIndex.FAILED) != 0 && !UtilitiesIndexing.stopIndexing) {
             siteDto.setStatusIndex(StatusIndex.INDEXED);
             siteDto.setStatusTime(LocalDateTime.now());
             poolService.getSiteService().saveSiteDto(siteDto);
             indexingResponseForFuture = new IndexingResponse(true);
         }
-        if (htmlRecursiveParser.isDone() && UtilitiesIndexing.stopStartIndexingMethod) {
+        if (htmlRecursiveParser.isDone() && UtilitiesIndexing.stopIndexing) {
             siteDto.setStatusIndex(StatusIndex.FAILED);
             siteDto.setLastError(errorMessageConfig.getErrorIndexingStopUser());
             poolService.getSiteService().saveSiteDto(siteDto);

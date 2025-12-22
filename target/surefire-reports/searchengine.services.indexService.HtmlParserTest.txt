@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: searchengine.services.indexService.HtmlParserTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! - in searchengine.services.indexService.HtmlParserTest
-testIsPresentPathInPageRepository  Time elapsed: 0.001 s  <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "searchengine.repositories.SiteRepository.findAll()" because "this.siteRepository" is null
-	at searchengine.services.indexService.HtmlParserTest.testIsPresentPathInPageRepository(HtmlParserTest.java:29)
-

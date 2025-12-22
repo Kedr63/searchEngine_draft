@@ -33,7 +33,12 @@ public class SearchingResultParser {
             RelativeRelevanceFloater relativeRelevanceFloater = entry.getValue();
             PageDto pageDto = poolService.getPageService().getPageDtoById(pageIdInteger.getPageId());
 
-            SearchingResult searchingResult = getSearchingResult(pageDto, relativeRelevanceFloater);
+            SearchingResult searchingResult = null;
+            try {
+                searchingResult = getSearchingResult(pageDto, relativeRelevanceFloater);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             searchResultList.add(searchingResult);
 
             counterLimitResultTemp = counterLimitResultTemp + 1;
@@ -51,7 +56,6 @@ public class SearchingResultParser {
         String title = document.select("title").text();
         searchingResult.setTitle(title);
         SiteDto siteDto = new SiteDto();
-      //  if (poolService.getSiteService().getSiteDto(pageDto.getSiteId()).isPresent())
         siteDto = poolService.getSiteService().getSiteDto(pageDto.getSiteId()).orElse(siteDto);
         searchingResult.setSite(siteDto.getUrl());
         searchingResult.setSiteName(siteDto.getName());
@@ -60,16 +64,7 @@ public class SearchingResultParser {
        // SnippetSearcher snippetSearcher = new SnippetSearcherImp(); // применю реализацию SnippetSearcherImp(), и еще можно создать другие реализации
         SnippetSearcher snippetSearcher = new SnippetSearcherRegexImpl(poolService); // применю реализацию SnippetSearcherImp(), и еще можно создать другие реализации
         String snippetResult = snippetSearcher.searchSnippets(document, lemmaDtoSet);
-      //  String snippetResult = getSnippets(document, lemmaDtoSet, snippetSearcher);
         searchingResult.setSnippet(snippetResult);
         return searchingResult;
-    }
-
-    private String getSnippets(Document document, Set<LemmaDto> lemmaDtoSet, SnippetSearcher snippetSearcher) {
-        try {
-            return snippetSearcher.searchSnippets(document, lemmaDtoSet);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

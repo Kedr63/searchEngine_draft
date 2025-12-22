@@ -4,7 +4,7 @@ public class FailedConnectionException extends RuntimeException{
 
 
     public FailedConnectionException(String message) {
-        super(message);
+        super("Что-то с соединением ( :" + message);
     }
 
     public FailedConnectionException(Throwable cause) {

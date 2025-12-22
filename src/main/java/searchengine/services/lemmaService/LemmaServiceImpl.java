@@ -11,7 +11,6 @@ import searchengine.repositories.LemmaRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -21,23 +20,9 @@ public class LemmaServiceImpl implements LemmaService {
     private final LemmaRepository lemmaRepository;
     private final ModelMapper modelMapper;
 
-    //  protected static final Object lockLemmaRepository = new Object();
-
-
-//    public LemmaServiceImpl(LuceneMorphology luceneMorphology, LemmaRepository lemmaRepository) {
-//        this.luceneMorphology = luceneMorphology;
-//        this.lemmaRepository = lemmaRepository;
-//    }
-
-    @Override
-    public List<LemmaEntity> getAllLemmaEntities() {
-        return List.of();
-    }
-
     @Transactional
     @Override
     public LemmaDto getLemmaDtoById(int id) {
-        //  synchronized (UtilitiesIndexing.lockLemmaRepository) {
         if (lemmaRepository.findById(id).isPresent()) {
             return modelMapper.map((lemmaRepository.findById(id).get()), LemmaDto.class);
         } else throw new RuntimeException("Lemma not found");
@@ -64,19 +49,8 @@ public class LemmaServiceImpl implements LemmaService {
 
     @Transactional
     @Override
-    public boolean isPresentLemmaEntity(String lemma, int siteId) {
-        //   synchronized (UtilitiesIndexing.lockLemmaRepository) {
-        Optional<String> optionalLemma = lemmaRepository.findByLemma(lemma, siteId);
-        return optionalLemma.isPresent();
-
-    }
-
-    @Transactional
-    @Override
     public Optional<Integer> getLemmaId(String lemma, int siteId) {
-        // synchronized (UtilitiesIndexing.lockLemmaRepository) {
         return lemmaRepository.findIdByLemma(lemma, siteId);
-        // return optionalId.orElse(0);
 
     }
 
@@ -99,8 +73,6 @@ public class LemmaServiceImpl implements LemmaService {
             baseFormWord = wordNormalForms.get(0);
         }
         return baseFormWord;
-
-        //return (luceneMorphology.getNormalForms(word)).get(0);
     }
 
     @Override
@@ -112,15 +84,9 @@ public class LemmaServiceImpl implements LemmaService {
     @Override
     @Transactional
     public void deleteAllLemmaEntities() {
-        Logger.getLogger(LemmaServiceImpl.class.getName()).info("Deleting all lemma entities   lemmaRepository.deleteAllLemmaEntity()");
         lemmaRepository.deleteAllLemmaEntity();
     }
 
-    @Override
-    @Transactional
-    public void deleteLemmaEntityById(int lemmaId) {
-        lemmaRepository.deleteById(lemmaId);
-    }
 
     @Override
     @Transactional

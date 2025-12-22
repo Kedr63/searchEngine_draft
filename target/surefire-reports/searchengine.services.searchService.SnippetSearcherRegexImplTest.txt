@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: searchengine.services.searchService.SnippetSearcherRegexImplTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 2.905 s <<< FAILURE! - in searchengine.services.searchService.SnippetSearcherRegexImplTest
+shouldImplementMethodOfInterfaceSnippetSearcher  Time elapsed: 0.005 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "searchengine.services.searchService.SnippetSearcher.searchSnippets(org.jsoup.nodes.Document, java.util.Set)" because "this.snippetSearcher" is null
+	at searchengine.services.searchService.SnippetSearcherRegexImplTest.shouldImplementMethodOfInterfaceSnippetSearcher(SnippetSearcherRegexImplTest.java:99)
+

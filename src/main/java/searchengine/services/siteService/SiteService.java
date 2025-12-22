@@ -16,11 +16,7 @@ public interface SiteService {
 
     Optional<SiteDto> getSiteDto(int id);
 
-    void deleteSiteEntity(int id);
-
     void deleteAllSiteEntity();
 
     Optional<SiteDto> getSiteDtoByUrl(String url);
-
-    int getIdSiteEntityByUrl(String siteBaseUrl);
 }

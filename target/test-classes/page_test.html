@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="format-detection" content="telephone=no">
+    <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+    <title>Методические мероприятие по работе с генеративными нейронными сетями</title>
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/owl.carousel.css">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/datepicker.min.css">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/fancybox.css">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/perfect-scrollbar.min.css">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/jquery.bxslider.css">
+
+
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/styles.css?v=1.5">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/response_1279.css?v=1.5" media="(max-width: 1279px)">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/response_1023.css?v=1.5" media="(max-width: 1023px)">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/response_767.css?v=1.5" media="(max-width: 767px)">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/response_479.css?v=1.5" media="(max-width: 479px)">
+    <link rel="stylesheet" href="/local/templates/svetlovka/css/response_413.css?v=1.5" media="(max-width: 413px)">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="robots" content="index, follow"/>
+    <meta name="keywords" content="Библиотека"/>
+    <meta name="description" content="Библиотека"/>
+    <link href="/bitrix/cache/css/s1/svetlovka/template_d7a21cd97d8703335d170cc3153e6a3a/template_d7a21cd97d8703335d170cc3153e6a3a_v1.css?176122806663040"
+          type="text/css" data-template-style="true" rel="stylesheet"/>
+    <script type="text/javascript">
+        if (window == window.top) {
+            document.addEventListener("DOMContentLoaded", function () {
+                var div = document.createElement("div");
+                div.innerHTML = ' <div id="nca-cookiesaccept-line" class="nca-cookiesaccept-line style-3 "> <div id="nca-nca-position-left"id="nca-bar" class="nca-bar nca-style- nca-animation-none nca-position-left"> <div class="nca-cookiesaccept-line-text">На сайте осуществляется обработка файлов cookie с использованием Яндекс Метрика и прокультура.рф. Нажимая на кнопку «Да, согласен» вы даете согласие на их обработку</div> <div><button type="button" id="nca-cookiesaccept-line-accept-btn" onclick="ncaCookieAcceptBtn()" >Да, согласен</button></div> </div> </div> ';
+                document.body.appendChild(div);
+            });
+        }
+
+        function ncaCookieAcceptBtn() {
+            var alertWindow = document.getElementById("nca-cookiesaccept-line");
+            alertWindow.remove();
+            var cookie_string = "NCA_COOKIE_ACCEPT_1" + "=" + escape("Y");
+            var expires = new Date((new Date).getTime() + (1000 * 60 * 60 * 24 * 1500));
+            cookie_string += "; expires=" + expires.toUTCString();
+            cookie_string += "; path=" + escape("/");
+            document.cookie = cookie_string;
+        }
+
+        function ncaCookieAcceptCheck() {
+            var closeCookieValue = "N";
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + "NCA_COOKIE_ACCEPT_1" + "=");
+            if (parts.length == 2) {
+                closeCookieValue = parts.pop().split(";").shift();
+            }
+            if (closeCookieValue != "Y") {
+                /*document.head.insertAdjacentHTML("beforeend", "<style>#nca-cookiesaccept-line {display:flex}</style>")*/
+            } else {
+                document.head.insertAdjacentHTML("beforeend", "<style>#nca-cookiesaccept-line {display:none}</style>")
+            }
+        }
+
+        ncaCookieAcceptCheck();
+    </script>
+    <style> .nca-cookiesaccept-line {
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        border: none !important;
+        width: 100% !important;
+        min-height: 10px !important;
+        max-height: 250px !important;
+        display: block;
+        clear: both !important;
+        padding: 12px !important;
+        position: fixed;
+        bottom: 0px !important;
+        opacity: 1;
+        transform: translateY(0%);
+        z-index: 99999;
+    }
+
+    .nca-cookiesaccept-line > div {
+        display: flex;
+        align-items: center;
+    }
+
+    .nca-cookiesaccept-line > div > div {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .nca-cookiesaccept-line a {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    @media screen and (max-width: 767px) {
+        .nca-cookiesaccept-line > div > div {
+            padding-left: 1%;
+            padding-right: 1%;
+        }
+    } </style>
+
+
+    <script type="text/javascript">var _ba = _ba || [];
+    _ba.push(["aid", "254bbe2dea12db84d6dd2ee56b3f40ac"]);
+    _ba.push(["host", "www.svetlovka.ru"]);
+    (function () {
+        var ba = document.createElement("script");
+        ba.type = "text/javascript";
+        ba.async = true;
+        ba.src = (document.location.protocol == "https:" ? "https://" : "http://") + "bitrix.info/ba.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(ba, s);
+    })();</script>
+
+
+    <script src="https://culturaltracking.ru/static/js/spxl.js" data-pixel-id="963"></script>
+
+</head>
+
+<body style="opacity: 0">
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WJVHNDS"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<div class="wrap">
+    <div class="main">
+        <!-- Шапка -->
+        <div class="mob_header">
+            <div class="cont">
+
+                <div class="logo">
+                    <a href="/"><img src="/local/templates/svetlovka/images/mob_logo.png" alt=""></a>
+                </div>
+
+                <a href="#" class="glasses show-slabo-version">
+                    <svg viewBox="0 0 18462.41 13142.23">
+                        <path d="M17264.22 7432.21l643.63 0c153.13,0 291.8,62.08 392.13,162.43 100.36,100.36 162.43,239 162.43,392.13 0,153.13 -62.07,291.77 -162.43,392.13 -100.36,100.36 -239,162.43 -392.13,162.43l-507.18 0 0 2233.9c0,656.34 -265.91,1245.45 -692.28,1671.81 -430.62,430.62 -1025.12,695.18 -1674.71,695.18l0 -0.78 -2957.94 0.01 0 0.78c-656.34,0 -1245.45,-265.91 -1671.81,-692.28 -430.62,-430.62 -695.18,-1025.12 -695.18,-1674.71l0 -110.41 -955.07 0 0 110.41c0,649.59 -264.56,1244.09 -695.18,1674.71 -426.36,426.37 -1015.47,692.28 -1671.81,692.28l0 -0.78 -2957.94 -0.01 0 0.78c-649.59,0 -1244.09,-264.56 -1674.71,-695.18 -426.37,-426.36 -692.28,-1015.47 -692.28,-1671.81l0 -2233.9 -507.18 0c-153.13,0 -291.77,-62.07 -392.13,-162.43 -100.36,-100.36 -162.43,-239 -162.43,-392.13 0,-153.13 62.07,-291.77 162.43,-392.13 100.33,-100.35 239,-162.43 392.13,-162.43l643.63 0 1757.65 -6151.69c107.91,-377.99 334.87,-698.8 634.38,-924.74 298.04,-224.83 667.52,-355.77 1062.7,-355.77 486.65,0 927.91,197.93 1247.45,517.47 319.55,319.54 517.47,760.79 517.47,1247.45 0,153.13 -62.07,291.77 -162.43,392.13 -100.36,100.36 -239,162.43 -392.13,162.43 -153.13,0 -291.8,-62.08 -392.13,-162.43 -100.35,-100.33 -162.43,-239 -162.43,-392.13 0,-180.73 -73.58,-344.68 -192.35,-463.45 -118.77,-118.77 -282.72,-192.35 -463.45,-192.35 -146.71,0 -284.49,48.32 -395.4,131.98 -110.73,83.54 -195.13,202.38 -235.48,343.66l-1670.72 5847.44 13759.76 0 -1670.72 -5847.44c-40.35,-141.28 -124.75,-260.13 -235.48,-343.66 -110.91,-83.67 -248.69,-131.98 -395.4,-131.98 -180.73,0 -344.68,73.58 -463.45,192.35 -118.77,118.77 -192.35,282.72 -192.35,463.45 0,153.13 -62.08,291.8 -162.43,392.13 -100.33,100.35 -239,162.43 -392.13,162.43 -153.13,0 -291.77,-62.07 -392.13,-162.43 -100.36,-100.36 -162.43,-239 -162.43,-392.13 0,-486.65 197.93,-927.91 517.47,-1247.45 319.54,-319.55 760.79,-517.47 1247.45,-517.47 395.18,0 764.67,130.94 1062.7,355.77 299.51,225.94 526.47,546.75 634.38,924.74l1757.65 6151.69zm-7555.48 1109.12l-955.07 0 0 1014.37 955.07 0 0 -1014.37zm-6280 3491.77l2957.95 0c347.39,0 661.32,-141.16 888.67,-368.51 228.22,-228.22 369.2,-543.22 369.2,-889.36l0 -2233.9 -5473.69 0 0 2233.9c0,347.39 141.16,661.32 368.51,888.67 228.22,228.22 543.22,369.2 889.36,369.2zm8646.99 0l2957.95 0c346.14,0 661.13,-140.97 889.36,-369.2 227.35,-227.35 368.51,-541.29 368.51,-888.67l0 -2233.9 -5473.69 0 0 2233.9c0,346.14 140.97,661.13 369.2,889.36 227.35,227.35 541.29,368.51 888.67,368.51z"/>
+                    </svg>
+                </a>
+
+
+                <div class="account">
+                    <a href="http://catalog.svetlovka.ru/jirbis2/index.php" target="_blank" class="link"></a>
+                </div>
+
+
+                <div class="modal_cont search">
+                    <a href="#" class="mini_modal_link search_link" data-modal-id="#search_modal">
+                        <svg height="180.622mm" viewBox="0 0 18062.18 18062.2">
+                            <path d="M18062.18 7408.32c0,1286.54 -335.14,2554.05 -969.17,3665.72 -193.06,338.45 -623.84,456.27 -962.42,263.21 -338.45,-193.06 -456.41,-623.98 -263.21,-962.42 512.63,-898.89 783.69,-1924.7 783.69,-2966.5 0,-3306.87 -2690.34,-5997.22 -5997.22,-5997.22 -3306.88,0 -5997.22,2690.34 -5997.22,5997.22 0,3306.88 2690.34,5997.22 5997.22,5997.22 1029.12,0 2044.04,-264.86 2934.94,-765.91 339.69,-191 769.91,-70.42 960.91,269.13 191,339.69 70.56,769.91 -269.13,960.77 -1101.6,619.7 -2355.75,947.12 -3626.72,947.12 -1780.7,0 -3416.57,-631.69 -4695.66,-1682.58l-4755.47 4723.22c-137.53,136.56 -317.36,204.91 -497.2,204.91 -181.35,0 -362.7,-69.45 -500.64,-208.36 -274.5,-276.43 -272.99,-723.19 3.45,-997.84l4749.13 -4716.74c-1068.39,-1284.19 -1711.94,-2933.7 -1711.94,-4730.94 0,-4084.91 3323.41,-7408.33 7408.33,-7408.33 4084.92,0 7408.33,3323.41 7408.33,7408.33l0 -0.01z"/>
+                        </svg>
+                    </a>
+
+                    <div class="mini_modal" id="search_modal">
+                        <form action="/search/">
+                            <input type="text" name="q" size="40" value="" required placeholder="Поиск по сайту"
+                                   class="input">
+                            <button type="submit" class="submit_btn">
+                                <svg height="180.622mm" viewBox="0 0 18062.18 18062.2">
+                                    <path d="M18062.18 7408.32c0,1286.54 -335.14,2554.05 -969.17,3665.72 -193.06,338.45 -623.84,456.27 -962.42,263.21 -338.45,-193.06 -456.41,-623.98 -263.21,-962.42 512.63,-898.89 783.69,-1924.7 783.69,-2966.5 0,-3306.87 -2690.34,-5997.22 -5997.22,-5997.22 -3306.88,0 -5997.22,2690.34 -5997.22,5997.22 0,3306.88 2690.34,5997.22 5997.22,5997.22 1029.12,0 2044.04,-264.86 2934.94,-765.91 339.69,-191 769.91,-70.42 960.91,269.13 191,339.69 70.56,769.91 -269.13,960.77 -1101.6,619.7 -2355.75,947.12 -3626.72,947.12 -1780.7,0 -3416.57,-631.69 -4695.66,-1682.58l-4755.47 4723.22c-137.53,136.56 -317.36,204.91 -497.2,204.91 -181.35,0 -362.7,-69.45 -500.64,-208.36 -274.5,-276.43 -272.99,-723.19 3.45,-997.84l4749.13 -4716.74c-1068.39,-1284.19 -1711.94,-2933.7 -1711.94,-4730.94 0,-4084.91 3323.41,-7408.33 7408.33,-7408.33 4084.92,0 7408.33,3323.41 7408.33,7408.33l0 -0.01z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <a href="#" class="mob_menu_link">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+
+            </div>
+        </div>
+
+
+        <header>
+            <a href="#" class="close">
+                <span></span>
+                <span></span>
+            </a>
+
+            <div class="scroll">
+                <div class="info">
+                    <div class="cont flex">
+
+                        <div class="logo">
+                            <a href="/"><img src="/local/templates/svetlovka/images/logo.png" alt=""></a>
+
+                            <a href="http://bibliogorod.ru/" target="_blank"><img
+                                    src="/local/templates/svetlovka/images/logo_sep.png" alt="" class="sep"></a>
+
+                            <a href="https://www.mos.ru/kultura/" target="_blank"><img
+                                    src="/local/templates/svetlovka/images/logo_dep.png" alt="" class="dep"></a>
+                        </div>
+
+
+                        <div class="col_right">
+
+                            <div class="links">
+
+
+                                <div class="menu-item">
+                                    <a href="/about/"
+                                       class="has-subitems ">О библиотеке</a>
+                                    <div class="sub_menu">
+                                        <ul>
+                                            <li class="mobile-main"><a href="/about/">О библиотеке</a></li>
+
+
+                                            <li><a
+                                                    href="/about/pravila-biblioteki/">Правила библиотеки</a></li>
+
+
+                                            <li><a
+                                                    href="/about/prostranstvo/">Пространство</a></li>
+
+
+                                            <li><a
+                                                    href="/about/dokumenty/">Документы</a></li>
+
+
+                                            <li><a
+                                                    href="/about/team/">Команда</a></li>
+
+
+                                            <li><a
+                                                    href="/about/o-nas-v-smi/">О нас в СМИ</a></li>
+
+
+                                            <li><a
+                                                    href="/news/">Новости библиотеки</a></li>
+
+
+                                            <li><a
+                                                    href="/partners-news/">Новости партнеров</a></li>
+
+
+                                            <li><a
+                                                    target="_blank" href="/svetlov/">О Михаиле Светлове</a></li>
+
+
+                                            <li><a
+                                                    href="/for_partners/o-nas/">Наши друзья</a></li>
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="menu-item">
+                                    <a href="/to_colleagues/"
+                                       class="has-subitems ">Коллегам</a>
+                                    <div class="sub_menu">
+                                        <ul>
+                                            <li class="mobile-main"><a href="/to_colleagues/">Коллегам</a></li>
+
+
+                                            <li><a
+                                                    href="/to_colleagues/proekty-i-meropriyatiya/" class="active">Проекты
+                                                и мероприятия</a></li>
+
+
+                                            <li><a
+                                                    href="/to_colleagues/metodicheskie-materialy/">Методические
+                                                материалы</a></li>
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="menu-item">
+                                    <a href="/for_partners/"
+                                       class="has-subitems ">Партнерам</a>
+                                    <div class="sub_menu">
+                                        <ul>
+                                            <li class="mobile-main"><a href="/for_partners/">Партнерам</a></li>
+
+
+                                            <li><a
+                                                    href="/for_partners/o-nas/">Наши друзья</a></li>
+
+
+                                            <li><a
+                                                    href="/about/prostranstvo/">Пространство</a></li>
+
+
+                                            <li><a
+                                                    href="/about/o-nas-v-smi/">О нас в СМИ</a></li>
+
+
+                                            <li><a
+                                                    href="/for_partners/brendbuk/">Брендбук и лого</a></li>
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <a href="#" id="specialButton" class="glasses show-slabo-version">
+                                <svg viewBox="0 0 18462.41 13142.23">
+                                    <path d="M17264.22 7432.21l643.63 0c153.13,0 291.8,62.08 392.13,162.43 100.36,100.36 162.43,239 162.43,392.13 0,153.13 -62.07,291.77 -162.43,392.13 -100.36,100.36 -239,162.43 -392.13,162.43l-507.18 0 0 2233.9c0,656.34 -265.91,1245.45 -692.28,1671.81 -430.62,430.62 -1025.12,695.18 -1674.71,695.18l0 -0.78 -2957.94 0.01 0 0.78c-656.34,0 -1245.45,-265.91 -1671.81,-692.28 -430.62,-430.62 -695.18,-1025.12 -695.18,-1674.71l0 -110.41 -955.07 0 0 110.41c0,649.59 -264.56,1244.09 -695.18,1674.71 -426.36,426.37 -1015.47,692.28 -1671.81,692.28l0 -0.78 -2957.94 -0.01 0 0.78c-649.59,0 -1244.09,-264.56 -1674.71,-695.18 -426.37,-426.36 -692.28,-1015.47 -692.28,-1671.81l0 -2233.9 -507.18 0c-153.13,0 -291.77,-62.07 -392.13,-162.43 -100.36,-100.36 -162.43,-239 -162.43,-392.13 0,-153.13 62.07,-291.77 162.43,-392.13 100.33,-100.35 239,-162.43 392.13,-162.43l643.63 0 1757.65 -6151.69c107.91,-377.99 334.87,-698.8 634.38,-924.74 298.04,-224.83 667.52,-355.77 1062.7,-355.77 486.65,0 927.91,197.93 1247.45,517.47 319.55,319.54 517.47,760.79 517.47,1247.45 0,153.13 -62.07,291.77 -162.43,392.13 -100.36,100.36 -239,162.43 -392.13,162.43 -153.13,0 -291.8,-62.08 -392.13,-162.43 -100.35,-100.33 -162.43,-239 -162.43,-392.13 0,-180.73 -73.58,-344.68 -192.35,-463.45 -118.77,-118.77 -282.72,-192.35 -463.45,-192.35 -146.71,0 -284.49,48.32 -395.4,131.98 -110.73,83.54 -195.13,202.38 -235.48,343.66l-1670.72 5847.44 13759.76 0 -1670.72 -5847.44c-40.35,-141.28 -124.75,-260.13 -235.48,-343.66 -110.91,-83.67 -248.69,-131.98 -395.4,-131.98 -180.73,0 -344.68,73.58 -463.45,192.35 -118.77,118.77 -192.35,282.72 -192.35,463.45 0,153.13 -62.08,291.8 -162.43,392.13 -100.33,100.35 -239,162.43 -392.13,162.43 -153.13,0 -291.77,-62.07 -392.13,-162.43 -100.36,-100.36 -162.43,-239 -162.43,-392.13 0,-486.65 197.93,-927.91 517.47,-1247.45 319.54,-319.55 760.79,-517.47 1247.45,-517.47 395.18,0 764.67,130.94 1062.7,355.77 299.51,225.94 526.47,546.75 634.38,924.74l1757.65 6151.69zm-7555.48 1109.12l-955.07 0 0 1014.37 955.07 0 0 -1014.37zm-6280 3491.77l2957.95 0c347.39,0 661.32,-141.16 888.67,-368.51 228.22,-228.22 369.2,-543.22 369.2,-889.36l0 -2233.9 -5473.69 0 0 2233.9c0,347.39 141.16,661.32 368.51,888.67 228.22,228.22 543.22,369.2 889.36,369.2zm8646.99 0l2957.95 0c346.14,0 661.13,-140.97 889.36,-369.2 227.35,-227.35 368.51,-541.29 368.51,-888.67l0 -2233.9 -5473.69 0 0 2233.9c0,346.14 140.97,661.13 369.2,889.36 227.35,227.35 541.29,368.51 888.67,368.51z"/>
+                                </svg>
+                            </a>
+
+
+                            <div class="account">
+                                <a href="https://www.mos.ru/knigi/" target="_blank" class="link">Личный кабинет</a>
+                            </div>
+                        </div>
+
+
+                        <nav class="menu flex">
+
+
+                            <div class="item">
+                                <a href="/events/"
+
+                                   class="has-subitems ">
+                                    Афиша </a>
+                                <div class="sub_menu">
+                                    <ul>
+
+
+                                        <li><a href="/events/lektsii/"
+                                        >Лекции</a></li>
+
+
+                                        <li><a href="/events/kontserty/"
+                                        >Концерты</a></li>
+
+
+                                        <li><a href="/events/master-klassy/"
+                                        >Мастер-классы</a></li>
+
+
+                                        <li><a href="/events/detskie/"
+                                        >Детям</a></li>
+
+
+                                        <li><a href="/events/archive/"
+                                        >Архив событий</a></li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                            <div class="item">
+                                <a href="/projects/"
+
+                                   class="has-subitems ">
+                                    Проекты </a>
+                                <div class="sub_menu">
+                                    <ul>
+
+
+                                        <li><a href="/tests/test-svetlof/"
+                                        >Тест - Какой вы Светлов?</a></li>
+
+
+                                        <li><a href="/projects/"
+                                        >Текущие</a></li>
+
+
+                                        <li><a href="/projects/kids/"
+                                        >Для детей и родителей</a></li>
+
+
+                                        <li><a href="/projects/archive/"
+                                        >Портфолио</a></li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                            <div class="item">
+                                <a href="https://www.mos.ru/knigi/"
+                                   target="_blank"
+                                   class="has-subitems ">
+                                    Каталог </a>
+                                <div class="sub_menu">
+                                    <ul>
+                                        <li><a target="_blank"
+                                               href="https://www.mos.ru/knigi/search/?q=&page=1&in_stock=true&is_online=true&sort=relevant&library=323293434">Абонемент</a>
+                                        </li>
+                                        <li><a target="_blank"
+                                               href="https://www.mos.ru/knigi/search/?q=&page=1&in_stock=true&is_online=true&sort=relevant&library=323293433">Молодежный
+                                            медиацентр</a></li>
+                                        <li><a target="_blank"
+                                               href="https://www.mos.ru/knigi/search/?q=&page=1&in_stock=true&is_online=true&sort=relevant&library=323293397">Детско-юношеский
+                                            отдел</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                            <div class="item">
+                                <a href="/books/"
+
+                                   class="has-subitems ">
+                                    Что почитать </a>
+                                <div class="sub_menu">
+                                    <ul>
+
+
+                                        <li><a href="/books/info/"
+                                        >Новинки</a></li>
+
+
+                                        <li><a href="/books/reviews/"
+                                        >Рецензии</a></li>
+
+
+                                        <li><a href="/books/collections/"
+                                        >Подборки</a></li>
+
+
+                                        <li><a href="/books/about/"
+                                        >Истории</a></li>
+
+
+                                        <li><a href="/books/#recomend"
+                                        >Персональные рекомендации</a></li>
+
+
+                                        <li><a href="/books/#book_lab"
+                                        >Книжные лабиринты</a></li>
+
+
+                                        <li><a href="/books/knizhnaya-polka/"
+                                        >Книжная полка</a></li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                            <div class="item">
+                                <a href="/what-see/"
+
+                                   class="">Что посмотреть</a>
+                            </div>
+
+
+                            <div class="item">
+                                <a href="/services/"
+
+                                   class="has-subitems ">
+                                    Услуги </a>
+                                <div class="sub_menu">
+                                    <ul>
+
+
+                                        <li><a href="/services/chto-vy-mozhete-poluchit-besplatno/"
+                                        >Что вы можете получить бесплатно</a></li>
+
+
+                                        <li><a href="/services/chto-vy-mozhete-poluchit-platno/"
+                                        >Что вы можете получить платно</a></li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <div class="search">
+                            <form action="/search/">
+                                <input type="text" name="q" value="" required size="40" placeholder="Поиск по сайту"
+                                       class="input">
+                                <button type="submit" class="submit_btn">
+                                    <svg height="180.622mm" viewBox="0 0 18062.18 18062.2">
+                                        <path d="M18062.18 7408.32c0,1286.54 -335.14,2554.05 -969.17,3665.72 -193.06,338.45 -623.84,456.27 -962.42,263.21 -338.45,-193.06 -456.41,-623.98 -263.21,-962.42 512.63,-898.89 783.69,-1924.7 783.69,-2966.5 0,-3306.87 -2690.34,-5997.22 -5997.22,-5997.22 -3306.88,0 -5997.22,2690.34 -5997.22,5997.22 0,3306.88 2690.34,5997.22 5997.22,5997.22 1029.12,0 2044.04,-264.86 2934.94,-765.91 339.69,-191 769.91,-70.42 960.91,269.13 191,339.69 70.56,769.91 -269.13,960.77 -1101.6,619.7 -2355.75,947.12 -3626.72,947.12 -1780.7,0 -3416.57,-631.69 -4695.66,-1682.58l-4755.47 4723.22c-137.53,136.56 -317.36,204.91 -497.2,204.91 -181.35,0 -362.7,-69.45 -500.64,-208.36 -274.5,-276.43 -272.99,-723.19 3.45,-997.84l4749.13 -4716.74c-1068.39,-1284.19 -1711.94,-2933.7 -1711.94,-4730.94 0,-4084.91 3323.41,-7408.33 7408.33,-7408.33 4084.92,0 7408.33,3323.41 7408.33,7408.33l0 -0.01z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="fixedHeaderMenu">
+                <div class="cont">
+                    <div class="logo">
+                        <a href="/"><img src="/local/templates/svetlovka/images/mob_logo.png" alt=""></a>
+                    </div>
+
+                    <nav class="menu flex">
+
+
+                        <div class="item">
+                            <a href="/events/"
+
+                               class="has-subitems ">
+                                Афиша </a>
+                            <div class="sub_menu">
+                                <ul>
+
+
+                                    <li><a href="/events/lektsii/"
+                                    >Лекции</a></li>
+
+
+                                    <li><a href="/events/kontserty/"
+                                    >Концерты</a></li>
+
+
+                                    <li><a href="/events/master-klassy/"
+                                    >Мастер-классы</a></li>
+
+
+                                    <li><a href="/events/detskie/"
+                                    >Детям</a></li>
+
+
+                                    <li><a href="/events/archive/"
+                                    >Архив событий</a></li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="item">
+                            <a href="/projects/"
+
+                               class="has-subitems ">
+                                Проекты </a>
+                            <div class="sub_menu">
+                                <ul>
+
+
+                                    <li><a href="/tests/test-svetlof/"
+                                    >Тест - Какой вы Светлов?</a></li>
+
+
+                                    <li><a href="/projects/"
+                                    >Текущие</a></li>
+
+
+                                    <li><a href="/projects/kids/"
+                                    >Для детей и родителей</a></li>
+
+
+                                    <li><a href="/projects/archive/"
+                                    >Портфолио</a></li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="item">
+                            <a href="https://www.mos.ru/knigi/"
+                               target="_blank"
+                               class="has-subitems ">
+                                Каталог </a>
+                            <div class="sub_menu">
+                                <ul>
+                                    <li><a target="_blank"
+                                           href="https://www.mos.ru/knigi/search/?q=&page=1&in_stock=true&is_online=true&sort=relevant&library=323293434">Абонемент</a>
+                                    </li>
+                                    <li><a target="_blank"
+                                           href="https://www.mos.ru/knigi/search/?q=&page=1&in_stock=true&is_online=true&sort=relevant&library=323293433">Молодежный
+                                        медиацентр</a></li>
+                                    <li><a target="_blank"
+                                           href="https://www.mos.ru/knigi/search/?q=&page=1&in_stock=true&is_online=true&sort=relevant&library=323293397">Детско-юношеский
+                                        отдел</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="item">
+                            <a href="/books/"
+
+                               class="has-subitems ">
+                                Что почитать </a>
+                            <div class="sub_menu">
+                                <ul>
+
+
+                                    <li><a href="/books/info/"
+                                    >Новинки</a></li>
+
+
+                                    <li><a href="/books/reviews/"
+                                    >Рецензии</a></li>
+
+
+                                    <li><a href="/books/collections/"
+                                    >Подборки</a></li>
+
+
+                                    <li><a href="/books/about/"
+                                    >Истории</a></li>
+
+
+                                    <li><a href="/books/#recomend"
+                                    >Персональные рекомендации</a></li>
+
+
+                                    <li><a href="/books/#book_lab"
+                                    >Книжные лабиринты</a></li>
+
+
+                                    <li><a href="/books/knizhnaya-polka/"
+                                    >Книжная полка</a></li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="item">
+                            <a href="/what-see/"
+
+                               class="">Что посмотреть</a>
+                        </div>
+
+
+                        <div class="item">
+                            <a href="/services/"
+
+                               class="has-subitems ">
+                                Услуги </a>
+                            <div class="sub_menu">
+                                <ul>
+
+
+                                    <li><a href="/services/chto-vy-mozhete-poluchit-besplatno/"
+                                    >Что вы можете получить бесплатно</a></li>
+
+
+                                    <li><a href="/services/chto-vy-mozhete-poluchit-platno/"
+                                    >Что вы можете получить платно</a></li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+
+
+                    <nav class="menu flex">
+
+
+                        <div class="item">
+                            <a href="/about/"
+
+                               class="has-subitems ">
+                                О библиотеке </a>
+                            <div class="sub_menu">
+                                <ul>
+
+
+                                    <li><a href="/about/pravila-biblioteki/"
+                                    >Правила библиотеки</a></li>
+
+
+                                    <li><a href="/about/prostranstvo/"
+                                    >Пространство</a></li>
+
+
+                                    <li><a href="/about/dokumenty/"
+                                    >Документы</a></li>
+
+
+                                    <li><a href="/about/team/"
+                                    >Команда</a></li>
+
+
+                                    <li><a href="/about/o-nas-v-smi/"
+                                    >О нас в СМИ</a></li>
+
+
+                                    <li><a href="/news/"
+                                    >Новости библиотеки</a></li>
+
+
+                                    <li><a href="/partners-news/"
+                                    >Новости партнеров</a></li>
+
+
+                                    <li><a href="/svetlov/"
+                                           target="_blank">О Михаиле Светлове</a></li>
+
+
+                                    <li><a href="/for_partners/o-nas/"
+                                    >Наши друзья</a></li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <div class="fixedHeaderMenu__soc">
+                        <!-- <a class="fixedHeaderMenu__soc--link" href="https://www.instagram.com/svetlovka/" target="_blank" rel="noopener nofollow">
+                            <svg width="19" height="19">
+                                <use xlink:href="#inst__svg" />
+                            </svg>
+                        </a> -->
+                        <a class="fixedHeaderMenu__soc--link" href="https://vk.com/svetlovka" target="_blank"
+                           rel="noopener nofollow">
+                            <svg width="33" height="19">
+                                <use xlink:href="#vk__svg"/>
+                            </svg>
+                        </a>
+                        <!-- <a class="fixedHeaderMenu__soc--link" href="https://www.facebook.com/Svetlovka/" target="_blank" rel="noopener nofollow">
+                            <svg width="12" height="19">
+                                <use xlink:href="#fb__svg" />
+                            </svg>
+                        </a> -->
+                        <a class="fixedHeaderMenu__soc--link" href="https://www.youtube.com/user/TheSvetlovka/videos"
+                           target="_blank" rel="noopener nofollow">
+                            <svg width="26" height="19">
+                                <use xlink:href="#yt__svg"/>
+                            </svg>
+                        </a>
+                        <a class="fixedHeaderMenu__soc--link" href="https://t.me/svetlovkamoscow" target="_blank"
+                           rel="noopener nofollow">
+                            <svg width="26" height="19">
+                                <use xlink:href="#telegram__svg"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+        <section class="page_head">
+            <div class="cont">
+                <div class="breadcrumbs"><a href="/" title="">Главная </a><span class="sep"></span><a
+                        href="/to_colleagues/" title="">Коллегам </a><span class="sep"></span><a
+                        href="/to_colleagues/proekty-i-meropriyatiya/" title="">Мероприятия для коллег </a><span
+                        class="sep"></span><span>Методические мероприятие по работе с генеративными нейронными сетями</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="content_flex">
+            <div class="cont flex">
+
+                <section class="content">
+                    <section class="project_info block">
+                        <h1 class="project_name">Методические мероприятие по работе с генеративными нейронными
+                            сетями</h1>
+
+                        <div class="head">
+                            <div class="img">
+                                <img data-src="/upload/iblock/f46/wpbm4festfam215tlkxhcxsl0yhaflzw.jpg"
+                                     alt="Методические мероприятие по работе с генеративными нейронными сетями"
+                                     class="lozad">
+                            </div>
+
+                            <div class="date"></div>
+
+                            <div class="share">
+                                <div class="pluso-share">
+                                    <div class="pluso-share__btns">
+                                        <script type="text/javascript">(function () {
+                                            if (window.pluso) if (typeof window.pluso.start == "function") return;
+                                            if (window.ifpluso == undefined) {
+                                                window.ifpluso = 1;
+                                                var d = document, s = d.createElement('script'),
+                                                    g = 'getElementsByTagName';
+                                                s.type = 'text/javascript';
+                                                s.charset = 'UTF-8';
+                                                s.async = true;
+                                                s.src = ('https:' == window.location.protocol ? 'https' : 'http') + '://share.pluso.ru/pluso-like.js';
+                                                var h = d[g]('body')[0];
+                                                h.appendChild(s);
+                                            }
+                                        })();</script>
+                                        <!-- <div class="pluso" data-background="transparent" data-options="big,round,line,horizontal,nocounter,theme=04" data-services="vkontakte,odnoklassniki,facebook,twitter,email,print"></div> -->
+                                    </div>
+                                </div>
+                                <div class="ya-share2" data-background="transparent"
+                                     data-options="big,round,line,horizontal,nocounter,theme=04" data-curtain=""
+                                     data-shape="round"
+                                     data-services="vkontakte,telegram,viber,whatsapp,odnoklassniki,email,print">
+                                </div>
+                            </div>
+                            <br></div>
+
+                        <div class="text_block">
+                            <h2>Семинар «Удивительный нейромир. Работа с генеративными нейронными сетями»</h2>
+                            Федоров Андрей Олегович, кандидат педагогических наук, доцент, главный аналитик отдела
+                            информационных систем и электронных ресурсов библиотеки НИУ "Высшая школа экономики"<br>
+                            <br>
+                            Искусственный интеллект действительно открыл новые горизонты для библиотек, позволяя
+                            оптимизировать процессы и улучшать качество обслуживания пользователей. На семинаре мы
+                            обсудили, как использовать возможности ИИ для развития библиотек, а также определили задачи,
+                            которые можно доверить ИИ, и те, где незаменим человек. Найти баланс между технологиями и
+                            традициями стало ключевой задачей, требующей внимательного подхода.<br>
+                            <br>
+                            На семинаре мы рассмотрели следующие направления:<br>
+                            <ol>
+                                <li>Составление промптов для библиотечной работы</li>
+                                <li>Запрос на составление аннотации к книге или статье.</li>
+                                <li>Генерация стандартных писем и уведомлений для читателей.</li>
+                                <li>Создание сценариев мероприятий, афиш, постов для соцсетей.</li>
+                                <li>Генеративные нейросети в библиотечной практике</li>
+                                <li>Автоматизация рутинных процессов: индексация, классификация, создание метаданных,
+                                    поиск литературы.
+                                </li>
+                                <li>Креативные проекты: генерация иллюстраций для выставок, разработка уникального
+                                    контента для продвижения библиотеки.
+                                </li>
+                            </ol>
+                            С методическими рекомендациями можно ознакомиться по <a
+                                href="https://www.svetlovka.ru/to_colleagues/metodicheskie-materialy/metodicheskie-rekomendatsii-po-rabota-s-generativnymi-neyronnymi-setyami/">ссылке</a>.<br>
+                        </div>
+
+                        <div class="bottom">
+
+                            <a href="/to_colleagues/proekty-i-meropriyatiya/" class="back-to-list">Перейти к списку</a>
+
+                            <div class="share">
+                                <div class="pluso-share">
+                                    <div class="pluso-share__btns">
+                                        <script type="text/javascript">(function () {
+                                            if (window.pluso) if (typeof window.pluso.start == "function") return;
+                                            if (window.ifpluso == undefined) {
+                                                window.ifpluso = 1;
+                                                var d = document, s = d.createElement('script'),
+                                                    g = 'getElementsByTagName';
+                                                s.type = 'text/javascript';
+                                                s.charset = 'UTF-8';
+                                                s.async = true;
+                                                s.src = ('https:' == window.location.protocol ? 'https' : 'http') + '://share.pluso.ru/pluso-like.js';
+                                                var h = d[g]('body')[0];
+                                                h.appendChild(s);
+                                            }
+                                        })();</script>
+                                        <!-- <div class="pluso" data-background="transparent" data-options="big,round,line,horizontal,nocounter,theme=04" data-services="vkontakte,odnoklassniki,facebook,twitter,email,print"></div> -->
+                                    </div>
+                                </div>
+                                <div class="ya-share2" data-background="transparent"
+                                     data-options="big,round,line,horizontal,nocounter,theme=04" data-curtain=""
+                                     data-shape="round"
+                                     data-services="vkontakte,telegram,viber,whatsapp,odnoklassniki,email,print">
+                                </div>
+                            </div>
+                            <br></div>
+                    </section>
+                </section>
+
+                <aside>
+                    <div class="banner">
+                        <a href="https://www.svetlovka.ru/svetlov/"
+                           target="_blank"
+                        >
+                            <img data-src="/upload/resize_cache/iblock/dbc/600_600_1/dbcb2bede4916e84940320d402b497cb.jpg"
+                                 alt="" class="lozad" height="499">
+                        </a>
+                    </div>
+                </aside>
+
+
+            </div>
+        </section>
+
+        <section class="bottom_links bg_block partners_slider">
+            <div class="cont">
+
+                <div class="flex slider owl-carousel carousel">
+                    <a href="/nezavisimaya-otsenka-kachestva/" class="item">
+                        <img src="/local/templates/svetlovka/images/ic_bottom_link.png" alt="" class="lozad">
+                        <div class="name">Независимая<br> оценка</div>
+                    </a>
+
+
+                    <a href="https://bus.gov.ru/pub/independentRating/list" target="_blank" rel="noopener" class="item">
+                        <img src="/local/templates/svetlovka/images/ic_bottom_link2.png" alt="" class="lozad">
+                        <div class="name">Результаты независимой<br> оценки качества</div>
+                    </a>
+
+
+                    <a href="/informatsionnye-resursy/" class="item">
+                        <img src="/local/templates/svetlovka/images/ic_bottom_link3.png" alt="" class="lozad">
+                        <div class="name">Информационные<br> ресурсы</div>
+                    </a>
+
+                    <a href="https://www.mkrf.ru/about/national-project/" target="_blank" rel="noopener"
+                       class="item nacpro">
+                        <img src="/local/templates/svetlovka/images/nac_pro.png" alt="" class="lozad">
+                    </a>
+
+                    <a href="http://nac.gov.ru/rekomendacii-po-pravilam-lichnoy-bezopasnosti.html" target="_blank"
+                       rel="noopener" class="item antiter">
+                        <img src="/local/templates/svetlovka/images/ic_bottom_link4.png" alt="" class="lozad">
+                    </a>
+
+
+                    <a href="https://www.mos.ru/kultura/anticorruption/" target="_blank" rel="noopener"
+                       class="item corup">
+                        <img src="/local/templates/svetlovka/images/ic_bottom_link5.png" alt="" class="lozad">
+                        <div class="name">О противодействии<br> коррупции</div>
+                    </a>
+
+                    <a href="http://hrculturemos.ru/bank/" target="_blank" rel="noopener" class="item">
+                        <img src="/local/templates/svetlovka/images/bank_vakans.png" alt="" class="lozad">
+                        <div class="name">Банк вакансий</div>
+                    </a>
+
+                    <a href="https://litschool.pro/" target="_blank" rel="noopener" class="item">
+                        <img src="/local/templates/svetlovka/images/ЛогоCWS_горизонт.png" alt="" class="lozad">
+                    </a>
+
+                </div>
+
+            </div>
+        </section>
+
+
+    </div>
+
+    <footer>
+        <div class="info">
+            <div class="cont">
+
+                <div class="contacts">
+                    <div class="item">
+                        <div class="name">Молодежный медиацентр</div>
+                        <div class="work-time">
+                            <div class="item">
+                                <div class="day">Вт – Сб:</div>
+                                <div class="val"><strong>10:00 – 21:00</strong></div>
+                            </div>
+                            <div class="item">
+                                <div class="day">Вс:</div>
+                                <div class="val"><strong>10:00 – 20:00</strong></div>
+                            </div>
+                            <div class="item">
+                                <div class="day">Пн:</div>
+                                <div class="val"><strong>выходной</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="adres">123001, г. Москва,<br> ул. Большая Садовая, д. 1</div>
+
+                        <div class="metro">
+                            <div>Маяковская</div>
+                        </div>
+
+                        <div class="phone">
+                            <a href="tel:84992505181">8 (499) 250-51-81</a>
+                        </div>
+
+                        <div class="email">
+                            <a href="mailto:mmediateka_svetlovka@culture.mos.ru">mediateka_svetlovka@culture.mos.ru</a>
+                        </div>
+                        <div class="email_smi">
+                            <a href="mailto:public_svetlovka@culture.mos.ru">public_svetlovka@culture.mos.ru </a> - по
+                            вопросам партнерства и СМИ
+                        </div>
+                    </div>
+
+
+                    <div class="item">
+                        <div class="name">Абонемент</div>
+                        <div class="work-time">
+                            <div class="item">
+                                <div class="day">Вт – Сб:</div>
+                                <div class="val"><strong>10:00 – 21:00</strong></div>
+                            </div>
+                            <div class="item">
+                                <div class="day">Вс:</div>
+                                <div class="val"><strong>10:00 – 20:00</strong></div>
+                            </div>
+                            <div class="item">
+                                <div class="day">Пн:</div>
+                                <div class="val"><strong>выходной</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="adres">123001, г. Москва,<br> ул. Садовая-Кудринская, д. 23 стр.1</div>
+
+                        <div class="metro">
+                            <div>Маяковская</div>
+                        </div>
+
+                        <div class="phone">
+                            <a href="tel:84992546271">8 (499) 254-62-71</a>
+                        </div>
+
+                        <div class="phone">
+                            <a href="tel:84992548475">8 (499) 254-84-75</a>
+                            </span>
+                        </div>
+
+                        <div class="email">
+                            <a href="mailto:abonement_svetlovka@culture.mos.ru">abonement_svetlovka@culture.mos.ru</a>
+                        </div>
+
+                    </div>
+
+
+                    <div class="item">
+                        <div class="name">Детско-юношеский отдел</div>
+                        <div class="work-time">
+                            <div class="item">
+                                <div class="day">Вт – Сб:</div>
+                                <div class="val"><strong>10:00 – 21:00</strong></div>
+                            </div>
+                            <div class="item">
+                                <div class="day">Вс:</div>
+                                <div class="val"><strong>10:00 – 20:00</strong></div>
+                            </div>
+                            <div class="item">
+                                <div class="day">Пн</div>
+                                <div class="val"><strong>выходной</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="adres">123557, г. Москва,<br> пер. Большой Тишинский, д. 24 стр.1</div>
+
+                        <div class="metro">
+                            <div>Улица 1905 года</div>
+                            <div>Баррикадная</div>
+                            <div>Белорусская</div>
+                        </div>
+
+                        <div class="phone">
+                            <a href="tel:84992542047">8 (499) 254-20-47</a>
+                            <!-- <span>абонемент</span> -->
+                        </div>
+
+                        <div class="email">
+                            <a href="mailto:deti_svetlovka@culture.mos.ru">deti_svetlovka@culture.mos.ru</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="data">
+                    <div class="logo">
+                        <a href="/"><img src="/local/templates/svetlovka/images/footer_logo.png" alt="Светловка"></a>
+
+                        <a href="http://bibliogorod.ru/" target="_blank"><img
+                                src="/local/templates/svetlovka/images/footer_logo_sep.png" alt="" class="sep"></a>
+
+                        <a href="https://www.mos.ru/kultura/" target="_blank"><img
+                                src="/local/templates/svetlovka/images/footer_logo_dep.png" alt="" class="dep"></a>
+
+                        <div class="info_gos">
+                            Государственное бюджетное учреждение культуры города Москвы «Центральная городская
+                            молодежная библиотека им.М.А. Светлова» <p class="gos_big">(ГБУК г.Москвы «ЦГМБ им.М.А.
+                            Светлова»)</p>
+                        </div>
+                    </div>
+
+
+                    <div class="time">
+
+                        <div><span>Каждый последний вторник месяца во всех отделах проводится санитарный день — библиотека закрыта для посетителей.</span>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="director">
+                        <div class="title">Часы приема директора:</div>
+
+                        <div>Вторник: <strong>16:00 – 18:00</strong></div>
+
+                        <div>По предварительной записи</div>
+
+                        <div class="phone">
+                            <a href="tel:84992505181">8 (495) 650-49-83</a>
+                        </div>
+
+                        <div class="email">
+                            <a href="mailto:svetlovka@culture.mos.ru">svetlovka@culture.mos.ru</a>
+                        </div>
+                    </div>
+
+
+                    <div class="socials">
+                        <div class="title">Мы в социальных сетях:</div>
+
+                        <div class="flex">
+                            <!-- <a href="https://www.instagram.com/svetlovka/" target="_blank" rel="noopener nofollow">
+                                <span class="soc1"></span>
+                            </a> -->
+
+                            <a href="https://vk.com/svetlovka" target="_blank" rel="noopener nofollow">
+                                <span class="soc2"></span>
+                            </a>
+
+                            <!-- <a href="https://www.youtube.com/user/TheSvetlovka/videos?shelf_id=1&sort=dd&view=0" target="_blank" rel="noopener nofollow">
+                                <span class="soc3"></span>
+                            </a> -->
+
+                            <a href="https://t.me/svetlovkamoscow" target="_blank" rel="noopener nofollow">
+                                <span class="soc5"></span>
+                            </a>
+
+                            <!-- <a href="https://www.facebook.com/Svetlovka/" target="_blank" rel="noopener nofollow">
+                                <span class="soc4"></span>
+                            </a> -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="bottom">
+            <div class="cont flex">
+                <div class="copyright">2003-2025 &copy;</div>
+
+                <div class="text">Вся информация на сервере представлена исключительно для ознакомительного просмотра
+                    ГБУК города Москвы "Центральная городская молодежная библиотека имени М. А. Светлова"
+                </div>
+
+                <!-- <div class="metrika"> -->
+                <!-- Yandex.Metrika informer -->
+                <!-- <a href="https://metrika.yandex.ru/stat/?id=35076975&amp;from=informer"
+                target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/35076975/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" class="ym-advanced-informer" data-cid="35076975" data-lang="ru" /></a> -->
+                <!-- /Yandex.Metrika informer -->
+                <!-- </div> -->
+
+                <div class="creator">
+                    <a href="https://artwot.ru" title="Разработка интернет-проектов ARTWOT" target="_blank"
+                       rel="noopener">разработка сайта</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End Подвал -->
+</div>
+
+<div class="modal">
+    <div id="book_info" class="modal-book">
+        <img class="preloader" src="/local/templates/svetlovka/images/preloader/book.gif"/>
+    </div>
+</div>
+
+<div class="overlay"></div>
+
+
+<!-- Begin - SVG components -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none;">
+    <symbol id="inst__svg" viewBox="0 0 19 19" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M13.7566 0H5.24321C2.3521 0 0 2.35221 0 5.24332V13.7567C0 16.6479 2.3521 19 5.24321 19H13.7566C16.6479 19 19 16.6478 19 13.7567V5.24332C19.0001 2.35221 16.6479 0 13.7566 0ZM9.49999 4.60442C6.80039 4.60442 4.60417 6.80065 4.60417 9.50024C4.60417 12.1998 6.80039 14.3958 9.49999 14.3958C12.1996 14.3958 14.3958 12.1998 14.3958 9.50024C14.3958 6.80065 12.1996 4.60442 9.49999 4.60442ZM9.49999 12.71C7.73004 12.71 6.28994 11.2701 6.28994 9.50014C6.28994 7.73007 7.72992 6.29008 9.49999 6.29008C11.27 6.29008 12.7101 7.73007 12.7101 9.50014C12.7101 11.2701 11.2699 12.71 9.49999 12.71ZM13.7279 3.53686C13.9573 3.30647 14.2764 3.17498 14.6011 3.17498C14.9271 3.17498 15.2463 3.30647 15.4755 3.53686C15.7059 3.76612 15.8373 4.0853 15.8373 4.41122C15.8373 4.73601 15.7059 5.05518 15.4755 5.28557C15.2451 5.51483 14.9271 5.64745 14.6011 5.64745C14.2764 5.64745 13.9571 5.51483 13.7279 5.28557C13.4975 5.05518 13.3649 4.73612 13.3649 4.41122C13.3649 4.0853 13.4974 3.76612 13.7279 3.53686Z"
+              fill="currentColor"/>
+    </symbol>
+
+    <symbol id="vk__svg" viewBox="0 0 33 19" fill="none">
+        <path d="M32.2455 16.4866C32.2068 16.4031 32.1707 16.3338 32.1372 16.2783C31.5829 15.2785 30.5237 14.0513 28.9602 12.5964L28.9272 12.563L28.9107 12.5467L28.8939 12.53H28.8772C28.1676 11.8525 27.7182 11.3969 27.53 11.1637C27.1857 10.7194 27.1086 10.2697 27.2968 9.81409C27.4297 9.46983 27.9291 8.7428 28.7938 7.632C29.2486 7.04332 29.6088 6.5715 29.8748 6.21604C31.7934 3.66151 32.6251 2.02913 32.37 1.31826L32.2709 1.15214C32.2043 1.05213 32.0324 0.96064 31.7555 0.8772C31.478 0.793936 31.1232 0.780166 30.6906 0.835656L25.9004 0.868798C25.8228 0.841257 25.712 0.843825 25.5676 0.8772C25.4234 0.910576 25.3513 0.927323 25.3513 0.927323L25.2679 0.969042L25.2017 1.01916C25.1463 1.05231 25.0853 1.1106 25.0187 1.19392C24.9524 1.27695 24.897 1.37439 24.8528 1.48543C24.3312 2.82927 23.7383 4.07871 23.0728 5.23367C22.6625 5.92237 22.2856 6.51922 21.9415 7.02459C21.5978 7.52977 21.3095 7.90198 21.0768 8.14057C20.8438 8.3794 20.6335 8.57072 20.4446 8.71525C20.256 8.85984 20.1121 8.92094 20.0124 8.89859C19.9125 8.87624 19.8184 8.85407 19.7293 8.83189C19.5741 8.73188 19.4494 8.59587 19.3553 8.42374C19.2608 8.25161 19.1972 8.03496 19.1639 7.77396C19.1308 7.51279 19.1112 7.28815 19.1056 7.09927C19.1004 6.91063 19.1028 6.6438 19.1141 6.29954C19.1256 5.9551 19.1308 5.72206 19.1308 5.59987C19.1308 5.17777 19.139 4.71967 19.1555 4.22546C19.1723 3.73124 19.1859 3.33966 19.1972 3.05118C19.2085 2.76241 19.2138 2.45689 19.2138 2.1348C19.2138 1.81271 19.1942 1.56012 19.1555 1.37679C19.1173 1.19369 19.0586 1.01596 18.9813 0.84365C18.9035 0.67152 18.7897 0.538367 18.6403 0.443841C18.4906 0.349432 18.3046 0.274511 18.0831 0.218846C17.4954 0.0856347 16.7469 0.0135734 15.8374 0.00237037C13.775 -0.0198023 12.4498 0.113584 11.8621 0.402354C11.6292 0.524363 11.4185 0.691066 11.2301 0.90194C11.0304 1.14637 11.0026 1.27975 11.1467 1.30169C11.8121 1.40153 12.2832 1.64035 12.5605 2.01793L12.6604 2.21801C12.7381 2.36236 12.8157 2.61793 12.8934 2.98437C12.9709 3.3508 13.021 3.75615 13.043 4.20019C13.0983 5.01107 13.0983 5.70519 13.043 6.28262C12.9875 6.86027 12.935 7.30997 12.885 7.63206C12.8349 7.95415 12.7601 8.21514 12.6604 8.41499C12.5605 8.61489 12.494 8.73708 12.4607 8.78142C12.4274 8.82577 12.3997 8.85372 12.3777 8.86469C12.2335 8.92 12.0836 8.94818 11.9285 8.94818C11.7731 8.94818 11.5847 8.87035 11.363 8.71479C11.1413 8.55923 10.9112 8.34555 10.6728 8.07341C10.4343 7.80121 10.1654 7.42084 9.86588 6.93222C9.56661 6.4436 9.25609 5.86612 8.9345 5.19977L8.66843 4.71652C8.5021 4.40564 8.27489 3.95296 7.98657 3.35891C7.69807 2.76462 7.44307 2.18977 7.22139 1.63446C7.13278 1.40123 6.99966 1.22368 6.82226 1.1015L6.73901 1.05137C6.68366 1.00703 6.59482 0.95994 6.47294 0.909759C6.35089 0.859637 6.22353 0.823694 6.09035 0.801579L1.53282 0.834722C1.0671 0.834722 0.7511 0.940392 0.584713 1.15144L0.518123 1.25128C0.484857 1.30688 0.468079 1.39569 0.468079 1.51793C0.468079 1.64012 0.501344 1.79007 0.567934 1.96763C1.23325 3.53373 1.95677 5.0441 2.73849 6.49898C3.5202 7.95386 4.1995 9.1258 4.77598 10.0138C5.35256 10.9024 5.94028 11.741 6.53912 12.5293C7.13797 13.3179 7.53436 13.8233 7.7283 14.0453C7.92248 14.2677 8.075 14.434 8.18587 14.545L8.60178 14.9448C8.86791 15.2114 9.25871 15.5307 9.77436 15.9027C10.2901 16.2749 10.8611 16.6413 11.4876 17.0025C12.1143 17.3632 12.8433 17.6575 13.675 17.8851C14.5067 18.113 15.3161 18.2044 16.1035 18.1603H18.0164C18.4043 18.1268 18.6982 18.0046 18.898 17.7937L18.9642 17.7102C19.0087 17.6439 19.0503 17.5409 19.0888 17.4023C19.1277 17.2635 19.1471 17.1106 19.1471 16.9442C19.1357 16.4668 19.172 16.0365 19.2549 15.6533C19.3378 15.2703 19.4323 14.9816 19.538 14.7871C19.6436 14.5928 19.7628 14.4288 19.8955 14.2959C20.0285 14.1627 20.1232 14.082 20.1788 14.0542C20.234 14.0263 20.2781 14.0073 20.3114 13.9959C20.5775 13.9071 20.8907 13.9931 21.2514 14.2543C21.6119 14.5153 21.9499 14.8376 22.2662 15.2206C22.5822 15.604 22.962 16.0341 23.4054 16.5115C23.8492 16.9892 24.2372 17.3442 24.5697 17.5778L24.9023 17.7777C25.1244 17.9111 25.4127 18.0333 25.7676 18.1443C26.1219 18.2553 26.4323 18.2831 26.6988 18.2276L30.9568 18.1611C31.3779 18.1611 31.7056 18.0912 31.9381 17.9526C32.171 17.8138 32.3094 17.6609 32.354 17.4945C32.3985 17.328 32.4009 17.1391 32.3624 16.9279C32.323 16.7172 32.2841 16.5698 32.2455 16.4866Z"
+              fill="currentColor"/>
+    </symbol>
+
+    <symbol id="fb__svg" viewBox="0 0 12 19" fill="none">
+        <path d="M10.7756 4.93684C11.1255 4.93684 11.4095 4.66037 11.4095 4.31973V0.617104C11.4095 0.276463 11.1255 0 10.7756 0H6.97246C4.52576 0 2.53544 1.93771 2.53544 4.31973V7.40525H0.633859C0.283969 7.40525 0 7.68172 0 8.02236V11.725C0 12.0656 0.283969 12.3421 0.633859 12.3421H2.53544V17.6382C2.53544 17.9789 2.81941 18.2553 3.1693 18.2553H6.97246C7.32235 18.2553 7.60631 17.9789 7.60631 17.6382V12.3421H10.1418C10.4515 12.3421 10.716 12.124 10.7672 11.8266L11.401 8.12397C11.4314 7.94501 11.3799 7.76194 11.2595 7.6233C11.139 7.48506 10.962 7.40525 10.7756 7.40525H7.60631V4.93684H10.7756Z"
+              fill="currentColor"/>
+    </symbol>
+
+    <symbol id="yt__svg" viewBox="0 0 26 19" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M24.9151 4.29756L24.9163 4.3086C24.9237 4.38951 25.1009 6.3111 25.1011 8.24042V10.044C25.1011 11.9733 24.9237 13.8949 24.9163 13.9758L24.9134 14.0004C24.8889 14.19 24.6482 15.8786 23.8161 16.7471C22.8176 17.8019 21.6916 17.9167 21.1502 17.9719C21.0985 17.9771 21.0509 17.9819 21.009 17.9872L20.9651 17.9916C17.6468 18.2233 12.6355 18.255 12.5853 18.2551L12.5776 18.2553L12.57 18.2551C12.3153 18.2516 6.30797 18.1654 4.39196 17.9903L4.33394 17.9826C4.27558 17.9728 4.19073 17.9634 4.0921 17.9526L4.08402 17.9517C3.43827 17.8807 2.23773 17.7487 1.28825 16.751C0.418629 15.8729 0.207208 14.179 0.185951 13.9881L0.18461 13.976C0.177142 13.895 0 11.9733 0 10.044V8.24042C0 6.3111 0.177142 4.38932 0.18461 4.3086L0.187483 4.28396C0.212187 4.09419 0.452717 2.40558 1.2848 1.53727C2.29748 0.467618 3.43004 0.342025 3.97429 0.281711C3.98193 0.280856 3.98945 0.280019 3.99687 0.279194C4.03092 0.275406 4.06262 0.271879 4.09188 0.268104L4.13611 0.26369C7.48438 0.0319959 12.4959 0.000367769 12.546 0.000183885L12.5504 0L12.5548 0.000183885C12.605 0.000367769 17.6165 0.0319959 20.9349 0.26369L20.9787 0.268104C21.0161 0.272885 21.0578 0.277482 21.1034 0.282447C21.654 0.342577 22.7988 0.467986 23.8086 1.50031C24.6822 2.37799 24.8939 4.10357 24.9151 4.29756ZM10.6399 5.43187L16.2025 8.01023C16.5318 8.16288 16.7354 8.45498 16.7341 8.7728C16.7325 9.09062 16.5264 9.38143 16.1962 9.53196L10.6334 12.0659C10.4806 12.1355 10.3147 12.1702 10.1491 12.1702C9.96831 12.1702 9.78793 12.1289 9.62522 12.0465C9.31364 11.8888 9.12769 11.6111 9.12769 11.3036V6.19119C9.12769 5.88232 9.31479 5.60404 9.62849 5.44652C9.942 5.28915 10.32 5.28362 10.6399 5.43187Z"
+              fill="currentColor"/>
+    </symbol>
+    <symbol id="telegram__svg" viewBox="0 0 22 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.02438 7.84391L20.5348 0.0948405C21.4403 -0.242151 22.2312 0.322397 21.9378 1.7329L21.9395 1.73116L18.6175 17.8529C18.3713 18.9959 17.7119 19.2738 16.7895 18.7353L11.7307 14.8947L9.29059 17.3162C9.02079 17.5941 8.79314 17.8286 8.27038 17.8286L8.62957 12.5253L18.0054 3.80001C18.4134 3.43001 17.9143 3.22157 17.3764 3.58983L5.78985 11.1044L0.795043 9.49934C-0.289244 9.14497 -0.312852 8.3824 1.02438 7.84391V7.84391Z"
+              fill="currentColor"/>
+    </symbol>
+</svg>
+<!-- End - SVG components -->
+
+<script src="/local/templates/svetlovka/js/jquery-3.3.1.min.js"></script>
+<script src="/local/templates/svetlovka/js/jquery-migrate-1.4.1.min.js"></script>
+<script src="/local/templates/svetlovka/js/lozad.min.js"></script>
+<script src="/local/templates/svetlovka/js/owl.carousel.min.js"></script>
+<script src="/local/templates/svetlovka/js/datepicker.min.js"></script>
+<script src="/local/templates/svetlovka/js/fancybox.min.js"></script>
+<script src="/local/templates/svetlovka/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="/local/templates/svetlovka/js/functions.js?v=1.0.2"></script>
+<script src="/local/templates/svetlovka/js/jquery.bxslider.min.js"></script>
+
+<script src="/local/templates/svetlovka/libs/slabovid/slabovid.js?v=1.0.1"></script>
+
+<script src="https://yastatic.net/share2/share.js"></script>
+
+<script src="/local/templates/svetlovka/js/scripts.js?v=2.1"></script>
+
+
+<script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(35076975, "init", {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true
+    });
+</script>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/35076975" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+<!-- /Yandex.Metrika counter -->
+<!-- Форма подписки -->
+<!-- <script src="https://261520.selcdn.ru/subscribe/popup/generator.js" data-email-generator-site-id="80240" data-version="0.1" async="async" charset="utf-8"></script>
+<!-- Старая форма подписки -->
+<!-- <script src="//web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="e69052493cf7a88a5ced61158af3155563081b3aabd95cee77de9415c0e7b712"></script> -->
+
+</body>
+</html>

@@ -13,7 +13,7 @@ import searchengine.model.StatusIndex;
 import searchengine.services.PoolService;
 import searchengine.services.indexEntityService.IndexEntityService;
 import searchengine.services.indexService.lemmaParser.LemmaParseable;
-import searchengine.services.indexService.lemmaParser.LemmaParser;
+import searchengine.services.indexService.lemmaParser.LemmaParserImpl;
 import searchengine.services.lemmaService.LemmaService;
 import searchengine.services.pageService.PageService;
 
@@ -82,7 +82,7 @@ public class SearchServiceImpl implements SearchService {
         if (pageIdSetForSearchingWhereAllLemmasFind.isEmpty()) {
             throw new NoPagesForSearchingException(errorNoPagesWithSuchSearchQuery);
         }
-        // TODO здесь продолжить проверять
+
         RelevanceCalculator relevanceCalculator = new RelevanceCalculator(lemmaDtoSetSortedByAscendingFrequency,
                 pageIdSetForSearchingWhereAllLemmasFind,
                 poolService);
@@ -91,6 +91,8 @@ public class SearchServiceImpl implements SearchService {
 
         return getSearchingResponse(lemmaDtoSetSortedByAscendingFrequency, pageToRelativeRelevanceSortedByDescRelevanceMap);
     }
+
+
 
 
     private SearchingResponse getSearchingResponse(Set<LemmaDto> lemmaDtoSortedAscFrequencySet, Map<PageIdInteger, RelativeRelevanceFloater> pageIdToRelativeRelevanceSortedMap) {
@@ -162,7 +164,7 @@ public class SearchServiceImpl implements SearchService {
 
     private Set<LemmaDto> getLemmaDtoSetFromQuery(String textQuery, List<SiteDto> siteDtoListForSearching) throws IOException {
         Set<LemmaDto> lemmaDtoSet = new HashSet<>();
-        LemmaParseable lemmaParser = new LemmaParser(poolService);
+        LemmaParseable lemmaParser = new LemmaParserImpl(poolService);
         /* универсальный метод: применим его, поэтому пришлось создать map */
         Map<String, Integer> tempMap = lemmaParser.extractLemmaToAmountFromTextForMap(textQuery);
         Set<String> setLemmaWordFromMap = tempMap.keySet();
