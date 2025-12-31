@@ -2,10 +2,7 @@ package searchengine.services.indexService;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import searchengine.config.UserAgent;
 import searchengine.dto.dtoToBD.PageDto;
 import searchengine.dto.dtoToBD.SiteDto;
 import searchengine.dto.indexing.PageParsed;
@@ -13,12 +10,13 @@ import searchengine.model.StatusIndex;
 import searchengine.services.PoolService;
 import searchengine.services.indexService.lemmaParser.LemmaParseable;
 import searchengine.services.indexService.lemmaParser.LemmaParserImpl;
+import searchengine.services.indexService.pageParser.PageParseable;
+import searchengine.services.indexService.pageParser.PageParserJSOUPImpl;
 import searchengine.services.pageService.PageService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RecursiveAction;
@@ -54,6 +52,7 @@ public class HtmlRecursiveParser extends RecursiveAction {
 
         PageParsed pageParsed;
         PageDto pageDto;
+        PageParseable pageParser = new PageParserJSOUPImpl(poolService);
         List<HtmlRecursiveParser> tasks = new ArrayList<>();
 
         String localAddressUrl = extractLocalAddressUrl(url, siteDto);
@@ -71,7 +70,7 @@ public class HtmlRecursiveParser extends RecursiveAction {
         }
 
         try {
-            pageParsed = getParsedPage(url);
+            pageParsed = pageParser.getParsedPage(url);
         } catch (IOException ex) {
             synchronized (UtilitiesIndexing.lockPageRepository) {
                 poolService.getPageService().deletePageById(pageDto.getId()); //
@@ -113,9 +112,6 @@ public class HtmlRecursiveParser extends RecursiveAction {
         }
     }
 
-
-
-
     /**
      * Найдет на пропарсенной (document) странице ссылки на другие страницы и сохранит в список оригинальных ссылок
      * без повторов.
@@ -128,7 +124,7 @@ public class HtmlRecursiveParser extends RecursiveAction {
     private List<String> getLinksFoundOnThisPage(PageParsed pageParsed) {
         return pageParsed.getDoc()
                 .select("body")
-                .select("a[href~=^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$]")
+                .select("a[href~=^((" + url + ")|(/[^A-Z#@?\\.]*))((/[^%A-Z#@?\\.]*)|(/[^A-Z#@?\\.]*)\\.html)$]")
                 .stream().map(element -> element.attr("href"))
                 .distinct().toList();
     }
@@ -170,43 +166,6 @@ public class HtmlRecursiveParser extends RecursiveAction {
     }
 
     /**
-     * Получим из {@code URL} пропарсенный HTML Document со status code ответа.
-     * Если метод выбросит {@code IOException}, то в {@code catch} блоке удалим {@code pageEntity},
-     * который начали добавлять в БД
-     *
-     * @param url в виде <i><b>https://camper-ural.ru/campers/turist-plus</b></i>
-     */
-    private PageParsed getParsedPage(String url) throws IOException {
-        PageParsed pageParsed = new PageParsed();
-        Document doc;
-        Connection.Response response;
-        int code;
-
-        response = Jsoup.connect(url)
-                .userAgent(generateUserAgent())
-                .referrer("https://www.google.com")
-                .ignoreHttpErrors(true)
-                .followRedirects(true)
-                .timeout(60000)
-                .execute();
-        try {
-            Thread.sleep(generateRandomRangeDelay()); // задержка между запросами
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        code = response.statusCode();
-
-        if (code == 200) {
-            doc = response.parse();
-        } else {
-            doc = new Document(url);
-        }
-        pageParsed.setDoc(doc);
-        pageParsed.setCode(code);
-        return pageParsed;
-    }
-
-    /**
      * Если не было IOException, то заполним pageDto остальными данными.
      * @Note: <p>{@code String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " ");}
      * Этим кодом <a href="https://sky.pro/wiki/java/udalenie-emodzi-i-znakov-iz-strok-na-java-reshenie/">очистим String от смайликов в тексте</a></p>
@@ -218,27 +177,6 @@ public class HtmlRecursiveParser extends RecursiveAction {
         String cleanContent = contentViaString.replaceAll("[\\p{So}\\p{Cn}]", " ");
         pageDto.setContent(cleanContent);
         poolService.getPageService().savePageDto(pageDto); // обновим сущ-ую запись в БД
-    }
-
-    private String generateUserAgent() {
-        List<UserAgent> userAgents = poolService.getUserAgentList().getUserAgents();
-        Map<Integer, UserAgent> nameMap = new LinkedHashMap<>();
-        String name = "";
-
-        int number = 1;
-        for (UserAgent usr : userAgents) {
-            nameMap.put(number, usr);
-            number++;
-        }
-
-        int randomNumber = 1 + (int) (Math.random() * nameMap.size());
-        name = nameMap.get(randomNumber).getName();
-        return name;
-    }
-
-    private long generateRandomRangeDelay() {
-        long beginningOfRange = 500;
-        return (long) (beginningOfRange + (Math.random() * 4500));
     }
 
     /**

@@ -55,8 +55,7 @@
     {
       "name": "snippet-searcher.output-limiter",
       "type": "java.lang.Integer",
-      "sourceType": "searchengine.config.SnippetSearcherConfiguration",
-      "defaultValue": 0
+      "sourceType": "searchengine.config.SnippetSearcherConfiguration"
     },
     {
       "name": "snippet-searcher.regex-searcher",

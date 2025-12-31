@@ -21,9 +21,8 @@ import java.util.regex.Pattern;
 @SpringBootTest
 public class SnippetSearcherRegexImplTest {
 
-   private SnippetSearcher snippetSearcher;
-   @Autowired // после этой аннотации подключились бины!!!!!!
-   private PoolService poolService;
+    @Autowired // после этой аннотации подключились бины!!!!!!
+    private PoolService poolService;
 
     LemmaDto lemmaDto;
     LemmaDto lemmaDtoTwo;
@@ -32,39 +31,43 @@ public class SnippetSearcherRegexImplTest {
 
     File input;
     File input2;
+    File input3;
+    File input4;
     Document document;
 
     @BeforeEach // чтоб перед каждым тестом создавалась переменная
-    public void setUp () throws IOException {
+    public void setUp() throws IOException {
 
         lemmaDto = new LemmaDto();
-        lemmaDto.setLemma("дом");
+        lemmaDto.setLemma("скидка");
 
         lemmaDtoTwo = new LemmaDto();
-        lemmaDtoTwo.setLemma("прицеп");
+        lemmaDtoTwo.setLemma("на");
 
         lemmaDtoThree = new LemmaDto();
-        lemmaDtoThree.setLemma("купить");
+        lemmaDtoThree.setLemma("прицеп");
 
         lemmaDtoSet = Set.of(lemmaDto, lemmaDtoTwo, lemmaDtoThree);
 
         input = new File("src/test/resources/file_test.html");
         input2 = new File("src/test/resources/page_test.html");
-        document = Jsoup.parse(input2, "UTF-8", "https://camper-ural.ru");
+        input3 = new File("src/test/resources/page_test_shturm.html");
+        input4 = new File("src/test/resources/petsun.html");
+        document = Jsoup.parse(input4, "UTF-8", "https://camper-ural.ru");
     }
 
 
     @Test
     @DisplayName("check implementation SnippetSearcherSelectorImp")
-    void shouldImplementMethodOfInterfaceSnippetSearcher () throws IOException {
+    void shouldImplementMethodOfInterfaceSnippetSearcher() throws IOException {
 
-        snippetSearcher = new SnippetSearcherRegexImpl(poolService);
+        SnippetSearcher snippetSearcher = new SnippetSearcherRegexImpl(poolService);
         String findSnippet = snippetSearcher.searchSnippets(document, lemmaDtoSet);
         System.out.println(findSnippet);
     }
 
     @Test
-    void shouldFindLemmaInText () throws IOException {
+    void shouldFindLemmaInText() throws IOException {
         Set<String> resultWordListForSnippetSet = Set.of("автомобиль", "море");
         String resultTextOfContent = "Описание почему нужно покупать автомобиль для путешествий по стране и на море. Какой автомобиль покупать для семьи\n" +
                 "\tчтоб было комфортно. Как выгодней купить автомобиль. Какие бывают марки автомобилей. Плюсы путешествий на машине.";
@@ -97,7 +100,7 @@ public class SnippetSearcherRegexImplTest {
     }
 
     @Test
-    void shouldSelectLemmaInText () throws IOException {
+    void shouldSelectLemmaInText() throws IOException {
         Set<String> resultWordListForSnippetSet = Set.of("автомобиль", "море");
         String resultTextOfContent = "Описание почему нужно покупать автомобиль для путешествий по стране и на море. Какой автомобиль покупать для семьи\n" +
                 "\tчтоб было комфортно. Как выгодней купить автомобиль. Какие бывают марки автомобилей. Плюсы путешествий на машине.";

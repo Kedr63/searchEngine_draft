@@ -14,21 +14,22 @@ import java.util.stream.Collectors;
 
 public class TextContentFromPageHandler {
 
-    /**Выберет из страницы только семантически нужный текст контент и строитель соберет его для удобства обработки
+    /**
+     * Выберет из страницы только семантически нужный текст контент и строитель соберет его для удобства обработки.
      * Приведем {@code Set<String> textSetOfTags} к виду: <b><i>Главная | О компании | Полезное о жилых прицепах | Стоит
-     * ли купить дом на колесах? | Статьи | В современном мире, насыщенном</i></b> */
+     * ли купить дом на колесах? | Статьи | В современном мире, насыщенном</i></b>
+     */
     public static String extractSemanticTextFromPage(Document document) {
         Elements mainContentOfTagBodyElement = filterElementsWithSemanticTextContentOfPage(document);
-        Set<String> textSetOfTags = new LinkedHashSet<>(); // эта коллекция не примет дубликаты
-
+        Set<String> textOfTagsSet = new LinkedHashSet<>(); // эта коллекция не примет дубликаты
         for (Element element : mainContentOfTagBodyElement) {
-            recursionDeepIntoElement(element, textSetOfTags);
+            recursionDeepIntoElementForFoundText(element, textOfTagsSet);
         }
 
         StringBuilder textFromSetWithTagSeparatorBuilder = new StringBuilder();
-        int sizeTextSet = textSetOfTags.size();
+        int sizeTextSet = textOfTagsSet.size();
         int counter = 1;
-        for (String text : textSetOfTags) {
+        for (String text : textOfTagsSet) {
             if (!text.contains(" ")) {  // уберем одиночные слова текста вытянутые из тега элемента
                 continue;
             }
@@ -45,35 +46,49 @@ public class TextContentFromPageHandler {
 
     private static Elements filterElementsWithSemanticTextContentOfPage(Document document) {
         Elements elements = document.select("body > *"); //выберем все Element внутри body
-        List<String> tagsToDeleteList = List.of("header", "footer");
-        int deleterElementsAfterTagFooter = elements.size(); // для удаления элементов после footer
-        for (int i = 0; i < elements.size(); i++) {
-            if (elements.get(i).tagName().equals(tagsToDeleteList.get(0))) {
-                elements.get(i).remove();
+        List<String> tagsToDeleteList = List.of("header", "footer", "svg");
+
+        for (Element element : elements) {
+            if (isTagToDelete(element, tagsToDeleteList)) {
+                element.remove();
                 continue;
             }
-            if (elements.get(i).tagName().equals(tagsToDeleteList.get(1))) {
-                elements.get(i).remove();
-                deleterElementsAfterTagFooter = i;
-            }
-            if (i > deleterElementsAfterTagFooter) { // элементы после footer
-                elements.get(i).remove();
-            }
+            recursionDeepIntoElementForFoundTag(element, tagsToDeleteList);
         }
+
         return document.select("body > *");
     }
 
-    private static void recursionDeepIntoElement(Element element, Set<String> textSetOfTags) {
+    private static void recursionDeepIntoElementForFoundText(Element element, Set<String> textSetOfTags) {
         Elements elements = element.children();
         if (!elements.isEmpty()) {
             for (Element child : elements) {
-                recursionDeepIntoElement(child, textSetOfTags);
-            }
-        } else {
-            if (!element.text().isEmpty()) {
-                textSetOfTags.add(element.text());
+                if (!child.ownText().isEmpty()) {
+                    textSetOfTags.add(child.ownText());
+                }
+                recursionDeepIntoElementForFoundText(child, textSetOfTags);
             }
         }
+    }
+
+    private static void recursionDeepIntoElementForFoundTag(Element element, List<String> tagsToDelete) {
+        Elements elements = element.children();
+        if (!elements.isEmpty()) {
+            for (Element child : elements) {
+                if (isTagToDelete(child, tagsToDelete)) {
+                    child.remove();
+                    continue;
+                }
+                recursionDeepIntoElementForFoundTag(child, tagsToDelete);
+            }
+        }
+    }
+
+    private static boolean isTagToDelete(Element element, List<String> tagsToDelete) {
+        return element.tagName().equals(tagsToDelete.get(0))
+                || element.tagName().equals(tagsToDelete.get(1))
+                || element.tagName().equals(tagsToDelete.get(2))
+                || element.tagName().contains("script");
     }
 
     public static String selectDesiredWordsInTheText(String textContentFromPage, Set<LemmaDto> lemmaDtoSetFromQuery, PoolService poolService) throws IOException {
@@ -104,10 +119,11 @@ public class TextContentFromPageHandler {
      * В методе строитель соберет регулярное выражение для поиска нужных слов из набора, чтобы потом вернуть этот текст,
      * в котором эти слова будут обернуты тегом {@code <b>desireWord</b>} для выделения слов на HTML странице.
      * Регулярное выражение соберется в вид: {@code String regex = "(?<!\\p{L})([Лл]ес|[Дд]ом|[Мм]ашина)(?!\\p{L})"}
+     *
      * @param textContentFromPage текст контента с пропарсеной страницы
-     * @param desiredWords слова которые нужно выделить в тексте
+     * @param desiredWords        слова которые нужно выделить в тексте
      * @Note <p>{@code "(?<!\\p{L})"} - это граница слова справа ({@code /b} - почему то не работает)</p>
-     *       <p>{@code "(?!\\p{L})"} - граница слова слева</p>
+     * <p>{@code "(?!\\p{L})"} - граница слова слева</p>
      */
     public static String getTextWithSearchWordsBoldSelection(String textContentFromPage, Set<String> desiredWords) {
         StringBuilder builderRegex = new StringBuilder();

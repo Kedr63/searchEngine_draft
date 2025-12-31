@@ -20,22 +20,18 @@ spring:
 
 indexing-settings:
   sites:
-    - url: https://www.svetlovka.ru
-      name: svetlovka.ru
-#    - url: https://camper-ural.ru
-#      name: camper-ural
-#      - url: https://canopuscamp.ru
-#        name: canopuscamp
-#      - url: https://autoyahta.ru
-#        name: autoyahta.ru
+#    - url: https://www.svetlovka.ru
+#      name: svetlovka.ru
+    - url: https://camper-ural.ru
+      name: camper-ural
+    - url: https://petsun.ru
+      name: petsun.ru
 #    - url: https://volochek.life
 #      name: volochek.life
 #      - url: https://autocamper.pro
 #        name: autocamper.pro
 #      - url: https://kung.ru
 #        name: kung.ru
-#    - url: https://camper-ural.ru
-#      name: camper-ural
 #    - url: https://www.playback.ru
 #      name: PlayBack.Ru
 #    - url: https://www.rbc.ru
@@ -48,23 +44,23 @@ indexing-settings:
 #      name: skillbox.ru
 #    - url: https://nosite.ru
 #      name: Nosite
-#    - url: https://fitstars.ru
-#      name: fitstars.ru
+#    - url: https://shturmancamper.ru
+#      name: shturmancamper.ru
 #    - url: https://kemperus.ru
 #      name: kemperus
 
 
 user-agents-settings:
   userAgents:
-    - name: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
-    - name: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0
-    - name: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.183 Safari/537.36 Vivaldi/1.96.1147.42
-    - name: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15
-    - name: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 OPR/73.0.3856.284
-    - name: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0
-    - name: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/99.0.0.0
-    - name: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Vivaldi/6.1.3035.75
-    - name: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML, как Gecko) Chrome / 80.0.3987.149 Safari / 537.36 OPR / 67.0.3575.115
+    - name: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+    - name: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:120.0) Gecko/20100101 Firefox/120.0
+    - name: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Vivaldi/7.0.3525.105
+    - name: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15
+    - name: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/102.0.0.0
+    - name: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:120.0) Gecko/20100101 Firefox/120.0
+    - name: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/102.0.0.0
+    - name: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Vivaldi/7.0.3525.105
+    - name: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) yandexbrowser/23.7.2.1538 Chrome/116.0.5845.188 YaBrowser/23.7.2.1538 Yowser/2.5 Safari/537.36
 
 error-message:
   errorIndexingNotRunning: "Индексация не запущена"
@@ -82,11 +78,12 @@ errorNoPagesWithSuchSearchQuery: "Нет страниц с таким поиск
 offset: 0
 limit: 7
 
-percentageAllowedNumberOfPages: 0.9
+percentageAllowedNumberOfPages: 0.99
 
 snippet-searcher:
   outputLimiter: 3
-  regexSearcher: "((((([А-Яа-яё\\s]*)\\s*)?)<b>[А-Яа-яё]+</b>[\\.|,]?(\\s*([\\p{Pd}0-9а-яё\\s\":]*)))+)"
+  regexSearcher : "((((([А-Яа-яё\\s]*)\\s*)?)<b>[А-Яа-яё]+</b>[\\.|,]?(\\s*([\\p{Pd}0-9а-яёA-Za-z\\s\":]*)))+)"
+#  regexSearcher: "((((([А-Яа-яё\\s]*)\\s*)?)<b>[А-Яа-яё]+</b>[\\.|,]?(\\s*([\\p{Pd}0-9а-яё\\s\":]*)))+)"
 # первый вариант ниже
 #  regexSearcher: "((((([А-Я][0-9а-яё\\s]*)\\s*)?)|(([А-Яа-яё\\s]*)\\s*)?)((<b>[А-Яа-яё]+</b>)(\\s*([\\p{Pd}0-9а-яёА-Я\\s\":]*)))+)"
 # Найдет в выражении все разные виды дефисов "\\p{Pd}"

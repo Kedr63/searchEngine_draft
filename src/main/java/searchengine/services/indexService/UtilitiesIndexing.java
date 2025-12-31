@@ -2,11 +2,13 @@ package searchengine.services.indexService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import searchengine.dto.indexing.IndexingResponse;
 import searchengine.dto.indexing.IndexingResponseError;
 import searchengine.exceptions.IncompleteIndexingException;
 import searchengine.exceptions.UtilityException;
+import searchengine.services.PoolService;
 import searchengine.services.utility.TimerExecution;
 
 import java.util.ArrayList;
@@ -17,7 +19,10 @@ import java.util.logging.Logger;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class UtilitiesIndexing {
+
+    public final PoolService poolService;
 
     public volatile static boolean stopIndexing;
     public volatile static boolean indexingInProgress;
@@ -91,6 +96,9 @@ public class UtilitiesIndexing {
 
         return indexingResponseList.get(sizeList - 1);
     }
+
+   // TODO добавить методы из HtmlRecursiveParser и сделать их public для тестирорвания
+
 }
 
 
